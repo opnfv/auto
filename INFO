@@ -1,0 +1,24 @@
+Project: ONAP-Automated OPNFV (Auto)
+Project Creation Date: August 15, 2017
+Project Category:
+Lifecycle State: Incubation
+Primary Contact: tina.tsou@arm.com
+Project Lead: tina.tsou@arm.com
+Jira Project Name: ONAP-Automated OPNFV
+Jira Project Prefix: AUTO
+Mailing list tag: [auto]
+IRC: Server:freenode.net Channel:#opnfv-auto
+Repository: auto
+
+Committers:
+tina.tsou@arm.com
+huangxiangyu5@huawei.com
+song.zhu@arm.com
+prasad.gorja@nxp.com
+oul.gd@chinatelecom.cn
+chenlei@caict.ac.cn
+wxy_cttl@126.com
+luxu_hd@163.com
+msambashivaiah@mvista.com
+
+Link to TSC approval of the project: http://meetbot.opnfv.org/meetings/opnfv-meeting/2017/opnfv-meeting.2017-08-15-12.59.html 
