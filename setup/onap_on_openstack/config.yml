@@ -1,0 +1,141 @@
+---
+
+onap_stack_name: onap
+
+onap_vm_images:
+  ubuntu_1404_image:
+    name: Ubuntu_14.04_trusty
+    url: https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
+  ubuntu_1604_image:
+    name: Ubuntu_16.04_xenial
+    url: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+  centos_7_image:
+    name: Centos_7
+    url: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1711.qcow2
+
+onap_secgroup_rules:
+  - protocol: tcp
+    direction: ingress
+    port_range_min: 1
+    port_range_max: 65535
+
+onap_quota:
+  instances: 100
+  cores: 100
+  ram: 204800
+
+onap_keypair:
+  name: onap_key
+  pubkey_path: ~/.ssh/id_rsa.pub
+
+onap_stack_config:
+  public_net_name: ext-net
+  flavor_small: m1.small
+  flavor_medium: m1.medium
+  flavor_large: m1.large
+  flavor_xlarge: m1.xlarge
+  flavor_xxlarge: m1.xlarge
+  vm_base_name: onap
+  nexus_repo: https://nexus.onap.org/content/sites/raw
+  nexus_docker_repo: nexus3.onap.org:10001
+  nexus_username: docker
+  nexus_password: docker
+  dmaap_topic: AUTO
+  artifacts_version: 1.1.1
+  openstack_tenant_name: # PUT YOUR OPENSTACK PROJECT NAME HERE
+  openstack_username: # PUT YOUR OPENSTACK USERNAME HERE
+  openstack_api_key: # PUT YOUR OPENSTACK PASSWORD HERE
+  openstack_auth_method: password
+  openstack_region: RegionOne
+  horizon_url: # PUT THE HORIZON URL HERE
+  keystone_url: # PUT THE KEYSTONE URL HERE
+  cloud_env: openstack
+  dns_list: ["8.8.8.8"]
+  external_dns: 8.8.8.8
+  dns_forwarder: # PUT THE IP OF DNS FORWARDER FOR ONAP DEPLOYMENT'S OWN DNS SERVER
+  # private IP addresses
+  oam_network_cidr: 100.0.0.0/16
+  aai1_ip_addr: 100.0.1.1
+  aai2_ip_addr: 100.0.1.2
+  appc_ip_addr: 100.0.2.1
+  dcae_ip_addr: 100.0.4.1
+  dns_ip_addr: 100.0.100.1
+  so_ip_addr: 100.0.5.1
+  mr_ip_addr: 100.0.11.1
+  policy_ip_addr: 100.0.6.1
+  portal_ip_addr: 100.0.9.1
+  robot_ip_addr: 100.0.10.1
+  sdc_ip_addr: 100.0.3.1
+  sdnc_ip_addr: 100.0.7.1
+  vid_ip_addr: 100.0.8.1
+  clamp_ip_addr: 100.0.12.1
+  openo_ip_addr: 100.0.14.1
+  # dcae parameters
+  dnsaas_config_enabled: true
+  dnsaas_region: RegionOne
+  dnsaas_keystone_url: # PUT THE DESIGNATE PROVIDING OPENSTACK'S KEYSTONE URL HERE
+  dnsaas_tenant_name: # PUT THE TENANT NAME IN THE DESIGNATE PROVIDING OPENSTACK HERE (FOR R1 USE THE SAME AS openstack_tenant_name)
+  dnsaas_username: # PUT THE DESIGNATE PROVIDING OPENSTACK'S USERNAME HERE
+  dnsaas_password: # PUT THE DESIGNATE PROVIDING OPENSTACK'S PASSWORD HERE
+  dcae_keystone_url: # PUT THE MULTIVIM PROVIDED KEYSTONE API URL HERE
+  dcae_centos_7_image: Centos_7
+  dcae_domain: dcaeg2.onap.org
+  # docker version and branches
+  aai_branch: amsterdam
+  appc_branch: amsterdam
+  so_branch: amsterdam
+  mr_branch: master
+  policy_branch: amsterdam
+  portal_branch: release-1.1.0
+  robot_branch: amsterdam
+  sdc_branch: amsterdam
+  sdnc_branch: amsterdam
+  vid_branch: amsterdam
+  clamp_branch: amsterdam
+  vnfsdk_branch: amsterdam
+  aai_docker: v1.1.0
+  aai_sparky_docker: v1.1.0
+  appc_docker: v1.2.0
+  so_docker: v1.1.2
+  dcae_docker: v1.1.1
+  policy_docker: v1.1.2
+  portal_docker: v1.3.0
+  robot_docker: 1.1-STAGING-latest
+  sdc_docker: v1.1.0
+  sdnc_docker: v1.2.1
+  vid_docker: v1.1.1
+  clamp_docker: v1.1.0
+  msb_docker: 1.0.0
+  mvim_docker: v1.0.0
+  uui_docker: v1.0.1
+  esr_docker: v1.0.0
+  dgbuilder_docker: v0.1.0
+  cli_docker: v1.1.0
+  vfc_nokia_docker: v1.0.2
+  vfc_ztevmanagerdriver_docker: v1.0.2
+  vfc_ztesdncdriver_docker: v1.0.0
+  vfc_vnfres_docker: v1.0.1
+  vfc_vnfmgr_docker: v1.0.1
+  vfc_vnflcm_docker: v1.0.1
+  vfc_resmanagement_docker: v1.0.0
+  vfc_nslcm_docker: v1.0.2
+  vfc_huawei_docker: v1.0.2
+  vfc_jujudriver_docker: v1.0.0
+  vfc_gvnfmdriver_docker: v1.0.1
+  vfc_emsdriver_docker: v1.0.1
+  vfc_catalog_docker: v1.0.2
+  vfc_wfengine_mgrservice_docker: v1.0.0
+  vfc_wfengine_activiti_docker: v1.0.0
+  # onap repos
+  aai_repo: http://gerrit.onap.org/r/aai/test-config
+  appc_repo: http://gerrit.onap.org/r/appc/deployment.git
+  mr_repo: http://gerrit.onap.org/r/dcae/demo/startup/message-router.git
+  so_repo: http://gerrit.onap.org/r/so/docker-config.git
+  policy_repo: http://gerrit.onap.org/r/policy/docker.git
+  portal_repo: http://gerrit.onap.org/r/portal.git
+  robot_repo: http://gerrit.onap.org/r/testsuite/properties.git
+  sdc_repo: http://gerrit.onap.org/r/sdc.git
+  sdnc_repo: http://gerrit.onap.org/r/sdnc/oam.git
+  vid_repo: http://gerrit.onap.org/r/vid.git
+  clamp_repo: http://gerrit.onap.org/r/clamp.git
+  vnfsdk_repo: http://gerrit.onap.org/r/vnfsdk/refrepo.git
