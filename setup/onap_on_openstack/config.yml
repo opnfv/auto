@@ -1,0 +1,59 @@
+---
+
+onap_stack_name: onap
+
+onap_demo_git:
+  repo: https://gerrit.onap.org/r/demo
+  branch: amsterdam
+  heat_template: heat/ONAP/onap_openstack.yaml
+  heat_env: heat/ONAP/onap_openstack.env
+
+onap_vm_images:
+  ubuntu_1404_image:
+    name: Ubuntu_14.04_trusty
+    url: https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
+  ubuntu_1604_image:
+    name: Ubuntu_16.04_xenial
+    url: https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+  dcae_centos_7_image:
+    name: Centos_7
+    url: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1711.qcow2
+
+onap_secgroup_rules:
+  - protocol: tcp
+    direction: ingress
+    port_range_min: 1
+    port_range_max: 65535
+
+onap_quota:
+  instances: 100
+  cores: 100
+  ram: 204800
+
+onap_keypair:
+  name: onap_key
+  pubkey_path: ~/.ssh/id_rsa.pub
+
+onap_user_config:
+  public_net_name: ext-net
+  flavor_small: m1.small
+  flavor_medium: m1.medium
+  flavor_large: m1.large
+  flavor_xlarge: m1.xlarge
+  flavor_xxlarge: m1.xlarge
+  openstack_tenant_name: admin
+  openstack_username: admin
+  openstack_api_key: 49ef27251b38c5124378010e7be8758eb
+  horizon_url: https://192.168.22.222:80
+  keystone_url: https://192.168.22.222:5000
+  dns_list: ["8.8.8.8"]
+  external_dns: 8.8.8.8
+  dns_forwarder: 192.168.22.222
+  dnsaas_config_enabled: true
+  dnsaas_region: RegionOne
+  dnsaas_keystone_url: https://192.168.22.222:5000
+  dnsaas_tenant_name: service
+  dnsaas_username: designate
+  dnsaas_password: 853ff4c5315221ce5a042954eac38ea6692092a33c
+  dcae_keystone_url: https://192.168.22.222:5000
+  dcae_domain: dcaeg2.onap.org

@@ -1,0 +1,7 @@
+*.swp
+*.pyc
+/venv
+/work
+/auto.egg-info
+/build
+/dist
