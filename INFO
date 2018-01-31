@@ -11,14 +11,16 @@ IRC: Server:freenode.net Channel:#opnfv-auto
 Repository: auto
 
 Committers:
-tina.tsou@arm.com
-huangxiangyu5@huawei.com
-song.zhu@arm.com
-prasad.gorja@nxp.com
-oul.gd@chinatelecom.cn
-chenlei@caict.ac.cn
-wxy_cttl@126.com
-luxu_hd@163.com
-msambashivaiah@mvista.com
+Tina Tsou (tina.tsou@arm.com)
+Harry Huang (huangxiangyu5@huawei.com)
+Song Zhu (song.zhu@arm.com)
+Prasad Gorja (prasad.gorja@nxp.com)
+Liang Ou (oul.gd@chinatelecom.cn)
+Lei Chen (chenlei@caict.ac.cn)
+Xiaoyu Wang (wxy_cttl@126.com)
+Xu Lu (luxu_hd@163.com)
+Eric Maye (eric.dmaye@wipro.com)
+Chen Zhang (zhangchen.bri@chinatelecom.cn)
+Mohan Navaneethan (mnavaneethan@mvista.com)
 
-Link to TSC approval of the project: http://meetbot.opnfv.org/meetings/opnfv-meeting/2017/opnfv-meeting.2017-08-15-12.59.html 
+Link to TSC approval of the project: http://meetbot.opnfv.org/meetings/opnfv-meeting/2017/opnfv-meeting.2017-08-15-12.59.html
