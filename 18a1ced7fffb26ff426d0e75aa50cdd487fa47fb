@@ -22,6 +22,30 @@
       "revId": "18a1ced7fffb26ff426d0e75aa50cdd487fa47fb",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_e2b911cd",
+        "filename": "INFO",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5455
+      },
+      "writtenOn": "2018-02-01T01:58:59Z",
+      "side": 1,
+      "message": "sorry, my fault, i will update this patch",
+      "parentUuid": "9a3d3df0_6e332df6",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 43
+      },
+      "revId": "18a1ced7fffb26ff426d0e75aa50cdd487fa47fb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
