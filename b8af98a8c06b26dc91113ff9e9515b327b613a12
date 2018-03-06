@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a3f45e8_2f754398",
+        "filename": "README.md",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7107
+      },
+      "writtenOn": "2018-03-06T21:53:34Z",
+      "side": 1,
+      "message": "Question: when does one run prepare.sh?  Is that something that should be described here as well?",
+      "revId": "b8af98a8c06b26dc91113ff9e9515b327b613a12",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_4f26cfb8",
+        "filename": "setup/onap_on_openstack/config.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7107
+      },
+      "writtenOn": "2018-03-06T21:53:34Z",
+      "side": 1,
+      "message": "would you want to add ICMP to the security group rules?  Or is that a bad thing?  I find that being able to ping VMs when it\u0027s not clear whether they\u0027re up is a nice-to-have.",
+      "revId": "b8af98a8c06b26dc91113ff9e9515b327b613a12",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_8f3737e3",
+        "filename": "setup/onap_on_openstack/onap_os_builder.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 7107
+      },
+      "writtenOn": "2018-03-06T21:53:34Z",
+      "side": 1,
+      "message": "in clone_demo_code(), you have a number of configurable parameters from the config.yaml file, but then the repo directory name, \"demo\" is hard coded back in the constructor for the ONAP_os_builder object.  Is it overkill to have \"demo\" in the configuration file as well?  Or is that necessary later, and it\u0027s just too big of a hassle to make the name of your demo directory configurable?",
+      "revId": "b8af98a8c06b26dc91113ff9e9515b327b613a12",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_ef34fbdf",
+        "filename": "setup/onap_on_openstack/onap_os_builder.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 7107
+      },
+      "writtenOn": "2018-03-06T21:53:34Z",
+      "side": 1,
+      "message": "did you mean to call this method \"prepare_images\" rather than \"parepare_images\" ?  I see you invoke the method with the same name later, so maybe on purpose.",
+      "revId": "b8af98a8c06b26dc91113ff9e9515b327b613a12",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
