@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a3f45e8_b25edc43",
+        "filename": "vcpe_spinup.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 3461
+      },
+      "writtenOn": "2018-03-07T12:30:38Z",
+      "side": 1,
+      "message": "white spaces can be removed  (all occurrences)",
+      "range": {
+        "startLine": 31,
+        "startChar": 15,
+        "endLine": 31,
+        "endChar": 19
+      },
+      "revId": "537dab24cc5bd27c5c94b3d1f3eb279596be6132",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_f2586458",
+        "filename": "vpn_unsubscribe.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 3461
+      },
+      "writtenOn": "2018-03-07T12:30:38Z",
+      "side": 1,
+      "message": "tabs not allowed, please use spaces instead.",
+      "range": {
+        "startLine": 99,
+        "startChar": 0,
+        "endLine": 99,
+        "endChar": 17
+      },
+      "revId": "537dab24cc5bd27c5c94b3d1f3eb279596be6132",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
