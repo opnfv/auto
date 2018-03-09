@@ -1,13 +1,35 @@
 #!/usr/bin/env python3
 
+# ===============LICENSE_START=======================================================
+# Apache-2.0
+# ===================================================================================
+# Copyright (C) 2018 Wipro. All rights reserved.
+# ===================================================================================
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ===============LICENSE_END=========================================================
+
+
 # OPNFV Auto project
 # https://wiki.opnfv.org/pages/viewpage.action?pageId=12389095
 
-# (c) by Gerard Damm (Wipro)
-# Use case group: Resilience Improvements
-# this module: management of test definitions
+# Use case 02: Resilience Improvements
+# Use Case description: https://wiki.opnfv.org/display/AUTO/Auto+Use+Cases
+# Test case design: https://wiki.opnfv.org/display/AUTO/Use+case+2+%28Resilience+Improvements+through+ONAP%29+analysis
 
-# Functions to View/Edit/Delete:
+# This module: management of test definitions
+
+# Functions and classes to manage and initialize test data relative to:
 #   physical resources
 #   cloud resources
 #   VNFs
@@ -15,8 +37,8 @@
 #   challenge definitions
 #   optional metrics
 #   test definitions
-# Functions to Initialize Data (initial storage population)
-# Implicit Data Model, with classes
+# Storage of definition data in binary files (pickle), and test data results in .CSV files
+
 
 #docstring
 """This module contains functions and classes to manage OPNFV Auto Test Data for Use Case 2: Resilience Improvements Through ONAP.
@@ -42,15 +64,15 @@ FILE_METRIC_DEFINITIONS =       "DefinitionsMetrics.bin"
 FILE_CHALLENGE_DEFINITIONS =    "DefinitionsChallenges.bin"
 FILE_TEST_DEFINITIONS =         "DefinitionsTests.bin"
 
-######################################################################
 
+######################################################################
 
 def read_list_bin(file_name):
     """Generic function to extract a list from a binary file."""
     try:
         extracted_list = []
         with open(file_name, "rb") as binary_file:
-            extracted_list = pickle.load(binary_file)
+            extracted_list = pickle.load(binary_file)                
         return extracted_list
     except FileNotFoundError:
         print("File not found: ",file_name)
@@ -58,7 +80,7 @@ def read_list_bin(file_name):
         print(type(e), e)
         sys.exit()
 
-
+        
 def write_list_bin(inserted_list, file_name):
     """Generic function to write a list to a binary file (replace content)."""
     try:
@@ -81,10 +103,10 @@ class AutoBaseObject:
     def __str__(self):
         return ("ID="+str(self.ID)+" name="+self.name)
 
-
+    
 def index_already_there(index, given_list):
     """Generic function to check if an index already exists in a list of AutoBaseObject."""
-
+    
     # check if ID already exists
     already_there = False
     if len(given_list)>0:
@@ -96,15 +118,15 @@ def index_already_there(index, given_list):
             else:
                 print("Issue with list: item is not AutoBaseObject")
                 print(" index=\n",index)
-                sys.exit()
+                sys.exit()  
     return already_there
 
 
 def get_indexed_item_from_list(index, given_list):
     """Generic function to get an indexed entry from a list of AutoBaseObject."""
-
+    
     returned_item = None
-
+    
     if len(given_list)>0:
         for item in given_list:
             if isinstance(item, AutoBaseObject):
@@ -114,13 +136,13 @@ def get_indexed_item_from_list(index, given_list):
             else:
                 print("Issue with list: item is not AutoBaseObject")
                 print(" index=\n",index)
-                sys.exit()
+                sys.exit()   
     return returned_item
 
 
 def get_indexed_item_from_file(index, file_name):
     """Generic function to get an indexed entry from a list of AutoBaseObject stored in a binary file."""
-
+    
     list_in_file = read_list_bin(file_name)
     return get_indexed_item_from_list(index, list_in_file)
 
@@ -134,12 +156,12 @@ class TestCase(AutoBaseObject):
     """Test Case class for Auto project."""
     def __init__ (self, test_case_ID, test_case_name,
                   test_case_JIRA_URL):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, test_case_ID, test_case_name)
-
+        
         # specifics for this subclass
-
+        
         # Auto JIRA link
         self.JIRA_URL = test_case_JIRA_URL
 
@@ -151,16 +173,16 @@ def add_test_case_to_file(test_case_ID, test_case_name, test_case_JIRA_URL):
     """Function to add persistent data about test cases (in binary file)."""
 
     test_cases = read_list_bin(FILE_TEST_CASES)
-
+    
     if index_already_there(test_case_ID, test_cases):
         print("Test Case ID=",test_case_ID," is already defined and can't be added")
     else:
         test_cases.append(TestCase(test_case_ID, test_case_name, test_case_JIRA_URL))
         write_list_bin(test_cases, FILE_TEST_CASES)
-
+    
     return test_cases
 
-
+    
 
 def init_test_cases():
     """Function to initialize test case data."""
@@ -186,7 +208,7 @@ def init_test_cases():
     test_case_name = "auto-resiliency-pif-004"
     test_case_JIRA_URL = "https://jira.opnfv.org/browse/AUTO-12"
     test_cases.append(TestCase(test_case_ID, test_case_name, test_case_JIRA_URL))
-
+    
     test_case_ID = 5
     test_case_name = "auto-resiliency-vif-001"
     test_case_JIRA_URL = "https://jira.opnfv.org/browse/AUTO-13"
@@ -206,7 +228,7 @@ def init_test_cases():
     test_case_name = "auto-resiliency-sec-001"
     test_case_JIRA_URL = "https://jira.opnfv.org/browse/AUTO-16"
     test_cases.append(TestCase(test_case_ID, test_case_name, test_case_JIRA_URL))
-
+    
     test_case_ID = 9
     test_case_name = "auto-resiliency-sec-002"
     test_case_JIRA_URL = "https://jira.opnfv.org/browse/AUTO-17"
@@ -219,7 +241,7 @@ def init_test_cases():
 
     # write list to binary file
     write_list_bin(test_cases, FILE_TEST_CASES)
-
+    
     return test_cases
 
 
@@ -229,22 +251,22 @@ class TestDefinition(AutoBaseObject):
     """Test Definition class for Auto project."""
     def __init__ (self, test_def_ID, test_def_name,
                   test_def_challengeDefID,
-                  test_def_useCaseID,
+                  test_def_testCaseID,
                   test_def_VNFIDs,
                   test_def_associatedMetricsIDs,
                   test_def_recipientIDs,
                   test_def_testCLICommandSent,
                   test_def_testAPICommandSent):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, test_def_ID, test_def_name)
-
+        
         # specifics for this subclass
-
+        
         # associated Challenge Definition (ID)
         self.challenge_def_ID = test_def_challengeDefID
-        # associated Use Case (ID)
-        self.use_case_ID = test_def_useCaseID
+        # associated Test Case (ID)
+        self.test_case_ID = test_def_testCaseID
         # associated VNFs (list of IDs)
         self.VNF_ID_list = test_def_VNFIDs
         # associated Metrics (list of IDs)
@@ -265,25 +287,24 @@ def init_test_definitions():
     test_def_ID = 1
     test_def_name = "VM failure impact on virtual firewall (vFW VNF)"
     test_def_challengeDefID = 1
-    test_def_useCaseID = 5
+    test_def_testCaseID = 5
     test_def_VNFIDs = [1]
     test_def_associatedMetricsIDs = []
     test_def_recipientIDs = [2]
-    test_def_testCLICommandSent = ["pwd"]
-    test_def_testAPICommandSent = ["data1","data2"]
+    test_def_testCLICommandSent = ["pwd"]                  
+    test_def_testAPICommandSent = ["data1","data2"]             
     test_definitions.append(TestDefinition(test_def_ID, test_def_name,
                                            test_def_challengeDefID,
-                                           test_def_useCaseID,
+                                           test_def_testCaseID,
                                            test_def_VNFIDs,
                                            test_def_associatedMetricsIDs,
                                            test_def_recipientIDs,
                                            test_def_testCLICommandSent,
                                            test_def_testAPICommandSent))
 
-
     # write list to binary file
     write_list_bin(test_definitions, FILE_TEST_DEFINITIONS)
-
+    
     return test_definitions
 
 
@@ -317,9 +338,9 @@ class ChallengeDefinition(AutoBaseObject):
 
         # superclass constructor
         AutoBaseObject.__init__(self, chall_def_ID, chall_def_name)
-
+        
         # specifics for this subclass
-
+        
         # info about challenge type, categorization
         self.challenge_type = chall_def_challengeType
         # recipient instance, to start/stop the challenge
@@ -353,7 +374,7 @@ def init_challenge_definitions():
     chall_def_stopChallengeCLICommandSent = "service nova-compute restart"
     chall_def_startChallengeAPICommandSent = []
     chall_def_stopChallengeAPICommandSent = []
-
+    
     challenge_defs.append(ChallengeDefinition(chall_def_ID, chall_def_name,
                                               chall_def_challengeType,
                                               chall_def_recipientID,
@@ -366,7 +387,7 @@ def init_challenge_definitions():
 
     # write list to binary file
     write_list_bin(challenge_defs, FILE_CHALLENGE_DEFINITIONS)
-
+    
     return challenge_defs
 
 
@@ -383,10 +404,10 @@ class Recipient(AutoBaseObject):
                   recipient_passwordCreds,
                   recipient_keyCreds,
                   recipient_networkInfo):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, recipient_ID, recipient_name)
-
+        
         # specifics for this subclass
 
         # optional: free-form text info about recipient
@@ -406,7 +427,7 @@ class Recipient(AutoBaseObject):
         # optional: info about recipient's network (VPN, VCN, VN, Neutron, ...)
         self.network_info = recipient_networkInfo
 
-
+        
 def init_recipients():
     """Function to initialize recipient data."""
     test_recipients = []
@@ -422,7 +443,7 @@ def init_recipients():
     recipient_passwordCreds = "baba"
     recipient_keyCreds = "ssh-rsa k7fjsnEFzESfg6phg"
     recipient_networkInfo = "UNH IOL 172.16.0.0/16"
-
+    
     test_recipients.append(Recipient(recipient_ID, recipient_name,
                                      recipient_info,
                                      recipient_versionInfo,
@@ -435,7 +456,7 @@ def init_recipients():
 
     # write list to binary file
     write_list_bin(test_recipients, FILE_RECIPIENTS)
-
+    
     return test_recipients
 
 
@@ -445,12 +466,12 @@ class MetricDefinition(AutoBaseObject):
     """Metric Definition class for Auto project. Actual metrics are subclasses with specific calculation methods."""
     def __init__ (self, metric_def_ID, metric_def_name,
                   metric_def_info):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, metric_def_ID, metric_def_name)
-
+        
         # specifics for this subclass
-
+        
         # optional: free-form text info about metric: formula, etc.
         self.info = metric_def_info
 
@@ -483,7 +504,7 @@ class RecoveryTimeDef(MetricDefinition):
     """
     def compute (self,
                  time_challenge_started, time_restoration_detected):
-        """time_challenge_started: datetime object, time at which challenge was started;
+        """time_challenge_started: datetime object, time at which challenge was started; 
         time_restoration_detected: datetime object, time at which restoration was detected;
         returns a MetricValue containing a timedelta object as value.
         """
@@ -499,7 +520,7 @@ class RecoveryTimeDef(MetricDefinition):
 
         return MetricValue(measured_metric_value, timestamp, self.ID)
 
-
+    
 class UptimePercentageDef(MetricDefinition):
     """Uptime Percentage Metric Definition class for Auto project.
     Formula: uptime / (reference_time - planned_downtime))
@@ -507,7 +528,7 @@ class UptimePercentageDef(MetricDefinition):
     """
     def compute (self,
                  measured_uptime, reference_time, planned_downtime):
-        """measured_uptime: amount of time the service/system/resource was up and running;
+        """measured_uptime: amount of time the service/system/resource was up and running; 
         reference_time: amount of time during which the measurement was made;
         planned_downtime: amount to time during reference_time, which was planned to be down;
         returns a MetricValue object, with a value between 0 and 100.
@@ -525,19 +546,19 @@ class UptimePercentageDef(MetricDefinition):
         if planned_downtime < 0.0:
             print("planned_downtime should be >= 0.0")
             print("meas=",measured_uptime," ref=",reference_time," pla=",planned_downtime)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because fomulas MUST be correct        
         if reference_time < planned_downtime:
             print("reference_time should be >= planned_downtime")
             print("meas=",measured_uptime," ref=",reference_time," pla=",planned_downtime)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because fomulas MUST be correct        
         if measured_uptime > reference_time:
             print("measured_uptime should be <= reference_time")
             print("meas=",measured_uptime," ref=",reference_time," pla=",planned_downtime)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because fomulas MUST be correct 
         if measured_uptime > (reference_time - planned_downtime):
             print("measured_uptime should be <= (reference_time - planned_downtime)")
             print("meas=",measured_uptime," ref=",reference_time," pla=",planned_downtime)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because fomulas MUST be correct 
 
         measured_metric_value = 100 * measured_uptime / (reference_time - planned_downtime)
         timestamp = datetime.now()
@@ -556,7 +577,7 @@ def init_metric_definitions():
     metric_def_info = "Measures time taken by ONAP to restore a VNF"
     metric_definitions.append(RecoveryTimeDef(metric_def_ID, metric_def_name,
                                               metric_def_info))
-
+    
     metric_def_ID = 2
     metric_def_name = "Uptime Percentage"
     metric_def_info = "Measures ratio of uptime to reference time, not counting planned downtime"
@@ -566,7 +587,7 @@ def init_metric_definitions():
 
     # write list to binary file
     write_list_bin(metric_definitions, FILE_METRIC_DEFINITIONS)
-
+    
     return metric_definitions
 
 
@@ -579,10 +600,10 @@ class PhysicalResource(AutoBaseObject):
                   phys_resrc_info,
                   phys_resrc_IPAddress,
                   phys_resrc_MACAddress):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, phys_resrc_ID, phys_resrc_name)
-
+        
         # specifics for this subclass
 
         # optional: free-form text info about physical resource
@@ -592,7 +613,7 @@ class PhysicalResource(AutoBaseObject):
         # optional: main MAC address of physical resource
         self.MAC_address = phys_resrc_MACAddress
 
-
+        
 def init_physical_resources():
     """Function to initialize physical resource data."""
     test_physical_resources = []
@@ -603,7 +624,7 @@ def init_physical_resources():
     phys_resrc_info = "Jump server in Arm pod, 48 cores, 64G RAM, 447G SSD, aarch64 Cavium ThunderX, Ubuntu OS"
     phys_resrc_IPAddress = "10.10.50.12"
     phys_resrc_MACAddress = ""
-
+    
     test_physical_resources.append(PhysicalResource(phys_resrc_ID, phys_resrc_name,
                                                     phys_resrc_info,
                                                     phys_resrc_IPAddress,
@@ -611,7 +632,7 @@ def init_physical_resources():
 
     # write list to binary file
     write_list_bin(test_physical_resources, FILE_PHYSICAL_RESOURCES)
-
+    
     return test_physical_resources
 
 
@@ -624,10 +645,10 @@ class CloudVirtualResource(AutoBaseObject):
                   cldvirtres_IPAddress,
                   cldvirtres_URL,
                   cldvirtres_related_phys_rsrcIDs):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, cldvirtres_ID, cldvirtres_name)
-
+        
         # specifics for this subclass
 
         # optional: free-form text info about cloud virtual resource
@@ -639,7 +660,7 @@ class CloudVirtualResource(AutoBaseObject):
         # optional: related/associated physical resources (if known and useful or interesting, list of integer IDs)
         self.related_phys_rsrc_ID_list = cldvirtres_related_phys_rsrcIDs
 
-
+        
 def init_cloud_virtual_resources():
     """Function to initialize cloud virtual resource data."""
     test_cldvirt_resources = []
@@ -651,7 +672,7 @@ def init_cloud_virtual_resources():
     cldvirtres_IPAddress = "50.60.70.80"
     cldvirtres_URL = "http://50.60.70.80:8080"
     cldvirtres_related_phys_rsrcIDs = [1,3]
-
+    
     test_cldvirt_resources.append(CloudVirtualResource(cldvirtres_ID, cldvirtres_name,
                                                        cldvirtres_info,
                                                        cldvirtres_IPAddress,
@@ -660,7 +681,7 @@ def init_cloud_virtual_resources():
 
     # write list to binary file
     write_list_bin(test_cldvirt_resources, FILE_CLOUD_RESOURCES)
-
+    
     return test_cldvirt_resources
 
 
@@ -674,10 +695,10 @@ class VNFService(AutoBaseObject):
                   vnf_serv_URL,
                   vnf_serv_related_phys_rsrcIDs,
                   vnf_serv_related_cloudvirt_rsrcIDs):
-
+    
         # superclass constructor
         AutoBaseObject.__init__(self, vnf_serv_ID, vnf_serv_name)
-
+        
         # specifics for this subclass
 
         # optional: free-form text info about VNF / e2e Service
@@ -704,7 +725,7 @@ def init_VNFs_Services():
     vnf_serv_URL = "http://5.4.3.2:8080"
     vnf_serv_related_phys_rsrcIDs = [2,4,6]
     vnf_serv_related_cloudvirt_rsrcIDs = [1,2]
-
+        
     test_VNFs_Services.append(VNFService(vnf_serv_ID, vnf_serv_name,
                                          vnf_serv_info,
                                          vnf_serv_IPAddress,
@@ -714,7 +735,7 @@ def init_VNFs_Services():
 
     # write list to binary file
     write_list_bin(test_VNFs_Services, FILE_VNFS_SERVICES)
-
+    
     return test_VNFs_Services
 
 
@@ -738,10 +759,10 @@ class TimeStampedStringList:
         else:
             print("appended object must be a string, string_to_append=",string_to_append)
             sys.exit()  # stop entire program, because string MUST be correct
-
+            
     def get_raw_list(self):
         return self.__string_list
-
+    
     def get_raw_list_timestamps(self):
         return self.__timestamp_list
 
@@ -759,17 +780,17 @@ class TimeStampedStringList:
 
 
 ######################################################################
-
+    
 class ChallengeExecution(AutoBaseObject):
     """Class for Auto project, tracking the execution details of a Challenge Definition,
     with a method to dump all results to a CSV file.
     """
     def __init__ (self, chall_exec_ID, chall_exec_name,
                   chall_exec_challDefID):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, chall_exec_ID, chall_exec_name)
-
+        
         # specifics for this subclass
 
         # associated Challenge Definition (ID)
@@ -791,16 +812,16 @@ class ChallengeExecution(AutoBaseObject):
         """Generic function to dump all Challenge Execution data in a CSV file."""
 
         dump_list = []
-
+        
         # add rows one by one, each as a list, even if only 1 element
-
+        
         dump_list.append(["challenge execution ID",self.ID])
         dump_list.append(["challenge execution name",self.name])
-
+        
         dump_list.append(["challenge definition ID",self.challenge_def_ID])
         challenge_def_name = get_indexed_item_from_file(self.challenge_def_ID, FILE_CHALLENGE_DEFINITIONS)
         dump_list.append(["challenge definition name",challenge_def_name])
-
+        
         if self.start_time != None:
             dump_list.append(["challenge start time",self.start_time.strftime("%Y-%m-%d %H:%M:%S")])
         if self.stop_time != None:
@@ -810,7 +831,7 @@ class ChallengeExecution(AutoBaseObject):
             dump_list.append(["Log:"])
             for item in self.log.get_timestamped_strings():
                 dump_list.append([item])
-
+                             
         if self.CLI_responses.length() > 0 :
             dump_list.append(["CLI responses:"])
             for item in self.CLI_responses.get_timestamped_strings():
@@ -820,7 +841,7 @@ class ChallengeExecution(AutoBaseObject):
             dump_list.append(["API responses:"])
             for item in self.API_responses.get_timestamped_strings():
                 dump_list.append([item])
-
+        
         try:
             # output CSV file name: challDefExec + ID + start time + .csv
             file_name = "challDefExec" + "{0:0=3d}".format(self.challenge_def_ID) + "-" + self.start_time.strftime("%Y-%m-%d-%H-%M-%S") + ".csv"
@@ -849,7 +870,7 @@ class TimeStampedMetricValueList:
         else:
             print("appended object must be a MetricValue, metric_value_to_append=",metric_value_to_append)
             sys.exit()  # stop entire program, because metric_value_to_append MUST be correct
-
+            
     def get_raw_list(self):
         return self.__metric_value_list
 
@@ -881,10 +902,10 @@ class TestExecution(AutoBaseObject):
                   test_exec_testDefID,
                   test_exec_challengeExecID,
                   test_exec_userID):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, test_exec_ID, test_exec_name)
-
+        
         # specifics for this subclass
 
         # associated Test Definition (ID)
@@ -920,22 +941,22 @@ class TestExecution(AutoBaseObject):
         """Generic function to dump all Test Execution data in a CSV file."""
 
         dump_list = []
-
+        
         # add rows one by one, each as a list, even if only 1 element
-
+        
         dump_list.append(["test execution ID",self.ID])
         dump_list.append(["test execution name",self.name])
-
+        
         dump_list.append(["test definition ID",self.test_def_ID])
         test_def_name = get_indexed_item_from_file(self.test_def_ID, FILE_TEST_DEFINITIONS)
         dump_list.append(["test definition name",test_def_name])
 
         dump_list.append(["associated challenge execution ID",self.challenge_exec_ID])
         dump_list.append(["user ID",self.user_ID])
-
+        
         if self.start_time != None:
             dump_list.append(["test start time",self.start_time.strftime("%Y-%m-%d %H:%M:%S")])
-
+            
         if self.finish_time != None:
             dump_list.append(["test finish time",self.finish_time.strftime("%Y-%m-%d %H:%M:%S")])
 
@@ -960,12 +981,12 @@ class TestExecution(AutoBaseObject):
             dump_list.append(["Metric Values:"])
             for item in self.associated_metric_values.get_timestamped_metric_values_as_strings():
                 dump_list.append([item])
-
+        
         if self.log.length() > 0 :
             dump_list.append(["Log:"])
             for item in self.log.get_timestamped_strings():
                 dump_list.append([item])
-
+                             
         if self.CLI_responses.length() > 0 :
             dump_list.append(["CLI responses:"])
             for item in self.CLI_responses.get_timestamped_strings():
@@ -975,7 +996,7 @@ class TestExecution(AutoBaseObject):
             dump_list.append(["API responses:"])
             for item in self.API_responses.get_timestamped_strings():
                 dump_list.append([item])
-
+                
         try:
             # output CSV file name: testDefExec + ID + start time + .csv
             file_name = "testDefExec" + "{0:0=3d}".format(self.test_def_ID) + "-" + self.start_time.strftime("%Y-%m-%d-%H-%M-%S") + ".csv"
@@ -992,11 +1013,11 @@ def dump_all_binaries_to_CSV():
     """Get all content from all binary files, and dump everything in a snapshot CSV file."""
     ## TODO
     timenow = datetime.now()
-
+    
 
 ######################################################################
 def main():
-
+    
     tcs = init_test_cases()
     print(tcs)
 
@@ -1005,17 +1026,17 @@ def main():
     test_case_JIRA_URL = "https://jira.opnfv.org/browse/AUTO-400"
     add_test_case_to_file(test_case_ID, test_case_name, test_case_JIRA_URL)
     print(read_list_bin(FILE_TEST_CASES))
-
+    
     print(get_indexed_item_from_file(3,FILE_TEST_CASES))
     print(get_indexed_item_from_file(257,FILE_TEST_CASES))
-
+  
     print("tcs[4]=",tcs[4])
     print(tcs[4].ID)
     print(tcs[4].name)
     print(tcs[4].JIRA_URL)
 
     print()
-
+    
     tds = init_test_definitions()
     print(tds)
     td = get_indexed_item_from_file(1,FILE_TEST_DEFINITIONS)
@@ -1110,12 +1131,12 @@ def main():
     te1.start_time = datetime.now()
     te1.challenge_start_time = ce1.start_time  # illustrate how to set test execution challenge start time
     print("te1.challenge_start_time:",te1.challenge_start_time)
-
+    
     te1.log.append_to_list("test execution log event 1")
     te1.log.append_to_list("test execution log event 2")
     te1.CLI_responses.append_to_list("test execution CLI response 1")
     te1.CLI_responses.append_to_list("test execution CLI response 2")
-
+    
     metricdef = get_indexed_item_from_file(2,FILE_METRIC_DEFINITIONS)  # get a metric definition, some ID
     print(metricdef)
     r1 = metricdef.compute(735, 1000, 20)  # compute a metric value
@@ -1124,10 +1145,10 @@ def main():
     r1 = metricdef.compute(915, 1000, 20)  # compute a metric value
     print(r1)
     te1.associated_metric_values.append_to_list(r1)  # append a measured metric value to test execution
-
+    
     te1.log.append_to_list("test execution log event 3")
     te1.API_responses.append_to_list("test execution API response 1")
-
+    
     print("log length: ", te1.log.length())
     print(te1.log.get_timestamped_strings())
     print("CLI_responses length: ", te1.CLI_responses.length())
@@ -1136,25 +1157,25 @@ def main():
     print(te1.API_responses.get_timestamped_strings())
     print("associated_metric_values length: ", te1.associated_metric_values.length())
     print(te1.associated_metric_values.get_timestamped_metric_values_as_strings())
-
+    
     te1.restoration_detection_time = datetime.now()
     print("te1.restoration_detection_time:",te1.restoration_detection_time)
     metricdef = get_indexed_item_from_file(1,FILE_METRIC_DEFINITIONS)  # get Recovery Time metric definition: ID=1
     print(metricdef)
     r1 = metricdef.compute(te1.challenge_start_time, te1.restoration_detection_time)  # compute a metric value, for Recovery time
     te1.recovery_time = r1  # assignment could be direct, i.e. te1.recovery_time = metricdef.compute(...)
-
+    
     te1.finish_time = datetime.now()  # test execution is finished
     te1.write_to_csv()
 
     print()
-
+                          
     print("\nCiao")
 
 if __name__ == "__main__":
     main()
 
-
+    
 
 
 
