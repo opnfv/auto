@@ -1,13 +1,35 @@
 #!/usr/bin/env python3
 
+# ===============LICENSE_START=======================================================
+# Apache-2.0
+# ===================================================================================
+# Copyright (C) 2018 Wipro. All rights reserved.
+# ===================================================================================
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ===============LICENSE_END=========================================================
+
+
 # OPNFV Auto project
 # https://wiki.opnfv.org/pages/viewpage.action?pageId=12389095
 
-# (c) by Gerard Damm (Wipro)
-# Use case group: Resilience Improvements
-# this module: management of test definitions
+# Use case 02: Resilience Improvements
+# Use Case description: https://wiki.opnfv.org/display/AUTO/Auto+Use+Cases
+# Test case design: https://wiki.opnfv.org/display/AUTO/Use+case+2+%28Resilience+Improvements+through+ONAP%29+analysis
 
-# Functions to View/Edit/Delete:
+# This module: management of test definitions
+
+# Functions and classes to manage and initialize test data relative to:
 #   physical resources
 #   cloud resources
 #   VNFs
@@ -15,8 +37,8 @@
 #   challenge definitions
 #   optional metrics
 #   test definitions
-# Functions to Initialize Data (initial storage population)
-# Implicit Data Model, with classes
+# Storage of definition data in binary files (pickle), and test data results in .CSV files
+
 
 #docstring
 """This module contains functions and classes to manage OPNFV Auto Test Data for Use Case 2: Resilience Improvements Through ONAP.
@@ -42,8 +64,8 @@ FILE_METRIC_DEFINITIONS =       "DefinitionsMetrics.bin"
 FILE_CHALLENGE_DEFINITIONS =    "DefinitionsChallenges.bin"
 FILE_TEST_DEFINITIONS =         "DefinitionsTests.bin"
 
-######################################################################
 
+######################################################################
 
 def read_list_bin(file_name):
     """Generic function to extract a list from a binary file."""
@@ -229,7 +251,7 @@ class TestDefinition(AutoBaseObject):
     """Test Definition class for Auto project."""
     def __init__ (self, test_def_ID, test_def_name,
                   test_def_challengeDefID,
-                  test_def_useCaseID,
+                  test_def_testCaseID,
                   test_def_VNFIDs,
                   test_def_associatedMetricsIDs,
                   test_def_recipientIDs,
@@ -243,8 +265,8 @@ class TestDefinition(AutoBaseObject):
 
         # associated Challenge Definition (ID)
         self.challenge_def_ID = test_def_challengeDefID
-        # associated Use Case (ID)
-        self.use_case_ID = test_def_useCaseID
+        # associated Test Case (ID)
+        self.test_case_ID = test_def_testCaseID
         # associated VNFs (list of IDs)
         self.VNF_ID_list = test_def_VNFIDs
         # associated Metrics (list of IDs)
@@ -265,7 +287,7 @@ def init_test_definitions():
     test_def_ID = 1
     test_def_name = "VM failure impact on virtual firewall (vFW VNF)"
     test_def_challengeDefID = 1
-    test_def_useCaseID = 5
+    test_def_testCaseID = 5
     test_def_VNFIDs = [1]
     test_def_associatedMetricsIDs = []
     test_def_recipientIDs = [2]
@@ -273,13 +295,12 @@ def init_test_definitions():
     test_def_testAPICommandSent = ["data1","data2"]
     test_definitions.append(TestDefinition(test_def_ID, test_def_name,
                                            test_def_challengeDefID,
-                                           test_def_useCaseID,
+                                           test_def_testCaseID,
                                            test_def_VNFIDs,
                                            test_def_associatedMetricsIDs,
                                            test_def_recipientIDs,
                                            test_def_testCLICommandSent,
                                            test_def_testAPICommandSent))
-
 
     # write list to binary file
     write_list_bin(test_definitions, FILE_TEST_DEFINITIONS)
