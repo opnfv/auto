@@ -1,0 +1,29 @@
+.. _auto-userguide:
+
+.. This work is licensed under a Creative Commons Attribution 4.0 International License.
+.. http://creativecommons.org/licenses/by/4.0
+.. (c) <optionally add copywriters name>
+
+
+============================================
+OPNFV Auto (ONAP-Automated OPNFV) User Guide
+============================================
+
+.. The feature user guide should provide an OPNFV user with enough information to
+.. use the features provided by the feature project in the supported scenarios.
+.. This guide should walk a user through the usage of the features once a scenario
+.. has been deployed and is active according to the installation guide provided
+.. by the installer project.
+
+.. toctree::
+   :maxdepth: 1
+
+   UC01-feature.userguide.rst
+   UC02-feature.userguide.rst
+   UC03-feature.userguide.rst
+   
+.. The feature.userguide.rst files should contain the text for this document
+.. additional documents can be added to this directory and added in the right order
+.. to this file as a list below.
+
+
