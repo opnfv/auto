@@ -30,6 +30,10 @@
 # This module: interfaces with cloud managers (OpenStack, Kubernetes, AWS, ...)
 
 
+######################################################################
+# import statements
+import AutoResilGlobal
+
 
 def f1():
     return 0

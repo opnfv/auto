@@ -53,6 +53,7 @@ import csv
 import sys
 from enum import Enum
 from datetime import datetime, timedelta
+import AutoResilGlobal
 
 # Constants with definition file names
 FILE_PHYSICAL_RESOURCES =       "ResourcesPhysical.bin"
@@ -64,6 +65,9 @@ FILE_METRIC_DEFINITIONS =       "DefinitionsMetrics.bin"
 FILE_CHALLENGE_DEFINITIONS =    "DefinitionsChallenges.bin"
 FILE_TEST_DEFINITIONS =         "DefinitionsTests.bin"
 
+# Other constants
+INDENTATION_MULTIPLIER =        4
+
 
 ######################################################################
 
@@ -72,7 +76,7 @@ def read_list_bin(file_name):
     try:
         extracted_list = []
         with open(file_name, "rb") as binary_file:
-            extracted_list = pickle.load(binary_file)
+            extracted_list = pickle.load(binary_file)                
         return extracted_list
     except FileNotFoundError:
         print("File not found: ",file_name)
@@ -80,7 +84,7 @@ def read_list_bin(file_name):
         print(type(e), e)
         sys.exit()
 
-
+        
 def write_list_bin(inserted_list, file_name):
     """Generic function to write a list to a binary file (replace content)."""
     try:
@@ -103,10 +107,10 @@ class AutoBaseObject:
     def __str__(self):
         return ("ID="+str(self.ID)+" name="+self.name)
 
-
+    
 def index_already_there(index, given_list):
     """Generic function to check if an index already exists in a list of AutoBaseObject."""
-
+    
     # check if ID already exists
     already_there = False
     if len(given_list)>0:
@@ -118,15 +122,15 @@ def index_already_there(index, given_list):
             else:
                 print("Issue with list: item is not AutoBaseObject")
                 print(" index=\n",index)
-                sys.exit()
+                sys.exit()  
     return already_there
 
 
 def get_indexed_item_from_list(index, given_list):
     """Generic function to get an indexed entry from a list of AutoBaseObject."""
-
+    
     returned_item = None
-
+    
     if len(given_list)>0:
         for item in given_list:
             if isinstance(item, AutoBaseObject):
@@ -136,13 +140,13 @@ def get_indexed_item_from_list(index, given_list):
             else:
                 print("Issue with list: item is not AutoBaseObject")
                 print(" index=\n",index)
-                sys.exit()
+                sys.exit()   
     return returned_item
 
 
 def get_indexed_item_from_file(index, file_name):
     """Generic function to get an indexed entry from a list of AutoBaseObject stored in a binary file."""
-
+    
     list_in_file = read_list_bin(file_name)
     return get_indexed_item_from_list(index, list_in_file)
 
@@ -156,14 +160,23 @@ class TestCase(AutoBaseObject):
     """Test Case class for Auto project."""
     def __init__ (self, test_case_ID, test_case_name,
                   test_case_JIRA_URL):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, test_case_ID, test_case_name)
-
+        
         # specifics for this subclass
-
+        
         # Auto JIRA link
         self.JIRA_URL = test_case_JIRA_URL
+
+    def printout_all(self, indent_level):
+        """Print out all attributes, with an indentation level."""
+        indent = " "*indent_level*INDENTATION_MULTIPLIER
+        
+        print(indent, "Test Case ID:", self.ID, sep='')
+        print(indent, "|-name:", self.name, sep='')
+        
+        print(indent, "|-JIRA URL:", self.JIRA_URL, sep='')
 
 
 # no need for functions to remove data: ever-growing library, arbitrary ID
@@ -173,16 +186,16 @@ def add_test_case_to_file(test_case_ID, test_case_name, test_case_JIRA_URL):
     """Function to add persistent data about test cases (in binary file)."""
 
     test_cases = read_list_bin(FILE_TEST_CASES)
-
+    
     if index_already_there(test_case_ID, test_cases):
         print("Test Case ID=",test_case_ID," is already defined and can't be added")
     else:
         test_cases.append(TestCase(test_case_ID, test_case_name, test_case_JIRA_URL))
         write_list_bin(test_cases, FILE_TEST_CASES)
-
+    
     return test_cases
 
-
+    
 
 def init_test_cases():
     """Function to initialize test case data."""
@@ -208,7 +221,7 @@ def init_test_cases():
     test_case_name = "auto-resiliency-pif-004"
     test_case_JIRA_URL = "https://jira.opnfv.org/browse/AUTO-12"
     test_cases.append(TestCase(test_case_ID, test_case_name, test_case_JIRA_URL))
-
+    
     test_case_ID = 5
     test_case_name = "auto-resiliency-vif-001"
     test_case_JIRA_URL = "https://jira.opnfv.org/browse/AUTO-13"
@@ -228,7 +241,7 @@ def init_test_cases():
     test_case_name = "auto-resiliency-sec-001"
     test_case_JIRA_URL = "https://jira.opnfv.org/browse/AUTO-16"
     test_cases.append(TestCase(test_case_ID, test_case_name, test_case_JIRA_URL))
-
+    
     test_case_ID = 9
     test_case_name = "auto-resiliency-sec-002"
     test_case_JIRA_URL = "https://jira.opnfv.org/browse/AUTO-17"
@@ -241,7 +254,7 @@ def init_test_cases():
 
     # write list to binary file
     write_list_bin(test_cases, FILE_TEST_CASES)
-
+    
     return test_cases
 
 
@@ -257,12 +270,12 @@ class TestDefinition(AutoBaseObject):
                   test_def_recipientIDs,
                   test_def_testCLICommandSent,
                   test_def_testAPICommandSent):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, test_def_ID, test_def_name)
-
+        
         # specifics for this subclass
-
+        
         # associated Challenge Definition (ID)
         self.challenge_def_ID = test_def_challengeDefID
         # associated Test Case (ID)
@@ -279,6 +292,57 @@ class TestDefinition(AutoBaseObject):
         self.test_API_command_sent_list = test_def_testAPICommandSent
 
 
+    def printout_all(self, indent_level):
+        """Print out all attributes, with an indentation level."""
+        indent = " "*indent_level*INDENTATION_MULTIPLIER
+        
+        print(indent, "\nTest Definition ID:", self.ID, sep='')
+        print(indent, "|-name:", self.name, sep='')
+
+        print(indent, "|-associated test case ID:", self.test_case_ID, sep='')
+        test_case = get_indexed_item_from_list(self.test_case_ID, AutoResilGlobal.test_case_list)
+        if test_case != None:
+            test_case.printout_all(indent_level+1)
+
+        print(indent, "|-associated challenge def ID:", self.challenge_def_ID, sep='')
+        challenge_def = get_indexed_item_from_list(self.challenge_def_ID, AutoResilGlobal.challenge_definition_list)
+        if challenge_def != None:
+            challenge_def.printout_all(indent_level+1)
+
+        if self.VNF_ID_list != None:
+            if len(self.VNF_ID_list) >0:
+                print(indent, "|-associated VNFs:", sep='')
+                for VNF_ID in self.VNF_ID_list:
+                    VNF_item = get_indexed_item_from_list(VNF_ID, AutoResilGlobal.VNF_Service_list)
+                    if VNF_item != None:
+                        VNF_item.printout_all(indent_level+1)
+                        
+        if self.associated_metrics_ID_list != None:
+            if len(self.associated_metrics_ID_list) >0:
+                print(indent, "|-associated metrics:", sep='')
+                for Metric_ID in self.associated_metrics_ID_list:
+                    Metric_item = get_indexed_item_from_list(Metric_ID, AutoResilGlobal.metric_definition_list)
+                    if Metric_item != None:
+                        Metric_item.printout_all(indent_level+1)
+
+        if self.recipient_ID_list != None:
+            if len(self.recipient_ID_list) >0:
+                print(indent, "|-associated recipients:", sep='')
+                for recipient_ID in self.recipient_ID_list:
+                    recipient_item = get_indexed_item_from_list(recipient_ID, AutoResilGlobal.recipient_list)
+                    if recipient_item != None:
+                        recipient_item.printout_all(indent_level+1)
+
+        if self.test_CLI_command_sent_list != None:
+            if len(self.test_CLI_command_sent_list) >0:
+                print(indent, "|-associated CLI commands:", sep='')
+                for CLI_command in self.test_CLI_command_sent_list:
+                    print(" "*INDENTATION_MULTIPLIER, "|- ", CLI_command, sep='')
+
+        # TODO: self.test_API_command_sent_list (depends how API commands are stored: likely a list of strings)
+
+        
+
 def init_test_definitions():
     """Function to initialize test definition data."""
     test_definitions = []
@@ -289,10 +353,10 @@ def init_test_definitions():
     test_def_challengeDefID = 1
     test_def_testCaseID = 5
     test_def_VNFIDs = [1]
-    test_def_associatedMetricsIDs = []
+    test_def_associatedMetricsIDs = [2]
     test_def_recipientIDs = [2]
-    test_def_testCLICommandSent = ["pwd"]
-    test_def_testAPICommandSent = ["data1","data2"]
+    test_def_testCLICommandSent = ["pwd","kubectl describe pods --include-uninitialized=false"]                  
+    test_def_testAPICommandSent = ["data1","data2"]             
     test_definitions.append(TestDefinition(test_def_ID, test_def_name,
                                            test_def_challengeDefID,
                                            test_def_testCaseID,
@@ -304,7 +368,7 @@ def init_test_definitions():
 
     # write list to binary file
     write_list_bin(test_definitions, FILE_TEST_DEFINITIONS)
-
+    
     return test_definitions
 
 
@@ -329,8 +393,10 @@ class ChallengeDefinition(AutoBaseObject):
     def __init__ (self, chall_def_ID, chall_def_name,
                   chall_def_challengeType,
                   chall_def_recipientID,
-                  chall_def_impactedResourcesInfo,
-                  chall_def_impactedResourceIDs,
+                  chall_def_impactedCloudResourcesInfo,
+                  chall_def_impactedCloudResourceIDs,
+                  chall_def_impactedPhysResourcesInfo,
+                  chall_def_impactedPhysResourceIDs,
                   chall_def_startChallengeCLICommandSent,
                   chall_def_stopChallengeCLICommandSent,
                   chall_def_startChallengeAPICommandSent,
@@ -338,17 +404,24 @@ class ChallengeDefinition(AutoBaseObject):
 
         # superclass constructor
         AutoBaseObject.__init__(self, chall_def_ID, chall_def_name)
-
+        
         # specifics for this subclass
-
+        
         # info about challenge type, categorization
         self.challenge_type = chall_def_challengeType
         # recipient instance, to start/stop the challenge
         self.recipient_ID = chall_def_recipientID
-        # free-form info about impacted resource(s)
-        self.impacted_resources_info = chall_def_impactedResourcesInfo
+        
+        # free-form info about cloud virtual impacted resource(s)
+        self.impacted_cloud_resources_info = chall_def_impactedCloudResourcesInfo
         # impacted resources (list of IDs, usually only 1)
-        self.impacted_resource_ID_list = chall_def_impactedResourceIDs
+        self.impacted_cloud_resource_ID_list = chall_def_impactedCloudResourceIDs
+
+        # free-form info about physical impacted resource(s)
+        self.impacted_phys_resources_info = chall_def_impactedPhysResourcesInfo
+        # impacted resources (list of IDs, usually only 1)
+        self.impacted_phys_resource_ID_list = chall_def_impactedPhysResourceIDs
+        
         # if CLI; can include hard-coded references to resources
         self.start_challenge_CLI_command_sent = chall_def_startChallengeCLICommandSent
         # if CLI; to restore to normal
@@ -357,6 +430,50 @@ class ChallengeDefinition(AutoBaseObject):
         self.start_challenge_API_command_sent = chall_def_startChallengeAPICommandSent
         # if API; to restore to normal
         self.stop_challenge_API_command_sent = chall_def_stopChallengeAPICommandSent
+
+
+    def printout_all(self, indent_level):
+        """Print out all attributes, with an indentation level."""
+        indent = " "*indent_level*INDENTATION_MULTIPLIER
+        
+        print(indent, "Challenge Definition ID:", self.ID, sep='')
+        print(indent, "|-name:", self.name, sep='')
+
+        print(indent, "|-challenge type:", self.challenge_type, sep='')
+
+        print(indent, "|-associated recipient ID:", self.recipient_ID, sep='')
+        recipient = get_indexed_item_from_list(self.recipient_ID, AutoResilGlobal.recipient_list)
+        if recipient != None:
+            recipient.printout_all(indent_level+1)
+
+        print(indent, "|-info about cloud virtual impacted resource(s):", self.impacted_cloud_resources_info, sep='')
+
+        if self.impacted_cloud_resource_ID_list != None:
+            if len(self.impacted_cloud_resource_ID_list) >0:
+                print(indent, "|-associated cloud virtual impacted resource(s):", sep='')
+                for cloud_resource_ID in self.impacted_cloud_resource_ID_list:
+                    cloud_resource_item = get_indexed_item_from_list(cloud_resource_ID, AutoResilGlobal.cloud_virtual_resource_list)
+                    if cloud_resource_item != None:
+                        cloud_resource_item.printout_all(indent_level+1)
+
+        print(indent, "|-info about physical virtual impacted resource(s):", self.impacted_phys_resources_info, sep='')
+
+        if self.impacted_phys_resource_ID_list != None:
+            if len(self.impacted_phys_resource_ID_list) >0:
+                print(indent, "|-associated physical impacted resource(s):", sep='')
+                for phys_resource_ID in self.impacted_phys_resource_ID_list:
+                    phys_resource_item = get_indexed_item_from_list(phys_resource_ID, AutoResilGlobal.physical_resource_list)
+                    if phys_resource_item != None:
+                        phys_resource_item.printout_all(indent_level+1)
+
+        print(indent, "|-CLI command to start challenge:", self.start_challenge_CLI_command_sent, sep='')
+
+        print(indent, "|-CLI command to stop challenge:", self.stop_challenge_CLI_command_sent, sep='')
+        
+        # TODO: self.start_challenge_API_command_sent (depends how API commands are stored: likely a list of strings)
+        # TODO: self.stop_challenge_API_command_sent (depends how API commands are stored: likely a list of strings)
+
+
 
 
 def init_challenge_definitions():
@@ -368,18 +485,26 @@ def init_challenge_definitions():
     chall_def_name = "VM failure"
     chall_def_challengeType = ChallengeType.COMPUTE_HOST_FAILURE
     chall_def_recipientID = 1
-    chall_def_impactedResourcesInfo = "OpenStack VM on ctl02 in Arm pod"
-    chall_def_impactedResourceIDs = [2]
+    chall_def_impactedCloudResourcesInfo = "OpenStack VM on ctl02 in Arm pod"
+    chall_def_impactedCloudResourceIDs = [2]
+    chall_def_impactedPhysResourcesInfo = "physical server XYZ"
+    chall_def_impactedPhysResourceIDs = [1]
     chall_def_startChallengeCLICommandSent = "service nova-compute stop"
     chall_def_stopChallengeCLICommandSent = "service nova-compute restart"
+	# OpenStack VM Suspend vs. Pause: suspend stores the state of VM on disk while pause stores it in memory (RAM)
+	# $ nova suspend NAME
+	# $ nova resume NAME
+
     chall_def_startChallengeAPICommandSent = []
     chall_def_stopChallengeAPICommandSent = []
-
+    
     challenge_defs.append(ChallengeDefinition(chall_def_ID, chall_def_name,
                                               chall_def_challengeType,
                                               chall_def_recipientID,
-                                              chall_def_impactedResourcesInfo,
-                                              chall_def_impactedResourceIDs,
+                                              chall_def_impactedCloudResourcesInfo,
+                                              chall_def_impactedCloudResourceIDs,
+                                              chall_def_impactedPhysResourcesInfo,
+                                              chall_def_impactedPhysResourceIDs,
                                               chall_def_startChallengeCLICommandSent,
                                               chall_def_stopChallengeCLICommandSent,
                                               chall_def_startChallengeAPICommandSent,
@@ -387,7 +512,7 @@ def init_challenge_definitions():
 
     # write list to binary file
     write_list_bin(challenge_defs, FILE_CHALLENGE_DEFINITIONS)
-
+    
     return challenge_defs
 
 
@@ -404,10 +529,10 @@ class Recipient(AutoBaseObject):
                   recipient_passwordCreds,
                   recipient_keyCreds,
                   recipient_networkInfo):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, recipient_ID, recipient_name)
-
+        
         # specifics for this subclass
 
         # optional: free-form text info about recipient
@@ -422,12 +547,29 @@ class Recipient(AutoBaseObject):
         self.username_creds = recipient_userNameCreds
         # optional: password for user/pwd credentials
         self.password_creds = recipient_passwordCreds
-        # optional: password for user/pwd credentials
+        # optional: key credentials
         self.key_creds = recipient_keyCreds
         # optional: info about recipient's network (VPN, VCN, VN, Neutron, ...)
         self.network_info = recipient_networkInfo
 
 
+    def printout_all(self, indent_level):
+        """Print out all attributes, with an indentation level."""
+        indent = " "*indent_level*INDENTATION_MULTIPLIER
+        
+        print(indent, "Recipient ID:", self.ID, sep='')
+        print(indent, "|-name:", self.name, sep='')
+
+        print(indent, "|-version info:", self.version_info, sep='')
+        print(indent, "|-IP address:", self.access_IP_address, sep='')
+        print(indent, "|-URL:", self.access_URL, sep='')
+        print(indent, "|-username for user/pwd credentials:", self.username_creds, sep='')
+        print(indent, "|-password for user/pwd credentials:", self.password_creds, sep='')
+        print(indent, "|-key credentials:", self.key_creds, sep='')
+        print(indent, "|-info about network:", self.network_info, sep='')
+
+
+        
 def init_recipients():
     """Function to initialize recipient data."""
     test_recipients = []
@@ -442,7 +584,29 @@ def init_recipients():
     recipient_userNameCreds = "ali"
     recipient_passwordCreds = "baba"
     recipient_keyCreds = "ssh-rsa k7fjsnEFzESfg6phg"
-    recipient_networkInfo = "UNH IOL 172.16.0.0/16"
+    recipient_networkInfo = "UNH IOL 172.16.0.0/22"
+
+    test_recipients.append(Recipient(recipient_ID, recipient_name,
+                                     recipient_info,
+                                     recipient_versionInfo,
+                                     recipient_accessIPAddress,
+                                     recipient_accessURL,
+                                     recipient_userNameCreds,
+                                     recipient_passwordCreds,
+                                     recipient_keyCreds,
+                                     recipient_networkInfo))
+    
+    recipient_ID = 2
+    recipient_name = "Kubernetes on x86 pod"
+    recipient_info = "bare metal"
+    recipient_versionInfo = "v1.9"
+    recipient_accessIPAddress = "8.9.7.6"
+    recipient_accessURL = ""
+    recipient_userNameCreds = "kuber"
+    recipient_passwordCreds = "netes"
+    recipient_keyCreds = "ssh-rsa 0fjs7hjghsa37fhfs"
+    recipient_networkInfo = "UNH IOL 10.10.30.157/22"
+    
 
     test_recipients.append(Recipient(recipient_ID, recipient_name,
                                      recipient_info,
@@ -456,7 +620,7 @@ def init_recipients():
 
     # write list to binary file
     write_list_bin(test_recipients, FILE_RECIPIENTS)
-
+    
     return test_recipients
 
 
@@ -466,15 +630,25 @@ class MetricDefinition(AutoBaseObject):
     """Metric Definition class for Auto project. Actual metrics are subclasses with specific calculation methods."""
     def __init__ (self, metric_def_ID, metric_def_name,
                   metric_def_info):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, metric_def_ID, metric_def_name)
-
+        
         # specifics for this subclass
-
+        
         # optional: free-form text info about metric: formula, etc.
         self.info = metric_def_info
 
+
+    def printout_all(self, indent_level):
+        """Print out all attributes, with an indentation level."""
+        indent = " "*indent_level*INDENTATION_MULTIPLIER
+        
+        print(indent, "Metric Definition ID:", self.ID, sep='')
+        print(indent, "|-name:", self.name, sep='')
+
+        print(indent, "|-info:", self.info, sep='')
+        
 
 class MetricValue:
     """Object for storing a measurement of a Metric Definition for Auto project, with common attributes
@@ -504,7 +678,7 @@ class RecoveryTimeDef(MetricDefinition):
     """
     def compute (self,
                  time_challenge_started, time_restoration_detected):
-        """time_challenge_started: datetime object, time at which challenge was started;
+        """time_challenge_started: datetime object, time at which challenge was started; 
         time_restoration_detected: datetime object, time at which restoration was detected;
         returns a MetricValue containing a timedelta object as value.
         """
@@ -520,7 +694,7 @@ class RecoveryTimeDef(MetricDefinition):
 
         return MetricValue(measured_metric_value, timestamp, self.ID)
 
-
+    
 class UptimePercentageDef(MetricDefinition):
     """Uptime Percentage Metric Definition class for Auto project.
     Formula: uptime / (reference_time - planned_downtime))
@@ -528,7 +702,7 @@ class UptimePercentageDef(MetricDefinition):
     """
     def compute (self,
                  measured_uptime, reference_time, planned_downtime):
-        """measured_uptime: amount of time the service/system/resource was up and running;
+        """measured_uptime: amount of time the service/system/resource was up and running; 
         reference_time: amount of time during which the measurement was made;
         planned_downtime: amount to time during reference_time, which was planned to be down;
         returns a MetricValue object, with a value between 0 and 100.
@@ -546,19 +720,19 @@ class UptimePercentageDef(MetricDefinition):
         if planned_downtime < 0.0:
             print("planned_downtime should be >= 0.0")
             print("meas=",measured_uptime," ref=",reference_time," pla=",planned_downtime)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because fomulas MUST be correct        
         if reference_time < planned_downtime:
             print("reference_time should be >= planned_downtime")
             print("meas=",measured_uptime," ref=",reference_time," pla=",planned_downtime)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because fomulas MUST be correct        
         if measured_uptime > reference_time:
             print("measured_uptime should be <= reference_time")
             print("meas=",measured_uptime," ref=",reference_time," pla=",planned_downtime)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because fomulas MUST be correct 
         if measured_uptime > (reference_time - planned_downtime):
             print("measured_uptime should be <= (reference_time - planned_downtime)")
             print("meas=",measured_uptime," ref=",reference_time," pla=",planned_downtime)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because fomulas MUST be correct 
 
         measured_metric_value = 100 * measured_uptime / (reference_time - planned_downtime)
         timestamp = datetime.now()
@@ -577,7 +751,7 @@ def init_metric_definitions():
     metric_def_info = "Measures time taken by ONAP to restore a VNF"
     metric_definitions.append(RecoveryTimeDef(metric_def_ID, metric_def_name,
                                               metric_def_info))
-
+    
     metric_def_ID = 2
     metric_def_name = "Uptime Percentage"
     metric_def_info = "Measures ratio of uptime to reference time, not counting planned downtime"
@@ -587,7 +761,7 @@ def init_metric_definitions():
 
     # write list to binary file
     write_list_bin(metric_definitions, FILE_METRIC_DEFINITIONS)
-
+    
     return metric_definitions
 
 
@@ -600,10 +774,10 @@ class PhysicalResource(AutoBaseObject):
                   phys_resrc_info,
                   phys_resrc_IPAddress,
                   phys_resrc_MACAddress):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, phys_resrc_ID, phys_resrc_name)
-
+        
         # specifics for this subclass
 
         # optional: free-form text info about physical resource
@@ -614,6 +788,19 @@ class PhysicalResource(AutoBaseObject):
         self.MAC_address = phys_resrc_MACAddress
 
 
+    def printout_all(self, indent_level):
+        """Print out all attributes, with an indentation level."""
+        indent = " "*indent_level*INDENTATION_MULTIPLIER
+        
+        print(indent, "Physical Resource ID:", self.ID, sep='')
+        print(indent, "|-name:", self.name, sep='')
+
+        print(indent, "|-info:", self.info, sep='')
+        print(indent, "|-IP address:", self.IP_address, sep='')
+        print(indent, "|-MAC address:", self.MAC_address, sep='')
+
+
+        
 def init_physical_resources():
     """Function to initialize physical resource data."""
     test_physical_resources = []
@@ -623,16 +810,39 @@ def init_physical_resources():
     phys_resrc_name = "small-cavium-1"
     phys_resrc_info = "Jump server in Arm pod, 48 cores, 64G RAM, 447G SSD, aarch64 Cavium ThunderX, Ubuntu OS"
     phys_resrc_IPAddress = "10.10.50.12"
-    phys_resrc_MACAddress = ""
-
+    phys_resrc_MACAddress = "00-14-22-01-23-45"
+    
     test_physical_resources.append(PhysicalResource(phys_resrc_ID, phys_resrc_name,
                                                     phys_resrc_info,
                                                     phys_resrc_IPAddress,
                                                     phys_resrc_MACAddress))
 
+    phys_resrc_ID = 2
+    phys_resrc_name = "medium-cavium-1"
+    phys_resrc_info = "Jump server in New York pod, 96 cores, 64G RAM, 447G SSD, aarch64 Cavium ThunderX, Ubuntu OS"
+    phys_resrc_IPAddress = "30.31.32.33"
+    phys_resrc_MACAddress = "0xb3:22:05:c1:aa:82"
+    
+    test_physical_resources.append(PhysicalResource(phys_resrc_ID, phys_resrc_name,
+                                                    phys_resrc_info,
+                                                    phys_resrc_IPAddress,
+                                                    phys_resrc_MACAddress))
+
+    phys_resrc_ID = 3
+    phys_resrc_name = "mega-cavium-666"
+    phys_resrc_info = "Jump server in Las Vegas, 1024 cores, 1024G RAM, 6666G SSD, aarch64 Cavium ThunderX, Ubuntu OS"
+    phys_resrc_IPAddress = "54.53.52.51"
+    phys_resrc_MACAddress = "01-23-45-67-89-ab"
+    
+    test_physical_resources.append(PhysicalResource(phys_resrc_ID, phys_resrc_name,
+                                                    phys_resrc_info,
+                                                    phys_resrc_IPAddress,
+                                                    phys_resrc_MACAddress))
+
+    
     # write list to binary file
     write_list_bin(test_physical_resources, FILE_PHYSICAL_RESOURCES)
-
+    
     return test_physical_resources
 
 
@@ -645,10 +855,10 @@ class CloudVirtualResource(AutoBaseObject):
                   cldvirtres_IPAddress,
                   cldvirtres_URL,
                   cldvirtres_related_phys_rsrcIDs):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, cldvirtres_ID, cldvirtres_name)
-
+        
         # specifics for this subclass
 
         # optional: free-form text info about cloud virtual resource
@@ -660,7 +870,26 @@ class CloudVirtualResource(AutoBaseObject):
         # optional: related/associated physical resources (if known and useful or interesting, list of integer IDs)
         self.related_phys_rsrc_ID_list = cldvirtres_related_phys_rsrcIDs
 
+    def printout_all(self, indent_level):
+        """Print out all attributes, with an indentation level."""
+        indent = " "*indent_level*INDENTATION_MULTIPLIER
+        
+        print(indent, "Cloud Virtual Resource ID:", self.ID, sep='')
+        print(indent, "|-name:", self.name, sep='')
 
+        print(indent, "|-info:", self.info, sep='')
+        print(indent, "|-IP address:", self.IP_address, sep='')
+        print(indent, "|-URL:", self.URL, sep='')
+
+        if self.related_phys_rsrc_ID_list != None:
+            if len(self.related_phys_rsrc_ID_list) >0:
+                print(indent, "|-related/associated physical resource(s):", sep='')
+                for phys_resource_ID in self.related_phys_rsrc_ID_list:
+                    phys_resource_item = get_indexed_item_from_list(phys_resource_ID, AutoResilGlobal.physical_resource_list)
+                    if phys_resource_item != None:
+                        phys_resource_item.printout_all(indent_level+1)
+
+        
 def init_cloud_virtual_resources():
     """Function to initialize cloud virtual resource data."""
     test_cldvirt_resources = []
@@ -672,16 +901,43 @@ def init_cloud_virtual_resources():
     cldvirtres_IPAddress = "50.60.70.80"
     cldvirtres_URL = "http://50.60.70.80:8080"
     cldvirtres_related_phys_rsrcIDs = [1,3]
-
+    
     test_cldvirt_resources.append(CloudVirtualResource(cldvirtres_ID, cldvirtres_name,
                                                        cldvirtres_info,
                                                        cldvirtres_IPAddress,
                                                        cldvirtres_URL,
                                                        cldvirtres_related_phys_rsrcIDs))
 
+    cldvirtres_ID = 2
+    cldvirtres_name = "nova-compute-2"
+    cldvirtres_info = "nova VM in LaaS"
+    cldvirtres_IPAddress = "50.60.70.80"
+    cldvirtres_URL = "http://50.60.70.80:8080"
+    cldvirtres_related_phys_rsrcIDs = [2,3]
+    
+    test_cldvirt_resources.append(CloudVirtualResource(cldvirtres_ID, cldvirtres_name,
+                                                       cldvirtres_info,
+                                                       cldvirtres_IPAddress,
+                                                       cldvirtres_URL,
+                                                       cldvirtres_related_phys_rsrcIDs))
+
+    cldvirtres_ID = 3
+    cldvirtres_name = "nova-compute-3"
+    cldvirtres_info = "nova VM in x86 pod"
+    cldvirtres_IPAddress = "50.60.70.80"
+    cldvirtres_URL = "http://50.60.70.80:8080"
+    cldvirtres_related_phys_rsrcIDs = [1]
+    
+    test_cldvirt_resources.append(CloudVirtualResource(cldvirtres_ID, cldvirtres_name,
+                                                       cldvirtres_info,
+                                                       cldvirtres_IPAddress,
+                                                       cldvirtres_URL,
+                                                       cldvirtres_related_phys_rsrcIDs))
+
+    
     # write list to binary file
     write_list_bin(test_cldvirt_resources, FILE_CLOUD_RESOURCES)
-
+    
     return test_cldvirt_resources
 
 
@@ -695,10 +951,10 @@ class VNFService(AutoBaseObject):
                   vnf_serv_URL,
                   vnf_serv_related_phys_rsrcIDs,
                   vnf_serv_related_cloudvirt_rsrcIDs):
-
+    
         # superclass constructor
         AutoBaseObject.__init__(self, vnf_serv_ID, vnf_serv_name)
-
+        
         # specifics for this subclass
 
         # optional: free-form text info about VNF / e2e Service
@@ -713,6 +969,35 @@ class VNFService(AutoBaseObject):
         self.related_cloud_virt_rsrc_ID_list = vnf_serv_related_cloudvirt_rsrcIDs
 
 
+    def printout_all(self, indent_level):
+        """Print out all attributes, with an indentation level."""
+        indent = " "*indent_level*INDENTATION_MULTIPLIER
+        
+        print(indent, "VNF or e2e Service ID:", self.ID, sep='')
+        print(indent, "|-name:", self.name, sep='')
+
+        print(indent, "|-info:", self.info, sep='')
+        print(indent, "|-IP address:", self.IP_address, sep='')
+        print(indent, "|-URL:", self.URL, sep='')
+
+        if self.related_phys_rsrc_ID_list != None:
+            if len(self.related_phys_rsrc_ID_list) >0:
+                print(indent, "|-related/associated physical resource(s):", sep='')
+                for phys_resource_ID in self.related_phys_rsrc_ID_list:
+                    phys_resource_item = get_indexed_item_from_list(phys_resource_ID, AutoResilGlobal.physical_resource_list)
+                    if phys_resource_item != None:
+                        phys_resource_item.printout_all(indent_level+1)
+                        
+        if self.related_cloud_virt_rsrc_ID_list != None:
+            if len(self.related_cloud_virt_rsrc_ID_list) >0:
+                print(indent, "|-related/associated cloud virtual resource(s):", sep='')
+                for cloud_resource_ID in self.related_cloud_virt_rsrc_ID_list:
+                    cloud_resource_item = get_indexed_item_from_list(cloud_resource_ID, AutoResilGlobal.cloud_virtual_resource_list)
+                    if cloud_resource_item != None:
+                        cloud_resource_item.printout_all(indent_level+1)
+
+
+
 def init_VNFs_Services():
     """Function to initialize VNFs and e2e Services data."""
     test_VNFs_Services = []
@@ -723,9 +1008,9 @@ def init_VNFs_Services():
     vnf_serv_info = "virtual CPE in Arm pod"
     vnf_serv_IPAddress = "5.4.3.2"
     vnf_serv_URL = "http://5.4.3.2:8080"
-    vnf_serv_related_phys_rsrcIDs = [2,4,6]
-    vnf_serv_related_cloudvirt_rsrcIDs = [1,2]
-
+    vnf_serv_related_phys_rsrcIDs = [1,2]
+    vnf_serv_related_cloudvirt_rsrcIDs = [1]
+        
     test_VNFs_Services.append(VNFService(vnf_serv_ID, vnf_serv_name,
                                          vnf_serv_info,
                                          vnf_serv_IPAddress,
@@ -733,9 +1018,25 @@ def init_VNFs_Services():
                                          vnf_serv_related_phys_rsrcIDs,
                                          vnf_serv_related_cloudvirt_rsrcIDs))
 
+
+    vnf_serv_ID = 2
+    vnf_serv_name = "vFW-1"
+    vnf_serv_info = "virtual Firewall in x86 pod"
+    vnf_serv_IPAddress = "6.7.8.9"
+    vnf_serv_URL = "http://6.7.8.9:8080"
+    vnf_serv_related_phys_rsrcIDs = [3]
+    vnf_serv_related_cloudvirt_rsrcIDs = [2,3]
+        
+    test_VNFs_Services.append(VNFService(vnf_serv_ID, vnf_serv_name,
+                                         vnf_serv_info,
+                                         vnf_serv_IPAddress,
+                                         vnf_serv_URL,
+                                         vnf_serv_related_phys_rsrcIDs,
+                                         vnf_serv_related_cloudvirt_rsrcIDs))
+    
     # write list to binary file
     write_list_bin(test_VNFs_Services, FILE_VNFS_SERVICES)
-
+    
     return test_VNFs_Services
 
 
@@ -759,10 +1060,10 @@ class TimeStampedStringList:
         else:
             print("appended object must be a string, string_to_append=",string_to_append)
             sys.exit()  # stop entire program, because string MUST be correct
-
+            
     def get_raw_list(self):
         return self.__string_list
-
+    
     def get_raw_list_timestamps(self):
         return self.__timestamp_list
 
@@ -780,17 +1081,17 @@ class TimeStampedStringList:
 
 
 ######################################################################
-
+    
 class ChallengeExecution(AutoBaseObject):
     """Class for Auto project, tracking the execution details of a Challenge Definition,
     with a method to dump all results to a CSV file.
     """
     def __init__ (self, chall_exec_ID, chall_exec_name,
                   chall_exec_challDefID):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, chall_exec_ID, chall_exec_name)
-
+        
         # specifics for this subclass
 
         # associated Challenge Definition (ID)
@@ -812,16 +1113,16 @@ class ChallengeExecution(AutoBaseObject):
         """Generic function to dump all Challenge Execution data in a CSV file."""
 
         dump_list = []
-
+        
         # add rows one by one, each as a list, even if only 1 element
-
+        
         dump_list.append(["challenge execution ID",self.ID])
         dump_list.append(["challenge execution name",self.name])
-
+        
         dump_list.append(["challenge definition ID",self.challenge_def_ID])
         challenge_def_name = get_indexed_item_from_file(self.challenge_def_ID, FILE_CHALLENGE_DEFINITIONS)
         dump_list.append(["challenge definition name",challenge_def_name])
-
+        
         if self.start_time != None:
             dump_list.append(["challenge start time",self.start_time.strftime("%Y-%m-%d %H:%M:%S")])
         if self.stop_time != None:
@@ -831,7 +1132,7 @@ class ChallengeExecution(AutoBaseObject):
             dump_list.append(["Log:"])
             for item in self.log.get_timestamped_strings():
                 dump_list.append([item])
-
+                             
         if self.CLI_responses.length() > 0 :
             dump_list.append(["CLI responses:"])
             for item in self.CLI_responses.get_timestamped_strings():
@@ -841,7 +1142,7 @@ class ChallengeExecution(AutoBaseObject):
             dump_list.append(["API responses:"])
             for item in self.API_responses.get_timestamped_strings():
                 dump_list.append([item])
-
+        
         try:
             # output CSV file name: challDefExec + ID + start time + .csv
             file_name = "challDefExec" + "{0:0=3d}".format(self.challenge_def_ID) + "-" + self.start_time.strftime("%Y-%m-%d-%H-%M-%S") + ".csv"
@@ -870,7 +1171,7 @@ class TimeStampedMetricValueList:
         else:
             print("appended object must be a MetricValue, metric_value_to_append=",metric_value_to_append)
             sys.exit()  # stop entire program, because metric_value_to_append MUST be correct
-
+            
     def get_raw_list(self):
         return self.__metric_value_list
 
@@ -902,10 +1203,10 @@ class TestExecution(AutoBaseObject):
                   test_exec_testDefID,
                   test_exec_challengeExecID,
                   test_exec_userID):
-
+        
         # superclass constructor
         AutoBaseObject.__init__(self, test_exec_ID, test_exec_name)
-
+        
         # specifics for this subclass
 
         # associated Test Definition (ID)
@@ -941,22 +1242,22 @@ class TestExecution(AutoBaseObject):
         """Generic function to dump all Test Execution data in a CSV file."""
 
         dump_list = []
-
+        
         # add rows one by one, each as a list, even if only 1 element
-
+        
         dump_list.append(["test execution ID",self.ID])
         dump_list.append(["test execution name",self.name])
-
+        
         dump_list.append(["test definition ID",self.test_def_ID])
         test_def_name = get_indexed_item_from_file(self.test_def_ID, FILE_TEST_DEFINITIONS)
         dump_list.append(["test definition name",test_def_name])
 
         dump_list.append(["associated challenge execution ID",self.challenge_exec_ID])
         dump_list.append(["user ID",self.user_ID])
-
+        
         if self.start_time != None:
             dump_list.append(["test start time",self.start_time.strftime("%Y-%m-%d %H:%M:%S")])
-
+            
         if self.finish_time != None:
             dump_list.append(["test finish time",self.finish_time.strftime("%Y-%m-%d %H:%M:%S")])
 
@@ -981,12 +1282,12 @@ class TestExecution(AutoBaseObject):
             dump_list.append(["Metric Values:"])
             for item in self.associated_metric_values.get_timestamped_metric_values_as_strings():
                 dump_list.append([item])
-
+        
         if self.log.length() > 0 :
             dump_list.append(["Log:"])
             for item in self.log.get_timestamped_strings():
                 dump_list.append([item])
-
+                             
         if self.CLI_responses.length() > 0 :
             dump_list.append(["CLI responses:"])
             for item in self.CLI_responses.get_timestamped_strings():
@@ -996,7 +1297,7 @@ class TestExecution(AutoBaseObject):
             dump_list.append(["API responses:"])
             for item in self.API_responses.get_timestamped_strings():
                 dump_list.append([item])
-
+                
         try:
             # output CSV file name: testDefExec + ID + start time + .csv
             file_name = "testDefExec" + "{0:0=3d}".format(self.test_def_ID) + "-" + self.start_time.strftime("%Y-%m-%d-%H-%M-%S") + ".csv"
@@ -1010,14 +1311,16 @@ class TestExecution(AutoBaseObject):
 
 ######################################################################
 def dump_all_binaries_to_CSV():
-    """Get all content from all binary files, and dump everything in a snapshot CSV file."""
+    """Get all content from all Definition data binary files, and dump everything in a snapshot CSV file."""
     ## TODO
     timenow = datetime.now()
-
+    
 
 ######################################################################
 def main():
 
+
+    # everything here is for unit-testing of this module; not part of actual code
     tcs = init_test_cases()
     print(tcs)
 
@@ -1026,17 +1329,17 @@ def main():
     test_case_JIRA_URL = "https://jira.opnfv.org/browse/AUTO-400"
     add_test_case_to_file(test_case_ID, test_case_name, test_case_JIRA_URL)
     print(read_list_bin(FILE_TEST_CASES))
-
+    
     print(get_indexed_item_from_file(3,FILE_TEST_CASES))
     print(get_indexed_item_from_file(257,FILE_TEST_CASES))
-
+  
     print("tcs[4]=",tcs[4])
     print(tcs[4].ID)
     print(tcs[4].name)
     print(tcs[4].JIRA_URL)
 
     print()
-
+    
     tds = init_test_definitions()
     print(tds)
     td = get_indexed_item_from_file(1,FILE_TEST_DEFINITIONS)
@@ -1131,12 +1434,12 @@ def main():
     te1.start_time = datetime.now()
     te1.challenge_start_time = ce1.start_time  # illustrate how to set test execution challenge start time
     print("te1.challenge_start_time:",te1.challenge_start_time)
-
+    
     te1.log.append_to_list("test execution log event 1")
     te1.log.append_to_list("test execution log event 2")
     te1.CLI_responses.append_to_list("test execution CLI response 1")
     te1.CLI_responses.append_to_list("test execution CLI response 2")
-
+    
     metricdef = get_indexed_item_from_file(2,FILE_METRIC_DEFINITIONS)  # get a metric definition, some ID
     print(metricdef)
     r1 = metricdef.compute(735, 1000, 20)  # compute a metric value
@@ -1145,10 +1448,10 @@ def main():
     r1 = metricdef.compute(915, 1000, 20)  # compute a metric value
     print(r1)
     te1.associated_metric_values.append_to_list(r1)  # append a measured metric value to test execution
-
+    
     te1.log.append_to_list("test execution log event 3")
     te1.API_responses.append_to_list("test execution API response 1")
-
+    
     print("log length: ", te1.log.length())
     print(te1.log.get_timestamped_strings())
     print("CLI_responses length: ", te1.CLI_responses.length())
@@ -1157,25 +1460,25 @@ def main():
     print(te1.API_responses.get_timestamped_strings())
     print("associated_metric_values length: ", te1.associated_metric_values.length())
     print(te1.associated_metric_values.get_timestamped_metric_values_as_strings())
-
+    
     te1.restoration_detection_time = datetime.now()
     print("te1.restoration_detection_time:",te1.restoration_detection_time)
     metricdef = get_indexed_item_from_file(1,FILE_METRIC_DEFINITIONS)  # get Recovery Time metric definition: ID=1
     print(metricdef)
     r1 = metricdef.compute(te1.challenge_start_time, te1.restoration_detection_time)  # compute a metric value, for Recovery time
     te1.recovery_time = r1  # assignment could be direct, i.e. te1.recovery_time = metricdef.compute(...)
-
+    
     te1.finish_time = datetime.now()  # test execution is finished
     te1.write_to_csv()
 
     print()
-
+                          
     print("\nCiao")
 
 if __name__ == "__main__":
     main()
 
-
+    
 
 
 

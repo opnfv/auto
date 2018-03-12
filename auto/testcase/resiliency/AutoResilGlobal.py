@@ -27,32 +27,32 @@
 # Use Case description: https://wiki.opnfv.org/display/AUTO/Auto+Use+Cases
 # Test case design: https://wiki.opnfv.org/display/AUTO/Use+case+2+%28Resilience+Improvements+through+ONAP%29+analysis
 
-# This module: execution of tests
-# (might merge this module with Main module)
-## Receive/retrieve chosen test def info
-##pre-test (pings, etc.)
-##launch test:
-##  create execution instances of Test and Challenge
-##  simulate challenge
-##  get time T1
-##  loop:
-##    wait for VNF recovery
-##    optional other metrics
-##    store data and logs
-##  get time T2
-##  stop challenge
-##  reset (with ONAP MSO)
-##  store data and logs
-##post-tests
-##logs
+# This module: global variables (list of definition data)
+
+#docstring
+"""This module contains global variable for OPNFV Auto Test Data for Use Case 2: Resilience Improvements Through ONAP.
+Auto project: https://wiki.opnfv.org/pages/viewpage.action?pageId=12389095
+"""
 
 
 ######################################################################
 # import statements
-import AutoResilGlobal
 
-def f1():
-    return 0
+
+# global variables
+test_case_list =                None
+test_definition_list =          None
+recipient_list =                None
+challenge_definition_list =     None
+metric_definition_list =        None
+physical_resource_list =        None
+cloud_virtual_resource_list =   None
+VNF_Service_list =              None
+
+
+
+
+    
 
 
 
