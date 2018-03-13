@@ -21,9 +21,7 @@ OPNFV Auto (ONAP-Automated OPNFV) User Guide
    UC01-feature.userguide.rst
    UC02-feature.userguide.rst
    UC03-feature.userguide.rst
-   
+
 .. The feature.userguide.rst files should contain the text for this document
 .. additional documents can be added to this directory and added in the right order
 .. to this file as a list below.
-
-

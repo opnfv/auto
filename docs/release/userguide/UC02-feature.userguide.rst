@@ -3,17 +3,17 @@
 .. SPDX-License-Identifier CC-BY-4.0
 .. (c) optionally add copywriters name
 
+.. contents::
+   :depth: 3
+   :local:
+
 
 ================================================================
 Auto User Guide: Use Case 2 Resiliency Improvements Through ONAP
 ================================================================
 
-This document provides the release notes for Fraser release of Auto,
+This document provides the user guide for Fraser release of Auto,
 specifically for Use Case 2: Resiliency Improvements Through ONAP.
-
-.. contents::
-   :depth: 3
-   :local:
 
 
 Description
@@ -21,13 +21,15 @@ Description
 
 This use case illustrates VNF failure recovery time reduction with ONAP, thanks to its automated monitoring and management.
 It simulates an underlying problem (failure, stress, etc.: any adverse condition in the network that can impact VNFs),
-tracks a VNF, and measures the amount of time it takes for ONAP to restore the VNF functionality. 
+tracks a VNF, and measures the amount of time it takes for ONAP to restore the VNF functionality.
 
 The benefit for NFV edge service providers is to assess what degree of added VIM+NFVI platform resilience for VNFs is obtained by
 leveraging ONAP closed-loop control, vs. VIM+NFVI self-managed resilience (which may not be aware of the VNF or the corresponding
 end-to-end Service, but only of underlying resources such as VMs and servers).
 
+
 Preconditions:
+
 #. hardware environment in which Edge cloud may be deployed
 #. Edge cloud has been deployed and is ready for operation
 #. ONAP has been deployed onto a cloud and is interfaced (i.e. provisioned for API access) to the Edge cloud
@@ -41,6 +43,30 @@ Different types of problems can be simulated, hence the identification of multip
 as illustrated in this diagram:
 
 .. image:: auto-UC02-testcases.jpg
+
+Description of simulated problems/challenges:
+
+* Physical Infra Failure
+
+  * Migration upon host failure: Compute host power is interrupted, and affected workloads are migrated to other available hosts.
+  * Migration upon disk failure: Disk volumes are unmounted, and affected workloads are migrated to other available hosts.
+  * Migration upon link failure: Traffic on links is interrupted/corrupted, and affected workloads are migrated to other available hosts.
+  * Migration upon NIC failure: NIC ports are disabled by host commands, and affected workloads are migrated to other available hosts.
+
+* Virtual Infra Failure
+
+  * OpenStack compute host service fail: Core OpenStack service processes on compute hosts are terminated, and auto-restored, or affected workloads are migrated to other available hosts.
+  * SDNC service fail: Core SDNC service processes are terminated, and auto-restored.
+  * OVS fail: OVS bridges are disabled, and affected workloads are migrated to other available hosts.
+  * etc.
+
+* Security
+
+  * Host tampering: Host tampering is detected, the host is fenced, and affected workloads are migrated to other available hosts.
+  * Host intrusion: Host intrusion attempts are detected, an offending workload, device, or flow is identified and fenced, and as needed affected workloads are migrated to other available hosts.
+  * Network intrusion: Network intrusion attempts are detected, and an offending flow is identified and fenced.
+
+
 
 
 Test execution high-level description
@@ -109,11 +135,4 @@ In future releases of Auto, testing environments such as FuncTest and Yardstick 
 
 Also, anonymized test results could be collected from users willing to share them, and aggregates could be
 maintained as benchmarks.
-
-
-
-
-
-
-
 
