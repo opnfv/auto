@@ -1,0 +1,11 @@
+setup.py
+lib/auto/__init__.py
+lib/auto.egg-info/PKG-INFO
+lib/auto.egg-info/SOURCES.txt
+lib/auto.egg-info/dependency_links.txt
+lib/auto.egg-info/requires.txt
+lib/auto.egg-info/top_level.txt
+lib/auto/util/__init__.py
+lib/auto/util/openstack_lib.py
+lib/auto/util/util.py
+lib/auto/util/yaml_type.py

@@ -22,7 +22,8 @@ with open(requirement_path, 'r') as fd:
 setup(
     name="auto",
     version='1.0.0',
-    packages=find_packages(),
+    package_dir={'': 'lib'},
+    packages=find_packages('lib'),
     include_package_data=True,
     install_requires=requirements
 )
