@@ -27,20 +27,33 @@
 # Use Case description: https://wiki.opnfv.org/display/AUTO/Auto+Use+Cases
 # Test case design: https://wiki.opnfv.org/display/AUTO/Use+case+2+%28Resilience+Improvements+through+ONAP%29+analysis
 
-# This module: interfaces with cloud managers (OpenStack, Kubernetes, AWS, ...)
+# This module: global variables (list of definition data)
+
+#docstring
+"""This module contains global variable for OPNFV Auto Test Data for Use Case 2: Resilience Improvements Through ONAP.
+Auto project: https://wiki.opnfv.org/pages/viewpage.action?pageId=12389095
+"""
 
 
 ######################################################################
 # import statements
-import AutoResilGlobal
 
 
-def f1():
-    return 0
+# global variables
+test_case_list =                None
+test_definition_list =          None
+recipient_list =                None
+challenge_definition_list =     None
+metric_definition_list =        None
+physical_resource_list =        None
+cloud_virtual_resource_list =   None
+VNF_Service_list =              None
 
-# OpenStack HTTP API: https://developer.openstack.org/api-ref/compute/
-{your_compute_service_url}/servers/{server_id}/action
-GET 
-http://mycompute.pvt/compute/v2.1/servers/{server_id}/suspend
-http://mycompute.pvt/compute/v2.1/servers/{server_id}/resume
+
+
+
+    
+
+
+
 

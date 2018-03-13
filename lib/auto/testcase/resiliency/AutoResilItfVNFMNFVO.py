@@ -30,6 +30,9 @@
 # This module: interfaces with VNF/NVF managers (focus on ONAP)
 #     entities that manage VNFs and orchestrates services (VNF-M and NFV-O)
 
+######################################################################
+# import statements
+import AutoResilGlobal
 
 def f1():
     return 0
