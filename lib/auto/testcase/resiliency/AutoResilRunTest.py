@@ -47,6 +47,9 @@
 ##logs
 
 
+######################################################################
+# import statements
+import AutoResilGlobal
 
 def f1():
     return 0
