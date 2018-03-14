@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a3f45e8_24b55431",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5455
+      },
+      "writtenOn": "2018-03-14T01:31:46Z",
+      "side": 1,
+      "message": "please remove the trailing space in this file",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 3
+      },
+      "revId": "a72a489888a83135a32f7fb58c226702690d4e10",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
