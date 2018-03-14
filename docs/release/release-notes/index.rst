@@ -10,6 +10,5 @@ OPNFV Auto (ONAP-Automated OPNFV) Release Notes
 .. toctree::
    :maxdepth: 1
 
-   UC01-release-notes.rst
-   UC02-release-notes.rst
-   UC03-release-notes.rst
+   Auto-release-notes.rst
+
