@@ -1,0 +1,101 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a3f45e8_ea6333db",
+        "filename": "docs/release/userguide/UC01-feature.userguide.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 2409
+      },
+      "writtenOn": "2018-03-14T14:10:01Z",
+      "side": 1,
+      "message": "remove redundant lines",
+      "range": {
+        "startLine": 7,
+        "startChar": 38,
+        "endLine": 7,
+        "endChar": 64
+      },
+      "revId": "0460505f8a000dc0857e26d9c6e634ad4134d9b9",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_8a9c2fc2",
+        "filename": "docs/release/userguide/UC01-feature.userguide.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2409
+      },
+      "writtenOn": "2018-03-14T14:10:01Z",
+      "side": 1,
+      "message": "remove all trailing whitespace",
+      "revId": "0460505f8a000dc0857e26d9c6e634ad4134d9b9",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_caa63710",
+        "filename": "docs/release/userguide/UC02-feature.userguide.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 2409
+      },
+      "writtenOn": "2018-03-14T14:10:01Z",
+      "side": 1,
+      "message": "remove all trailing whitespace",
+      "revId": "0460505f8a000dc0857e26d9c6e634ad4134d9b9",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_aaa92be1",
+        "filename": "docs/release/userguide/UC03-feature.userguide.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 2409
+      },
+      "writtenOn": "2018-03-14T14:10:01Z",
+      "side": 1,
+      "message": "remove redundant lines",
+      "range": {
+        "startLine": 7,
+        "startChar": 44,
+        "endLine": 7,
+        "endChar": 62
+      },
+      "revId": "0460505f8a000dc0857e26d9c6e634ad4134d9b9",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_0ab01f42",
+        "filename": "docs/release/userguide/UC03-feature.userguide.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2409
+      },
+      "writtenOn": "2018-03-14T14:10:01Z",
+      "side": 1,
+      "message": "remove all trailing whitespace",
+      "revId": "0460505f8a000dc0857e26d9c6e634ad4134d9b9",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
