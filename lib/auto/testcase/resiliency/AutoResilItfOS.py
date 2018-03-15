@@ -30,6 +30,11 @@
 # This module: interfaces with OS, or servers
 
 
+######################################################################
+# import statements
+import AutoResilGlobal
+
+
 def f1():
     return 0
 
