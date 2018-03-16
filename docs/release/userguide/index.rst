@@ -2,8 +2,7 @@
 
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
 .. http://creativecommons.org/licenses/by/4.0
-.. (c) <optionally add copywriters name>
-
+.. (c) Open Platform for NFV Project, Inc. and its contributors
 
 ============================================
 OPNFV Auto (ONAP-Automated OPNFV) User Guide
@@ -16,7 +15,8 @@ OPNFV Auto (ONAP-Automated OPNFV) User Guide
 .. by the installer project.
 
 .. toctree::
-   :maxdepth: 1
+   :numbered:
+   :maxdepth: 2
 
    UC01-feature.userguide.rst
    UC02-feature.userguide.rst
