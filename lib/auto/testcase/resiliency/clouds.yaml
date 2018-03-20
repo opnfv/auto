@@ -1,0 +1,91 @@
+clouds:
+
+  # Openstack instance on Arm pod, controller IP@ 172.16.10.10
+  # Horizon: https://10.10.50.103/project/
+  # Identity API according to Horizon dashboard: https://10.10.50.103:5000/v2.0
+  # other potential auth_url: http://172.16.10.10:35357/v3
+  # (OS_AUTH_URL=http://controller:35357/v3)
+  # 2 project names: admin, service (project = tenant)
+  # project ID: 122caf64b3df4818bf2ce5ba793226b2
+  # EC2 URL: https://10.10.50.103:8773/services/Cloud
+  # EC2 access key: bcf3c69a7d1c405e9757f87f26faf19f
+  # 10.10.50.0/8: floating IP@
+  # 10.10.10.0/8: fixed IP@
+  armopenstack:
+    auth:
+      auth_url: https://10.10.50.103:5000/v2.0
+      username: admin
+      password: opnfv_secret
+      project_name: admin
+    region_name: RegionOne
+
+  # Openstack instance on LaaS hpe16, from OPNFV Euphrates, controller IP@ (mgt: 172.16.10.101; public: 10.16.0.101)
+  # keystone endpoints (openstack endpoint list --service keystone)
+  #   admin:    http://172.16.10.101:35357/v2.0
+  #   internal: http://172.16.10.101:5000/v2.0
+  #   public:   http://10.16.0.101:5000/v2.0  : works on LaaS hpe16, from hpe16
+  hpe16openstackEuphrates:
+    auth:
+      auth_url: http://10.16.0.101:5000/v2.0
+      username: admin
+      password: opnfv_secret
+      project_name: admin
+    region_name: RegionOne
+
+  # Openstack instance on LaaS hpe16, from OPNFV Fraser, controller IP@ (mgt: 172.16.10.36; public: 10.16.0.107)
+  # keystone endpoints (openstack endpoint list --service keystone)
+  #   admin:    http://172.16.10.36:35357/v3
+  #   internal: http://172.16.10.36:5000/v3
+  #   public:   http://10.16.0.107:5000/v3
+  hpe16openstackFraser:
+    auth:
+      auth_url: http://10.16.0.107:5000/v3
+      username: admin
+      password: opnfv_secret
+      project_name: admin
+    region_name: RegionOne
+
+# ubuntu@ctl01:~$ openstack project show admin
+# +-------------+----------------------------------+
+# | Field       | Value                            |
+# +-------------+----------------------------------+
+# | description | OpenStack Admin tenant           |
+# | domain_id   | default                          |
+# | enabled     | True                             |
+# | id          | 04fcfe7aa83f4df79ae39ca748aa8637 |
+# | is_domain   | False                            |
+# | name        | admin                            |
+# | parent_id   | default                          |
+# +-------------+----------------------------------+
+
+# (openstack) domain show default
+# +-------------+----------------------------------------------------------+
+# | Field       | Value                                                    |
+# +-------------+----------------------------------------------------------+
+# | description | Domain created automatically to support V2.0 operations. |
+# | enabled     | True                                                     |
+# | id          | default                                                  |
+# | name        | Default                                                  |
+# +-------------+----------------------------------------------------------+
+
+# (openstack) domain show heat_user_domain
+# +-------------+---------------------------------------------+
+# | Field       | Value                                       |
+# +-------------+---------------------------------------------+
+# | description | Contains users and projects created by heat |
+# | enabled     | True                                        |
+# | id          | d9c29adac0fe4816922d783b257879d6            |
+# | name        | heat_user_domain                            |
+# +-------------+---------------------------------------------+
+
+export OS_AUTH_URL=http://10.16.0.107:5000/v3
+export OS_PROJECT_ID=04fcfe7aa83f4df79ae39ca748aa8637
+export OS_PROJECT_NAME="admin"
+export OS_USER_DOMAIN_NAME="Default"
+export OS_USERNAME="admin"
+export OS_PASSWORD="opnfv_secret"
+export OS_REGION_NAME="RegionOne"
+export OS_INTERFACE=public
+export OS_IDENTITY_API_VERSION=3
+
+
