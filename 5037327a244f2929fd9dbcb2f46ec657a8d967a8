@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a3f45e8_7dcb61a5",
+        "filename": "lib/auto/testcase/EdgeCloud/AutoOSPlatCheck.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-03-20T15:26:20Z",
+      "side": 1,
+      "message": "request for creating token",
+      "range": {
+        "startLine": 67,
+        "startChar": 56,
+        "endLine": 67,
+        "endChar": 62
+      },
+      "revId": "5037327a244f2929fd9dbcb2f46ec657a8d967a8",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
