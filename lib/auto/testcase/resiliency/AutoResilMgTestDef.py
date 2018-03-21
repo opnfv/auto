@@ -54,6 +54,7 @@ import sys
 from enum import Enum
 from datetime import datetime, timedelta
 import AutoResilGlobal
+#import openstack
 
 # Constants with definition file names
 FILE_PHYSICAL_RESOURCES =       "ResourcesPhysical.bin"
@@ -149,8 +150,6 @@ def get_indexed_item_from_file(index, file_name):
 
     list_in_file = read_list_bin(file_name)
     return get_indexed_item_from_list(index, list_in_file)
-
-
 
 
 
@@ -269,7 +268,8 @@ class TestDefinition(AutoBaseObject):
                   test_def_associatedMetricsIDs,
                   test_def_recipientIDs,
                   test_def_testCLICommandSent,
-                  test_def_testAPICommandSent):
+                  test_def_testAPICommandSent,
+                  test_def_codeID):
 
         # superclass constructor
         AutoBaseObject.__init__(self, test_def_ID, test_def_name)
@@ -291,6 +291,93 @@ class TestDefinition(AutoBaseObject):
         # associated test API commands to Recipients (list of data objects)
         self.test_API_command_sent_list = test_def_testAPICommandSent
 
+        # constant for total number of test codes (one of them is used per TestDefinition instance); would be 1 per test case
+        self.TOTAL_NUMBER_OF_TEST_CODES = 10
+        # chosen test code ID (the ID is an index in a list of method names) for this instance; convention: [1;N]; in list, index is [0;N-1]
+        # a test code could use for instance Python clients (for OpenStack, Kubernetes, etc.), or HTTP APIs, or some of the CLI/API commands
+        try:
+            if 1 <= test_def_codeID <= self.TOTAL_NUMBER_OF_TEST_CODES:
+                self.test_code_ID = test_def_codeID
+            else:
+                print("TestDefinition constructor: incorrect test_def_codeID=",test_def_codeID)
+                sys.exit()  # stop entire program, because code ID MUST be correct
+        except Exception as e:
+            print(type(e), e)
+            sys.exit()  # stop entire program, because code ID MUST be correct
+
+        self.test_code_list = []  # list of method names; leave as per-object method (i.e. not as class methods or as static methods)
+        # add one by one, for easier later additions of new methods
+        self.test_code_list.append(self.test_code001)
+        self.test_code_list.append(self.test_code002)
+        self.test_code_list.append(self.test_code003)
+        self.test_code_list.append(self.test_code004)
+        self.test_code_list.append(self.test_code005)
+        self.test_code_list.append(self.test_code006)
+        self.test_code_list.append(self.test_code007)
+        self.test_code_list.append(self.test_code008)
+        self.test_code_list.append(self.test_code009)
+        self.test_code_list.append(self.test_code010)
+
+
+    def run_test_code(self):
+        """Run currently selected test code."""
+        try:
+            test_code_index = self.test_code_ID - 1  # lists are indexed from 0 to N-1
+            self.test_code_list[test_code_index]()   # invoke corresponding method, via index
+        except Exception as e:
+            print(type(e), e)
+            sys.exit()
+
+
+    # library of test codes, probably 1 per test case, so test_case_ID would be the same as test_code_ID
+    def test_code001(self):
+        """Test case code number 001."""
+        print("This is test_code001 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
+
+    def test_code002(self):
+        """Test case code number 002."""
+        print("This is test_code002 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
+
+    def test_code003(self):
+        """Test case code number 003."""
+        print("This is test_code003 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
+
+    def test_code004(self):
+        """Test case code number 004."""
+        print("This is test_code004 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
+
+    def test_code005(self):
+        """Test case code number 005."""
+        print("This is test_code005 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
+
+        # here, trigger start code from challenge def (to simulate VM failure), manage Recovery time measurement,
+        # monitoring of VNF, trigger stop code from challenge def, perform restoration of VNF
+        challenge_def = get_indexed_item_from_list(self.challenge_def_ID, AutoResilGlobal.challenge_definition_list)
+        if challenge_def != None:
+            challenge_def.run_start_challenge_code()
+            challenge_def.run_stop_challenge_code()
+
+
+    def test_code006(self):
+        """Test case code number 006."""
+        print("This is test_code006 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
+
+    def test_code007(self):
+        """Test case code number 007."""
+        print("This is test_code007 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
+
+    def test_code008(self):
+        """Test case code number 008."""
+        print("This is test_code008 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
+
+    def test_code009(self):
+        """Test case code number 009."""
+        print("This is test_code009 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
+
+    def test_code010(self):
+        """Test case code number 010."""
+        print("This is test_code010 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
+
 
     def printout_all(self, indent_level):
         """Print out all attributes, with an indentation level."""
@@ -303,6 +390,8 @@ class TestDefinition(AutoBaseObject):
         test_case = get_indexed_item_from_list(self.test_case_ID, AutoResilGlobal.test_case_list)
         if test_case != None:
             test_case.printout_all(indent_level+1)
+
+        print(indent, "|-test code ID:", self.test_code_ID, sep='')
 
         print(indent, "|-associated challenge def ID:", self.challenge_def_ID, sep='')
         challenge_def = get_indexed_item_from_list(self.challenge_def_ID, AutoResilGlobal.challenge_definition_list)
@@ -357,6 +446,7 @@ def init_test_definitions():
     test_def_recipientIDs = [2]
     test_def_testCLICommandSent = ["pwd","kubectl describe pods --include-uninitialized=false"]
     test_def_testAPICommandSent = ["data1","data2"]
+    test_def_testCodeID = 5
     test_definitions.append(TestDefinition(test_def_ID, test_def_name,
                                            test_def_challengeDefID,
                                            test_def_testCaseID,
@@ -364,7 +454,8 @@ def init_test_definitions():
                                            test_def_associatedMetricsIDs,
                                            test_def_recipientIDs,
                                            test_def_testCLICommandSent,
-                                           test_def_testAPICommandSent))
+                                           test_def_testAPICommandSent,
+                                           test_def_testCodeID))
 
     # write list to binary file
     write_list_bin(test_definitions, FILE_TEST_DEFINITIONS)
@@ -400,7 +491,8 @@ class ChallengeDefinition(AutoBaseObject):
                   chall_def_startChallengeCLICommandSent,
                   chall_def_stopChallengeCLICommandSent,
                   chall_def_startChallengeAPICommandSent,
-                  chall_def_stopChallengeAPICommandSent):
+                  chall_def_stopChallengeAPICommandSent,
+                  chall_def_codeID):
 
         # superclass constructor
         AutoBaseObject.__init__(self, chall_def_ID, chall_def_name)
@@ -431,6 +523,142 @@ class ChallengeDefinition(AutoBaseObject):
         # if API; to restore to normal
         self.stop_challenge_API_command_sent = chall_def_stopChallengeAPICommandSent
 
+        # constant for total number of challenge codes (one of them is used per ChallengeDefinition instance);
+        # may be 1 per test case, maybe not (common challenges, could be re-used across test definitions and test cases)
+        # start and stop challenges are strictly linked: exactly 1 Stop challenge for each Start challenge, so same ID for Start and for Stop
+        self.TOTAL_NUMBER_OF_CHALLENGE_CODES = 10
+
+        # chosen start/stop challenge code ID (the ID is an index in a list of method names) for this instance;
+        # convention: [1;N]; in list, index is [0;N-1]
+        # a challenge code could use for instance Python clients (for OpenStack, Kubernetes, etc.), or HTTP APIs, or some of the CLI/API commands
+        try:
+            if 1 <= chall_def_codeID <= self.TOTAL_NUMBER_OF_CHALLENGE_CODES:
+                self.challenge_code_ID = chall_def_codeID
+            else:
+                print("ChallengeDefinition constructor: incorrect chall_def_codeID=",chall_def_codeID)
+                sys.exit()  # stop entire program, because code ID MUST be correct
+        except Exception as e:
+            print(type(e), e)
+            sys.exit()  # stop entire program, because code ID MUST be correct
+
+        # list of method names; leave as per-object method (i.e. not as class methods or as static methods)
+        self.start_challenge_code_list = []
+        self.stop_challenge_code_list = []
+        # add one by one, for easier later additions of new methods; MUST be same index for Start and for Stop
+        self.start_challenge_code_list.append(self.start_challenge_code001)
+        self.stop_challenge_code_list.append(self.stop_challenge_code001)
+        self.start_challenge_code_list.append(self.start_challenge_code002)
+        self.stop_challenge_code_list.append(self.stop_challenge_code002)
+        self.start_challenge_code_list.append(self.start_challenge_code003)
+        self.stop_challenge_code_list.append(self.stop_challenge_code003)
+        self.start_challenge_code_list.append(self.start_challenge_code004)
+        self.stop_challenge_code_list.append(self.stop_challenge_code004)
+        self.start_challenge_code_list.append(self.start_challenge_code005)
+        self.stop_challenge_code_list.append(self.stop_challenge_code005)
+        self.start_challenge_code_list.append(self.start_challenge_code006)
+        self.stop_challenge_code_list.append(self.stop_challenge_code006)
+        self.start_challenge_code_list.append(self.start_challenge_code007)
+        self.stop_challenge_code_list.append(self.stop_challenge_code007)
+        self.start_challenge_code_list.append(self.start_challenge_code008)
+        self.stop_challenge_code_list.append(self.stop_challenge_code008)
+        self.start_challenge_code_list.append(self.start_challenge_code009)
+        self.stop_challenge_code_list.append(self.stop_challenge_code009)
+        self.start_challenge_code_list.append(self.start_challenge_code010)
+        self.stop_challenge_code_list.append(self.stop_challenge_code010)
+
+
+    def run_start_challenge_code(self):
+        """Run currently selected challenge code, start portion."""
+        try:
+            code_index = self.challenge_code_ID - 1  # lists are indexed from 0 to N-1
+            self.start_challenge_code_list[code_index]()   # invoke corresponding start method, via index
+        except Exception as e:
+            print(type(e), e)
+            sys.exit()
+
+    def run_stop_challenge_code(self):
+        """Run currently selected challenge code, stop portion."""
+        try:
+            code_index = self.challenge_code_ID - 1  # lists are indexed from 0 to N-1
+            self.stop_challenge_code_list[code_index]()   # invoke corresponding stop method, via index
+        except Exception as e:
+            print(type(e), e)
+            sys.exit()
+
+
+
+    # library of challenge codes
+    def start_challenge_code001(self):
+        """Start Challenge code number 001."""
+        print("This is start_challenge_code001 from ChallengeDefinition #",self.ID, sep='')
+    def stop_challenge_code001(self):
+        """Stop Challenge code number 001."""
+        print("This is stop_challenge_code001 from ChallengeDefinition #",self.ID, sep='')
+
+    def start_challenge_code002(self):
+        """Start Challenge code number 002."""
+        print("This is start_challenge_code002 from ChallengeDefinition #",self.ID, sep='')
+    def stop_challenge_code002(self):
+        """Stop Challenge code number 002."""
+        print("This is stop_challenge_code002 from ChallengeDefinition #",self.ID, sep='')
+
+    def start_challenge_code003(self):
+        """Start Challenge code number 003."""
+        print("This is start_challenge_code003 from ChallengeDefinition #",self.ID, sep='')
+    def stop_challenge_code003(self):
+        """Stop Challenge code number 003."""
+        print("This is stop_challenge_code003 from ChallengeDefinition #",self.ID, sep='')
+
+    def start_challenge_code004(self):
+        """Start Challenge code number 004."""
+        print("This is start_challenge_code004 from ChallengeDefinition #",self.ID, sep='')
+    def stop_challenge_code004(self):
+        """Stop Challenge code number 004."""
+        print("This is stop_challenge_code004 from ChallengeDefinition #",self.ID, sep='')
+
+    def start_challenge_code005(self):
+        """Start Challenge code number 005."""
+        print("This is start_challenge_code005 from ChallengeDefinition #",self.ID, sep='')
+    def stop_challenge_code005(self):
+        """Stop Challenge code number 005."""
+        print("This is stop_challenge_code005 from ChallengeDefinition #",self.ID, sep='')
+
+    def start_challenge_code006(self):
+        """Start Challenge code number 006."""
+        print("This is start_challenge_code006 from ChallengeDefinition #",self.ID, sep='')
+    def stop_challenge_code006(self):
+        """Stop Challenge code number 006."""
+        print("This is stop_challenge_code006 from ChallengeDefinition #",self.ID, sep='')
+
+    def start_challenge_code007(self):
+        """Start Challenge code number 007."""
+        print("This is start_challenge_code007 from ChallengeDefinition #",self.ID, sep='')
+    def stop_challenge_code007(self):
+        """Stop Challenge code number 007."""
+        print("This is stop_challenge_code007 from ChallengeDefinition #",self.ID, sep='')
+
+    def start_challenge_code008(self):
+        """Start Challenge code number 008."""
+        print("This is start_challenge_code008 from ChallengeDefinition #",self.ID, sep='')
+    def stop_challenge_code008(self):
+        """Stop Challenge code number 008."""
+        print("This is stop_challenge_code008 from ChallengeDefinition #",self.ID, sep='')
+
+    def start_challenge_code009(self):
+        """Start Challenge code number 009."""
+        print("This is start_challenge_code009 from ChallengeDefinition #",self.ID, sep='')
+    def stop_challenge_code009(self):
+        """Stop Challenge code number 009."""
+        print("This is stop_challenge_code009 from ChallengeDefinition #",self.ID, sep='')
+
+    def start_challenge_code010(self):
+        """Start Challenge code number 010."""
+        print("This is start_challenge_code010 from ChallengeDefinition #",self.ID, sep='')
+    def stop_challenge_code010(self):
+        """Stop Challenge code number 010."""
+        print("This is stop_challenge_code010 from ChallengeDefinition #",self.ID, sep='')
+
+
 
     def printout_all(self, indent_level):
         """Print out all attributes, with an indentation level."""
@@ -440,6 +668,8 @@ class ChallengeDefinition(AutoBaseObject):
         print(indent, "|-name:", self.name, sep='')
 
         print(indent, "|-challenge type:", self.challenge_type, sep='')
+
+        print(indent, "|-challenge code ID:", self.challenge_code_ID, sep='')
 
         print(indent, "|-associated recipient ID:", self.recipient_ID, sep='')
         recipient = get_indexed_item_from_list(self.recipient_ID, AutoResilGlobal.recipient_list)
@@ -498,6 +728,8 @@ def init_challenge_definitions():
     chall_def_startChallengeAPICommandSent = []
     chall_def_stopChallengeAPICommandSent = []
 
+    chall_def_codeID = 5
+
     challenge_defs.append(ChallengeDefinition(chall_def_ID, chall_def_name,
                                               chall_def_challengeType,
                                               chall_def_recipientID,
@@ -508,7 +740,8 @@ def init_challenge_definitions():
                                               chall_def_startChallengeCLICommandSent,
                                               chall_def_stopChallengeCLICommandSent,
                                               chall_def_startChallengeAPICommandSent,
-                                              chall_def_stopChallengeAPICommandSent))
+                                              chall_def_stopChallengeAPICommandSent,
+                                              chall_def_codeID))
 
     # write list to binary file
     write_list_bin(challenge_defs, FILE_CHALLENGE_DEFINITIONS)
@@ -687,7 +920,7 @@ class RecoveryTimeDef(MetricDefinition):
         if time_challenge_started > time_restoration_detected:
             print("time_challenge_started should be <= time_restoration_detected")
             print("time_challenge_started=",time_challenge_started," time_restoration_detected=",time_restoration_detected)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because formulas MUST be correct
 
         measured_metric_value = time_restoration_detected - time_challenge_started #difference between 2 datetime is a timedelta
         timestamp = datetime.now()
@@ -712,27 +945,27 @@ class UptimePercentageDef(MetricDefinition):
         if measured_uptime < 0.0:
             print("measured_uptime should be >= 0.0")
             print("meas=",measured_uptime," ref=",reference_time," pla=",planned_downtime)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because formulas MUST be correct
         if reference_time <= 0.0:
             print("reference_time should be > 0.0")
             print("meas=",measured_uptime," ref=",reference_time," pla=",planned_downtime)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because formulas MUST be correct
         if planned_downtime < 0.0:
             print("planned_downtime should be >= 0.0")
             print("meas=",measured_uptime," ref=",reference_time," pla=",planned_downtime)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because formulas MUST be correct
         if reference_time < planned_downtime:
             print("reference_time should be >= planned_downtime")
             print("meas=",measured_uptime," ref=",reference_time," pla=",planned_downtime)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because formulas MUST be correct
         if measured_uptime > reference_time:
             print("measured_uptime should be <= reference_time")
             print("meas=",measured_uptime," ref=",reference_time," pla=",planned_downtime)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because formulas MUST be correct
         if measured_uptime > (reference_time - planned_downtime):
             print("measured_uptime should be <= (reference_time - planned_downtime)")
             print("meas=",measured_uptime," ref=",reference_time," pla=",planned_downtime)
-            sys.exit()  # stop entire program, because fomulas MUST be correct
+            sys.exit()  # stop entire program, because formulas MUST be correct
 
         measured_metric_value = 100 * measured_uptime / (reference_time - planned_downtime)
         timestamp = datetime.now()
@@ -1340,10 +1573,21 @@ def main():
 
     print()
 
+    challgs = init_challenge_definitions()
+    print(challgs)
+    chall = get_indexed_item_from_file(1,FILE_CHALLENGE_DEFINITIONS)
+    print(chall)
+    chall.run_start_challenge_code()
+    chall.run_stop_challenge_code()
+
+    print()
+
     tds = init_test_definitions()
     print(tds)
     td = get_indexed_item_from_file(1,FILE_TEST_DEFINITIONS)
     print(td)
+    #td.printout_all(0)
+    #td.run_test_code()
 
     print()
 
@@ -1354,12 +1598,6 @@ def main():
 
     print()
 
-    challgs = init_challenge_definitions()
-    print(challgs)
-    chall = get_indexed_item_from_file(1,FILE_CHALLENGE_DEFINITIONS)
-    print(chall)
-
-    print()
 
     metricdefs = init_metric_definitions()
     print(metricdefs)
