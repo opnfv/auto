@@ -1,0 +1,10 @@
+Verified+1: jenkins-ci <jenkins-opnfv-ci@opnfv.org>
+Code-Review+1: Sofia Wallin <sofia.wallin@ericsson.com>
+Code-Review+1: Harry Huang <huangxiangyu5@huawei.com>
+Code-Review+2: Tina Tsou <tina.tsou@arm.com>
+Verified+1: Tina Tsou <tina.tsou@arm.com>
+Submitted-by: Tina Tsou <tina.tsou@arm.com>
+Submitted-at: Wed, 21 Mar 2018 20:58:06 +0000
+Reviewed-on: https://gerrit.opnfv.org/gerrit/54019
+Project: auto
+Branch: refs/heads/master
