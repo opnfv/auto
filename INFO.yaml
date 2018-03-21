@@ -1,0 +1,60 @@
+---
+project: 'ONAP-Automated OPNFV (Auto)'
+project_creation_date: 'August 15, 2017'
+project_category: ''
+lifecycle_state: 'Incubation'
+project_lead: &opnfv_auto_ptl
+    name: 'Tina Tsou'
+    email: 'tina.tsou@arm.com'
+    id: 'tinatsou'
+    company: 'arm.com'
+    timezone: 'Unknown'
+primary_contact: *opnfv_auto_ptl
+issue_tracking:
+    type: 'jira'
+    url: 'https://jira.opnfv.org/projects/AUTO'
+    key: 'AUTO'
+mailing_list:
+    type: 'mailman2'
+    url: 'opnfv-tech-discuss@lists.opnfv.org'
+    tag: '[auto]'
+realtime_discussion:
+    type: irc
+    server: 'freenode.net'
+    channel: '#opnfv-auto'
+meetings:
+    - type: 'gotomeeting+irc'
+      agenda:  # eg: 'https://wiki.opnfv.org/display/'
+      url:  # eg: 'https://global.gotomeeting.com/join/819733085'
+      server: 'freenode.net'
+      channel: '#opnfv-meeting'
+      repeats: 'weekly'
+      time:  # eg: '16:00 UTC'
+repositories:
+    - 'auto'
+committers:
+    - <<: *opnfv_auto_ptl
+    - name: 'Aric Gardner'
+      email: 'agardner@linuxfoundation.org'
+      company: 'linuxfoundation.org'
+      id: 'agardner'
+    - name: 'Harry Huang'
+      email: 'huangxiangyu5@huawei.com'
+      company: 'huawei.com'
+      id: 'huangxiangyu'
+    - name: 'Madhukesh Sambashivaiah'
+      email: 'madhukeshs@gmail.com'
+      company: 'gmail.com'
+      id: 'madhukeshs'
+    - name: 'Song Zhu'
+      email: 'song.zhu@arm.com'
+      company: 'arm.com'
+      id: 'mail22song'
+    - name: 'Liang Ou'
+      email: 'oul.gd@chinatelecom.cn'
+      company: 'chinatelecom.cn'
+      id: 'ouliang1'
+tsc:
+    # yamllint disable rule:line-length
+    approval: 'http//meetbot.opnfv.org/meetings/opnfv-meeting/2017/opnfv-meeting.2017-08-15-12.59.html'
+    # yamllint enable rule:line-length
