@@ -33,14 +33,15 @@
 ######################################################################
 # import statements
 import AutoResilGlobal
+import time
 
 # for method 1 and 2
-#import openstack
+import openstack
 
 #for method 3
-from openstack import connection
+#from openstack import connection
 
-def os_list_servers(conn):
+def openstack_list_servers(conn):
     """List OpenStack servers."""
     # see https://docs.openstack.org/python-openstacksdk/latest/user/proxies/compute.html
     if conn != None:
@@ -49,14 +50,20 @@ def os_list_servers(conn):
         try:
             i=1
             for server in conn.compute.servers():
-                print('Server',str(i),'\n',server,'n')
+                print('Server',str(i))
+                print('  Name:',server.name)
+                print('  ID:',server.id)
+                print('  key:',server.key_name)
+                print('  status:',server.status)
+                print('  AZ:',server.availability_zone)
+                print('Details:\n',server)
                 i+=1
         except Exception as e:
             print("Exception:",type(e), e)
             print("No Servers\n")
 
 
-def os_list_networks(conn):
+def openstack_list_networks(conn):
     """List OpenStack networks."""
     # see https://docs.openstack.org/python-openstacksdk/latest/user/proxies/network.html
     if conn != None:
@@ -65,14 +72,14 @@ def os_list_networks(conn):
         try:
             i=1
             for network in conn.network.networks():
-                print('Network',str(i),'\n',network,'n')
+                print('Network',str(i),'\n',network,'\n')
                 i+=1
         except Exception as e:
             print("Exception:",type(e), e)
             print("No Networks\n")
 
 
-def os_list_volumes(conn):
+def openstack_list_volumes(conn):
     """List OpenStack volumes."""
     # see https://docs.openstack.org/python-openstacksdk/latest/user/proxies/block_storage.html
     # note: The block_storage member will only be added if the service is detected.
@@ -82,14 +89,20 @@ def os_list_volumes(conn):
         try:
             i=1
             for volume in conn.block_storage.volumes():
-                print('Volume',str(i),'\n',volume,'n')
+                print('Volume',str(i))
+                print('  Name:',volume.name)
+                print('  ID:',volume.id)
+                print('  size:',volume.size)
+                print('  status:',volume.status)
+                print('  AZ:',volume.availability_zone)
+                print('Details:\n',volume)
                 i+=1
         except Exception as e:
             print("Exception:",type(e), e)
             print("No Volumes\n")
 
-            
-def os_list_users(conn):
+
+def openstack_list_users(conn):
     """List OpenStack users."""
     # see https://docs.openstack.org/python-openstacksdk/latest/user/guides/identity.html
     if conn != None:
@@ -98,13 +111,13 @@ def os_list_users(conn):
         try:
             i=1
             for user in conn.identity.users():
-                print('User',str(i),'\n',user,'n')
+                print('User',str(i),'\n',user,'\n')
                 i+=1
         except Exception as e:
             print("Exception:",type(e), e)
             print("No Users\n")
-            
-def os_list_projects(conn):
+
+def openstack_list_projects(conn):
     """List OpenStack projects."""
     # see https://docs.openstack.org/python-openstacksdk/latest/user/guides/identity.html
     if conn != None:
@@ -113,14 +126,14 @@ def os_list_projects(conn):
         try:
             i=1
             for project in conn.identity.projects():
-                print('Project',str(i),'\n',project,'n')
+                print('Project',str(i),'\n',project,'\n')
                 i+=1
         except Exception as e:
             print("Exception:",type(e), e)
             print("No Projects\n")
-            
 
-def os_list_domains(conn):
+
+def openstack_list_domains(conn):
     """List OpenStack domains."""
     # see https://docs.openstack.org/python-openstacksdk/latest/user/guides/identity.html
     if conn != None:
@@ -129,7 +142,7 @@ def os_list_domains(conn):
         try:
             i=1
             for domain in conn.identity.domains():
-                print('Domain',str(i),'\n',domain,'n')
+                print('Domain',str(i),'\n',domain,'\n')
                 i+=1
         except Exception as e:
             print("Exception:",type(e), e)
@@ -138,14 +151,17 @@ def os_list_domains(conn):
 
 
 
-        
-        
+
+
 
 def gdtest_openstack():
-    # Method 1: assume there is a clouds.yaml file in PATH, starting path search with local directory
+
+    # Method 1 (preferred) : assume there is a clouds.yaml file in PATH, starting path search with local directory
     #conn = openstack.connect(cloud='armopenstack', region_name='RegionOne')
-    #conn = openstack.connect(cloud='hpe16openstack', region_name='RegionOne')
-    # getting error: AttributeError: module 'openstack' has no attribute 'connect'
+    #conn = openstack.connect(cloud='hpe16openstackEuphrates', region_name='RegionOne')
+    conn = openstack.connect(cloud='hpe16openstackFraser', region_name='RegionOne')
+    # if getting error: AttributeError: module 'openstack' has no attribute 'connect', check that openstack is installed for this python version
+
 
     # Method 2: pass arguments directly, all as strings
     # see details at https://docs.openstack.org/python-openstacksdk/latest/user/connection.html
@@ -163,19 +179,20 @@ def gdtest_openstack():
         # password='opnfv_secret',
         # region_name='RegionOne',
         # )
-    # getting error: AttributeError: module 'openstack' has no attribute 'connect'
+    # if getting error: AttributeError: module 'openstack' has no attribute 'connect', check that openstack is installed for this python version
+
 
     # Method 3: create Connection object directly
-    auth_args = {
-        #'auth_url': 'https://10.10.50.103:5000/v2.0',  # Arm
-        #'auth_url': 'http://10.16.0.101:5000/v2.0',  # hpe16, Euphrates
-        'auth_url': 'http://10.16.0.107:5000/v3',  # hpe16, Fraser
-        'project_name': 'admin',
-        'username': 'admin',
-        'password': 'opnfv_secret',
-        'region_name': 'RegionOne', 
-        'domain': 'Default'}
-    conn = connection.Connection(**auth_args)
+    # auth_args = {
+        # #'auth_url': 'https://10.10.50.103:5000/v2.0',  # Arm
+        # #'auth_url': 'http://10.16.0.101:5000/v2.0',  # hpe16, Euphrates
+        # 'auth_url': 'http://10.16.0.107:5000/v3',  # hpe16, Fraser
+        # 'project_name': 'admin',
+        # 'username': 'admin',
+        # 'password': 'opnfv_secret',
+        # 'region_name': 'RegionOne',
+        # 'domain': 'Default'}
+    # conn = connection.Connection(**auth_args)
 
     #conn = connection.Connection(
         #auth_url='http://10.16.0.107:5000/v3',
@@ -184,12 +201,65 @@ def gdtest_openstack():
         #password='opnfv_secret')
 
 
-    os_list_servers(conn)
-    os_list_networks(conn)
-    os_list_volumes(conn)
-    os_list_users(conn)
-    os_list_projects(conn)
-    os_list_domains(conn)
+    openstack_list_servers(conn)
+    openstack_list_networks(conn)
+    openstack_list_volumes(conn)
+    openstack_list_users(conn)
+    openstack_list_projects(conn)
+    openstack_list_domains(conn)
+
+    # VM: hpe16-Auto-UC2-gdtest-compute1
+    gds_ID = '715c677a-7914-4ca8-8c6d-75bf29eeb940'
+    gds = conn.compute.get_server(gds_ID)
+    print('\ngds.name=',gds.name)
+    print('gds.status=',gds.status)
+    print('suspending...')
+    conn.compute.suspend_server(gds_ID)  # NOT synchronous: returns before suspension action is completed
+    wait_seconds = 10
+    print('  waiting',wait_seconds,'seconds...')
+    time.sleep(wait_seconds)
+    gds = conn.compute.get_server(gds_ID)  # need to refresh data; not maintained live
+    print('gds.status=',gds.status)
+    print('resuming...')
+    conn.compute.resume_server(gds_ID)
+    print('  waiting',wait_seconds,'seconds...')
+    time.sleep(wait_seconds)
+    gds = conn.compute.get_server(gds_ID)  # need to refresh data; not maintained live
+    print('gds.status=',gds.status)
+
+
+
+    #VM: test3
+    gds_ID = 'd3ceffc3-5967-4f18-b8b5-b1b2bd7ab76d'
+    gds = conn.compute.get_server(gds_ID)
+    print('\ngds.name=',gds.name)
+    print('gds.status=',gds.status)
+    print('suspending...')
+    conn.compute.suspend_server(gds_ID)  # NOT synchronous: returns before suspension action is completed
+    wait_seconds = 10
+    print('  waiting',wait_seconds,'seconds...')
+    time.sleep(wait_seconds)
+    gds = conn.compute.get_server(gds_ID)  # need to refresh data; not maintained live
+    print('gds.status=',gds.status)
+    print('resuming...')
+    conn.compute.resume_server(gds_ID)
+    print('  waiting',wait_seconds,'seconds...')
+    time.sleep(wait_seconds)
+    gds = conn.compute.get_server(gds_ID)  # need to refresh data; not maintained live
+    print('gds.status=',gds.status)
+
+    #Volume: hpe16-Auto-UC2-gdtest-volume1
+    gdv_ID = '5a6c1dbd-5097-4a9b-8f79-6f03cde18bf6'
+    gdv = conn.block_storage.get_volume(gdv_ID)
+    # no API for stopping/restarting a volume... only delete. ONAP would have to completely migrate a VNF depending on this volume
+    print('\ngdv.name=',gdv.name)
+    print('gdv.status=',gdv.status)
+    #gdv_recreate = gdv
+    #print('deleting...')
+    #conn.block_storage.delete_volume(gdv_ID)
+    #conn.block_storage.delete_volume(gdv)
+    #print('recreating...')
+    #gdv = conn.block_storage.create_volume(<attributes saved in gdv_recreate>)
 
 
     # get_server(server): Get a single Server
@@ -211,7 +281,7 @@ def main():
 
     gdtest_openstack()
 
-    print("Ciao\n")
+    print("\nCiao\n")
 
 if __name__ == "__main__":
     main()

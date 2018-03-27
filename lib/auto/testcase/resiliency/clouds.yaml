@@ -14,9 +14,9 @@ clouds:
   armopenstack:
     auth:
       auth_url: https://10.10.50.103:5000/v2.0
+      project_name: admin
       username: admin
       password: opnfv_secret
-      project_name: admin
     region_name: RegionOne
 
   # Openstack instance on LaaS hpe16, from OPNFV Euphrates, controller IP@ (mgt: 172.16.10.101; public: 10.16.0.101)
@@ -27,9 +27,9 @@ clouds:
   hpe16openstackEuphrates:
     auth:
       auth_url: http://10.16.0.101:5000/v2.0
+      project_name: admin
       username: admin
       password: opnfv_secret
-      project_name: admin
     region_name: RegionOne
 
   # Openstack instance on LaaS hpe16, from OPNFV Fraser, controller IP@ (mgt: 172.16.10.36; public: 10.16.0.107)
@@ -37,12 +37,16 @@ clouds:
   #   admin:    http://172.16.10.36:35357/v3
   #   internal: http://172.16.10.36:5000/v3
   #   public:   http://10.16.0.107:5000/v3
+  # Horizon: https://10.16.0.107:8078, but need SSH port forwarding through 10.10.100.26 to be reached from outside
+  # "If you are using Identity v3 you need to specify the user and the project domain name"
   hpe16openstackFraser:
     auth:
       auth_url: http://10.16.0.107:5000/v3
+      project_name: admin
       username: admin
       password: opnfv_secret
-      project_name: admin
+      user_domain_name: Default
+      project_domain_name: Default
     region_name: RegionOne
 
 # ubuntu@ctl01:~$ openstack project show admin
@@ -78,14 +82,28 @@ clouds:
 # | name        | heat_user_domain                            |
 # +-------------+---------------------------------------------+
 
-export OS_AUTH_URL=http://10.16.0.107:5000/v3
-export OS_PROJECT_ID=04fcfe7aa83f4df79ae39ca748aa8637
-export OS_PROJECT_NAME="admin"
-export OS_USER_DOMAIN_NAME="Default"
-export OS_USERNAME="admin"
-export OS_PASSWORD="opnfv_secret"
-export OS_REGION_NAME="RegionOne"
-export OS_INTERFACE=public
-export OS_IDENTITY_API_VERSION=3
+# admin user (from Horizon on hpe16):
+# Domain ID               default
+# Domain Name             Default
+# User Name               admin
+# Description             None
+# ID                      df0ea50cfcff4bbfbfdfefccdb018834
+# Email                   root@localhost
+# Enabled                 Yes
+# Primary Project ID      04fcfe7aa83f4df79ae39ca748aa8637
+# Primary Project Name    admin
+
+
+
+
+# export OS_AUTH_URL=http://10.16.0.107:5000/v3
+# export OS_PROJECT_ID=04fcfe7aa83f4df79ae39ca748aa8637
+# export OS_PROJECT_NAME="admin"
+# export OS_USER_DOMAIN_NAME="Default"
+# export OS_USERNAME="admin"
+# export OS_PASSWORD="opnfv_secret"
+# export OS_REGION_NAME="RegionOne"
+# export OS_INTERFACE=public
+# export OS_IDENTITY_API_VERSION=3
 
 
