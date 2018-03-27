@@ -164,7 +164,6 @@ def main():
                     print("Problem with test definition: empty")
                     sys.exit()  # stop entire program, because test definition MUST be correct
                 else:
-                    # TODO run test: call selected test definition run_test_code() method
                     test_def = get_indexed_item_from_list(selected_test_def_ID, AutoResilGlobal.test_definition_list)
                     if test_def != None:
                         test_def.run_test_code()
