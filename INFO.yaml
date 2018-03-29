@@ -23,21 +23,17 @@ realtime_discussion:
     server: 'freenode.net'
     channel: '#opnfv-auto'
 meetings:
-    - type: 'gotomeeting+irc'
-      agenda:  # eg: 'https://wiki.opnfv.org/display/'
-      url:  # eg: 'https://global.gotomeeting.com/join/819733085'
+    - type: 'zoom+irc'
+      agenda: 'https://wiki.opnfv.org/display/AUTO/Auto+Project+Meetings'
+      url: 'https://zoom.us/j/2362828999'
       server: 'freenode.net'
-      channel: '#opnfv-meeting'
-      repeats: 'weekly'
-      time:  # eg: '16:00 UTC'
+      channel: '#opnfv-auto'
+      repeats: 'weekly, mondays'
+      time: '14:00 UTC'
 repositories:
     - 'auto'
 committers:
     - <<: *opnfv_auto_ptl
-    - name: 'Aric Gardner'
-      email: 'agardner@linuxfoundation.org'
-      company: 'linuxfoundation.org'
-      id: 'agardner'
     - name: 'Harry Huang'
       email: 'huangxiangyu5@huawei.com'
       company: 'huawei.com'
@@ -54,6 +50,10 @@ committers:
       email: 'oul.gd@chinatelecom.cn'
       company: 'chinatelecom.cn'
       id: 'ouliang1'
+    - name: 'Gerard Damm'
+      email: 'gerard.damm@wipro.com'
+      company: 'Wipro'
+      id: 'gerard_damm'
 tsc:
     # yamllint disable rule:line-length
     approval: 'http//meetbot.opnfv.org/meetings/opnfv-meeting/2017/opnfv-meeting.2017-08-15-12.59.html'
