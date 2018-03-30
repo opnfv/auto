@@ -320,10 +320,62 @@ class TestDefinition(AutoBaseObject):
 
 
     def run_test_code(self):
-        """Run currently selected test code."""
+        """Run currently selected test code. Common code runs here, specific code is invoked through test_code_list and test_code_ID."""
         try:
+            # here, trigger start code from challenge def (to simulate VM failure), manage Recovery time measurement,
+            # specific monitoring of VNF, trigger stop code from challenge def
+
+            time1 = datetime.now()  # get time as soon as execution starts
+
+            # create challenge execution instance
+            chall_exec_ID = 1  # ideally, would be incremented, but need to maintain a number of challenge executions somewhere. or could be random.
+            chall_exec_name = 'challenge execution'  # challenge def ID is already passed
+            chall_exec_challDefID = self.challenge_def_ID
+            chall_exec = ChallengeExecution(chall_exec_ID, chall_exec_name, chall_exec_challDefID)
+            chall_exec.log.append_to_list('challenge execution created')
+
+            # create test execution instance
+            test_exec_ID = 1  # ideally, would be incremented, but need to maintain a number of text executions somewhere. or could be random.
+            test_exec_name = 'test execution'  # test def ID is already passed
+            test_exec_testDefID = self.ID
+            test_exec_userID = ''  # or get user name from getpass module: import getpass and test_exec_userID = getpass.getuser()
+            test_exec = TestExecution(test_exec_ID, test_exec_name, test_exec_testDefID, chall_exec_ID, test_exec_userID)
+            test_exec.log.append_to_list('test execution created')
+
+            # get time1 before anything else, so the setup time is counted
+            test_exec.start_time = time1
+
+            # get challenge definition instance, and start challenge
+            challenge_def = get_indexed_item_from_list(self.challenge_def_ID, AutoResilGlobal.challenge_definition_list)
+            challenge_def.run_start_challenge_code()
+
+            # memorize challenge start time
+            chall_exec.start_time = datetime.now()
+            test_exec.challenge_start_time = chall_exec.start_time
+
+            # call specific test definition code, via table of functions; this code should monitor a VNF and return when restoration is observed
             test_code_index = self.test_code_ID - 1  # lists are indexed from 0 to N-1
-            self.test_code_list[test_code_index]()   # invoke corresponding method, via index
+            self.test_code_list[test_code_index]()   # invoke corresponding method, via index; could check for return code
+
+            # memorize restoration detection time and compute recovery time
+            test_exec.restoration_detection_time = datetime.now()
+            recovery_time_metric_def = get_indexed_item_from_file(1,FILE_METRIC_DEFINITIONS)  # get Recovery Time metric definition: ID=1
+            test_exec.recovery_time = recovery_time_metric_def.compute(test_exec.challenge_start_time, test_exec.restoration_detection_time)
+
+            # stop challenge
+            challenge_def.run_stop_challenge_code()
+
+            # memorize challenge stop time
+            chall_exec.stop_time = datetime.now()
+            chall_exec.log.append_to_list('challenge execution finished')
+
+            # write results to CSV files, memorize test finish time
+            chall_exec.write_to_csv()
+            test_exec.finish_time = datetime.now()
+            test_exec.log.append_to_list('test execution finished')
+            test_exec.write_to_csv()
+
+
         except Exception as e:
             print(type(e), e)
             sys.exit()
@@ -350,13 +402,10 @@ class TestDefinition(AutoBaseObject):
         """Test case code number 005."""
         print("This is test_code005 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
 
-        # here, trigger start code from challenge def (to simulate VM failure), manage Recovery time measurement,
-        # monitoring of VNF, trigger stop code from challenge def, perform restoration of VNF
-        challenge_def = get_indexed_item_from_list(self.challenge_def_ID, AutoResilGlobal.challenge_definition_list)
-        if challenge_def != None:
-            challenge_def.run_start_challenge_code()
-            challenge_def.run_stop_challenge_code()
-
+        # specific VNF recovery monitoring, specific metrics if any
+        # interact with ONAP, periodic query about VNF status; may also check VM or container status directly with VIM
+        # return when VNF is recovered
+        # may provision for failure to recover (max time to wait; return code: recovery OK boolean)
 
     def test_code006(self):
         """Test case code number 006."""
@@ -437,9 +486,9 @@ def init_test_definitions():
     test_definitions = []
 
     # add info to list in memory, one by one, following signature values
-    test_def_ID = 1
+    test_def_ID = 5
     test_def_name = "VM failure impact on virtual firewall (vFW VNF)"
-    test_def_challengeDefID = 1
+    test_def_challengeDefID = 5
     test_def_testCaseID = 5
     test_def_VNFIDs = [1]
     test_def_associatedMetricsIDs = [2]
@@ -466,14 +515,20 @@ def init_test_definitions():
 ######################################################################
 
 class ChallengeType(Enum):
-    # server-level failures
+    # physical server-level failures 1XX
     COMPUTE_HOST_FAILURE = 100
     DISK_FAILURE = 101
     LINK_FAILURE = 102
     NIC_FAILURE = 103
-    # network-level failures
-    OVS_BRIDGE_FAILURE = 200
-    # security stresses
+
+    # cloud-level failures 2XX
+    CLOUD_COMPUTE_FAILURE = 200
+    SDN_C_FAILURE = 201
+    OVS_BRIDGE_FAILURE = 202
+    CLOUD_STORAGE_FAILURE = 203
+    CLOUD_NETWORK_FAILURE = 204
+
+    # security stresses 3XX
     HOST_TAMPERING = 300
     HOST_INTRUSION = 301
     NETWORK_INTRUSION = 302
@@ -619,9 +674,26 @@ class ChallengeDefinition(AutoBaseObject):
     def start_challenge_code005(self):
         """Start Challenge code number 005."""
         print("This is start_challenge_code005 from ChallengeDefinition #",self.ID, sep='')
+        # challenge #5, related to test case #5, i.e. test def #5
+        # cloud reference (name and region) should be in clouds.yaml file
+        # conn = openstack.connect(cloud='cloudNameForChallenge005', region_name='regionNameForChallenge005')
+        # TestDef knows VNF, gets VNF->VM mapping from ONAP, passes VM ref to ChallengeDef
+        # ChallengeDef suspends/resumes VM
+        # conn.compute.servers() to get list of servers, using VM ID, check server.id and/or server.name
+        # conn.compute.suspend_server(this server id)
+
+
     def stop_challenge_code005(self):
         """Stop Challenge code number 005."""
         print("This is stop_challenge_code005 from ChallengeDefinition #",self.ID, sep='')
+        # challenge #5, related to test case #5, i.e. test def #5
+        # cloud reference (name and region) should be in clouds.yaml file
+        # conn = openstack.connect(cloud='cloudNameForChallenge005', region_name='regionNameForChallenge005')
+        # TestDef knows VNF, gets VNF->VM mapping from ONAP, passes VM ref to ChallengeDef
+        # ChallengeDef suspends/resumes VM
+        # conn.compute.servers() to get list of servers, using VM ID, check server.id and/or server.name
+        # conn.compute.conn.compute.resume_server(this server id)
+
 
     def start_challenge_code006(self):
         """Start Challenge code number 006."""
@@ -711,9 +783,9 @@ def init_challenge_definitions():
     challenge_defs = []
 
     # add info to list in memory, one by one, following signature values
-    chall_def_ID = 1
+    chall_def_ID = 5
     chall_def_name = "VM failure"
-    chall_def_challengeType = ChallengeType.COMPUTE_HOST_FAILURE
+    chall_def_challengeType = ChallengeType.CLOUD_COMPUTE_FAILURE
     chall_def_recipientID = 1
     chall_def_impactedCloudResourcesInfo = "OpenStack VM on ctl02 in Arm pod"
     chall_def_impactedCloudResourceIDs = [2]
@@ -722,8 +794,10 @@ def init_challenge_definitions():
     chall_def_startChallengeCLICommandSent = "service nova-compute stop"
     chall_def_stopChallengeCLICommandSent = "service nova-compute restart"
 	# OpenStack VM Suspend vs. Pause: suspend stores the state of VM on disk while pause stores it in memory (RAM)
+    # in CLI:
 	# $ nova suspend NAME
 	# $ nova resume NAME
+    # but better use openstack SDK
 
     chall_def_startChallengeAPICommandSent = []
     chall_def_stopChallengeAPICommandSent = []
@@ -1575,7 +1649,7 @@ def main():
 
     challgs = init_challenge_definitions()
     print(challgs)
-    chall = get_indexed_item_from_file(1,FILE_CHALLENGE_DEFINITIONS)
+    chall = get_indexed_item_from_file(5,FILE_CHALLENGE_DEFINITIONS)
     print(chall)
     chall.run_start_challenge_code()
     chall.run_stop_challenge_code()
@@ -1584,7 +1658,7 @@ def main():
 
     tds = init_test_definitions()
     print(tds)
-    td = get_indexed_item_from_file(1,FILE_TEST_DEFINITIONS)
+    td = get_indexed_item_from_file(5,FILE_TEST_DEFINITIONS)
     print(td)
     #td.printout_all(0)
     #td.run_test_code()
@@ -1604,8 +1678,8 @@ def main():
 
     metricdef = get_indexed_item_from_file(1,FILE_METRIC_DEFINITIONS)
     print(metricdef)
-    t1 = datetime(2018,4,1,15,10,12,500000)
-    t2 = datetime(2018,4,1,15,13,43,200000)
+    t1 = datetime(2018,7,1,15,10,12,500000)
+    t2 = datetime(2018,7,1,15,13,43,200000)
     r1 = metricdef.compute(t1,t2)
     print(r1)
     print()
@@ -1646,7 +1720,7 @@ def main():
 
     print()
 
-    ce1 = ChallengeExecution(1,"essai challenge execution",1)
+    ce1 = ChallengeExecution(1,"essai challenge execution",5)
     ce1.start_time = datetime.now()
     ce1.log.append_to_list("challenge execution log event 1")
     ce1.log.append_to_list("challenge execution log event 2")
@@ -1668,7 +1742,7 @@ def main():
 
     print()
 
-    te1 = TestExecution(1,"essai test execution",1,1,"Gerard")
+    te1 = TestExecution(1,"essai test execution",5,1,"Gerard")
     te1.start_time = datetime.now()
     te1.challenge_start_time = ce1.start_time  # illustrate how to set test execution challenge start time
     print("te1.challenge_start_time:",te1.challenge_start_time)
