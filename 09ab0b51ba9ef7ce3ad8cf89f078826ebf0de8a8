@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a3f45e8_916e032e",
+        "filename": "lib/auto/__init__.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5455
+      },
+      "writtenOn": "2018-04-04T03:08:44Z",
+      "side": 1,
+      "message": "this is required to let python understand this is a importable module",
+      "revId": "09ab0b51ba9ef7ce3ad8cf89f078826ebf0de8a8",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_3188cfe6",
+        "filename": "lib/setup/ONAP/install/onap_on_openstack/launch_onap.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5455
+      },
+      "writtenOn": "2018-04-04T03:08:44Z",
+      "side": 1,
+      "message": "I still think the setup part is only called once and should not be considered as a module",
+      "revId": "09ab0b51ba9ef7ce3ad8cf89f078826ebf0de8a8",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_b1733f14",
+        "filename": "lib/testCases/01-EdgeCloud/AutoOSPlatCheck.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5455
+      },
+      "writtenOn": "2018-04-04T03:08:44Z",
+      "side": 1,
+      "message": "I think it\u0027s better to keep every thing under auto to have a tree \nlike hierarchy. I believe there are similar structures among opnfv testing projects.",
+      "revId": "09ab0b51ba9ef7ce3ad8cf89f078826ebf0de8a8",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_1162f33d",
+        "filename": "lib/util/__init__.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5455
+      },
+      "writtenOn": "2018-04-04T03:08:44Z",
+      "side": 1,
+      "message": "Same thought as keeping testcase under auto",
+      "revId": "09ab0b51ba9ef7ce3ad8cf89f078826ebf0de8a8",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
