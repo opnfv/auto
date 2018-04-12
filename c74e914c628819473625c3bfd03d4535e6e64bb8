@@ -71,6 +71,29 @@
     },
     {
       "key": {
+        "uuid": "5a3f45e8_b6331e13",
+        "filename": "docs/release/installation/UC01-installation.instruction.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 7107
+      },
+      "writtenOn": "2018-04-12T13:36:08Z",
+      "side": 0,
+      "message": "Do you really mean to recommend the Arno release?  This is from 2 years ago. This is probably not what you want to recommend...we typically use either Euphrates or the soon-to-be-released Fraser.",
+      "range": {
+        "startLine": 62,
+        "startChar": 18,
+        "endLine": 62,
+        "endChar": 22
+      },
+      "revId": "c74e914c628819473625c3bfd03d4535e6e64bb8",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a3f45e8_56ed7ab6",
         "filename": "docs/release/installation/UC01-installation.instruction.rst",
         "patchSetId": 1

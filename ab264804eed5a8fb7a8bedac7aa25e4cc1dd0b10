@@ -48,6 +48,29 @@
     },
     {
       "key": {
+        "uuid": "5a3f45e8_9651c238",
+        "filename": "docs/release/configguide/Auto-featureconfig.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 7107
+      },
+      "writtenOn": "2018-04-12T13:36:08Z",
+      "side": 1,
+      "message": "x86 should be used when describing what works and doesn\u0027t work.\nNothing works on Arm yet w.r.t. ONAP, as the ONAP components have not yet been built for arm64.",
+      "range": {
+        "startLine": 155,
+        "startChar": 4,
+        "endLine": 155,
+        "endChar": 7
+      },
+      "revId": "ab264804eed5a8fb7a8bedac7aa25e4cc1dd0b10",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a3f45e8_76d99621",
         "filename": "docs/release/configguide/Auto-featureconfig.rst",
         "patchSetId": 1
