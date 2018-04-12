@@ -4,15 +4,14 @@
 .. (c) Open Platform for NFV Project, Inc. and its contributors
 
 
-==================
 Auto Release Notes
 ==================
 
 This document provides the release notes for Fraser release of Auto.
 
 
-Important notes
-===============
+Important notes for this release
+================================
 
 Initial release (project inception: July 2017).
 
@@ -26,7 +25,7 @@ In particular, OPNFV has yet to integrate higher-level automation features for V
 
 Auto ("ONAP-Automated OPNFV") will focus on ONAP component integration and verification with OPNFV reference platforms/scenarios, through primarily a post-install process in order to avoid impact to OPNFV installer projects. As much as possible, this will use a generic installation/integration process (not specific to any OPNFV installer's technology).
 
-* `ONAP <https://www.onap.org/`_ (a Linux Foundation Project) is an open source software platform that delivers robust capabilities for the design, creation, orchestration, monitoring, and life cycle management of Software-Defined Networks (SDNs).
+* `ONAP <https://www.onap.org/>`_ (a Linux Foundation Project) is an open source software platform that delivers robust capabilities for the design, creation, orchestration, monitoring, and life cycle management of Software-Defined Networks (SDNs).
 
 While all of ONAP is in scope, as it proceeds, the project will focus on specific aspects of this integration and verification in each release. Some example topics and work items include:
 
@@ -58,8 +57,8 @@ Auto’s goals include the standup and tests for integrated ONAP-Cloud platforms
 Auto currently defines three use cases: Edge Cloud, Resiliency Improvements, and Enterprise vCPE. These use cases aim to show:
 
 * increased autonomy of Edge Cloud management (automation, catalog-based deployment)
-* increased resilience (i.e. fast VNF recovery in case of failure or problem, thanks to closed-loop control)
-* enterprise-grade performance of vCPEs (certification during onboarding, then real-time performance assurance with SLAs and HA).
+* increased resilience (i.e. fast VNF recovery in case of failure or problem, thanks to closed-loop control), including end-to-end composite services of which a Cloud Manager may not be aware
+* enterprise-grade performance of vCPEs (certification during onboarding, then real-time performance assurance with SLAs and HA as well as scaling).
 
 The use cases define test cases, which initially will be independent, but which might eventually be integrated to FuncTest.
 
@@ -67,17 +66,21 @@ Additional use cases can be added in the future, such as vIMS (example: project 
 
 Target architectures include x86 and Arm.
 
-An ONAP instance (without DCAE) has been installed over Kubernetes on bare metal on an x86 pod of 6 servers at UNH IOL.
-Onboarding of 2 VNFs is in progress: a vCPE and a vFW.
+An ONAP instance (without DCAE) has been installed over Kubernetes on bare metal on an x86 pod of 6 servers at UNH IOL. A transition is in progress, to leverage OPNFV LaaS (Lab-as-a-Service) pods (`Pharos <https://labs.opnfv.org/>`_).
+ONAP-based onboarding and deployment of VNFs is in progress (ONAP pre-loading of VNFs must still done outside of ONAP: for VM-based VNFs, need to prepare OpenStack stacks (using Heat templates), then make an instance snapshot which serves as the binary image of the VNF).
 
 Integration with Arm servers has started (exploring binary compatibility):
 
 * Openstack is currently installed on a 6-server pod of Arm servers
-* a Kubernetes cluster is installed there as well, for another instance of ONAP on Arm servers
-* An additional set of 14 Arm servers is in the process of being deployed at UNH, for increased capacity
-* LaaS (Lab as a Service) resources are also used (hpe16, hpe17, hpe19)
+* A set of 14 additional Arm servers was deployed at UNH, for increased capacity
+* Arm-compatible Docker images are in the process of being developed
 
 Test case implementation for the three use cases has started.
+
+Finally, the following figure illustrates Auto in terms of project activities:
+
+.. image:: auto-project-activities.png
+
 
 
 Release Data
@@ -115,6 +118,7 @@ Document version changes
 
 Reason for version
 ^^^^^^^^^^^^^^^^^^
+
 Feature additions
 ~~~~~~~~~~~~~~~~~
 
@@ -127,21 +131,37 @@ Initial release, with use case descriptions, release plan, and in-progress test 
 | **JIRA REFERENCE**                   | **SLOGAN**                           |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| AUTO-1                               | Define Auto-UC-01 Service Provider's |
+| AUTO-1, UC1 definition               | Define Auto-UC-01 Service Provider's |
 |                                      | Management of Edge Cloud             |
 +--------------------------------------+--------------------------------------+
-| AUTO-2                               | Define Auto-UC-02 Resilience         |
+| AUTO-2, UC2 definition               | Define Auto-UC-02 Resilience         |
 |                                      | Improvements through ONAP            |
 +--------------------------------------+--------------------------------------+
-| AUTO-7                               | Define Auto-UC-03 Enterprise vCPE    |
+| AUTO-7, UC3 definition               | Define Auto-UC-03 Enterprise vCPE    |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| AUTO-4                               | Develop test cases for Auto-UC-02    |
+| AUTO-4, UC2 test case definition     | Develop test cases for Auto-UC-02    |
 |                                      | Resilience Improvements through ONAP |
 +--------------------------------------+--------------------------------------+
-| AUTO-8                               | Develop test cases for Auto-UC-03    |
+| AUTO-8, UC3 test case definition     | Develop test cases for Auto-UC-03    |
 |                                      | Enterprise vCPE                      |
 +--------------------------------------+--------------------------------------+
+| (UC1 test case definition is done,   |                                      |
+|  but no associated JIRA ticket)      |                                      |
++--------------------------------------+--------------------------------------+
+| AUTO-5, install ONAP                 | Getting ONAP running onto Pharos     |
+|                                      | deployment (without DCAE)            |
++--------------------------------------+--------------------------------------+
+| AUTO-31, UC1 test case progress      | auto-edge-pif-001 Basic OpenStack    |
+|                                      | environment check                    |
++--------------------------------------+--------------------------------------+
+| AUTO-13, UC2 test case progress      | Develop test script for vif-001:     |
+|                                      | Data Management                      |
++--------------------------------------+--------------------------------------+
+| AUTO-20, UC3 test case progress      | Onboarding of VNFs via SDC GUI       |
+|                                      |                                      |
++--------------------------------------+--------------------------------------+
+
 
 
 Bug corrections
@@ -160,6 +180,7 @@ Bug corrections
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 
+
 Deliverables
 ============
 
@@ -174,8 +195,10 @@ Documentation deliverables
 
 Initial versions of:
 
-* User guide `OPNFV User and Configuration Guide <http://docs.opnfv.org/en/latest/release/userguide.introduction.html>`_
 * Release notes (this document)
+* User guide `OPNFV User and Configuration Guide <http://docs.opnfv.org/en/latest/release/userguide.introduction.html>`_
+* Configuration Guide (same landing page as User Guide)
+
 
 
 
@@ -240,6 +263,23 @@ References
 For more information on the OPNFV Fraser release, please see:
 http://opnfv.org/fraser
 
-Auto Wiki:
-https://wiki.opnfv.org/pages/viewpage.action?pageId=12389095
+
+Auto Wiki pages:
+
+* `Auto wiki main page <https://wiki.opnfv.org/pages/viewpage.action?pageId=12389095>`_
+
+
+OPNFV documentation on Auto:
+
+* `Auto release notes <http://docs.opnfv.org/en/latest/release/release-notes.html>`_
+* `Auto use case user guides <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/userguide/index.html#auto-userguide>`_
+* `Auto configuration guide <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/configguide/index.html#auto-configguide>`_
+
+
+Git&Gerrit Auto repositories:
+
+* `Auto Git repository <https://git.opnfv.org/auto/tree/>`_
+* `Gerrit for Auto project <https://gerrit.opnfv.org/gerrit/#/admin/projects/auto>`_
+
+
 
