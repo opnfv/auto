@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a3f45e8_f6e5a6dc",
+        "filename": "docs/release/configguide/Auto-featureconfig.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 3461
+      },
+      "writtenOn": "2018-04-12T11:55:35Z",
+      "side": 1,
+      "message": "Openstack \u003d\u003e OpenStack",
+      "range": {
+        "startLine": 51,
+        "startChar": 42,
+        "endLine": 51,
+        "endChar": 51
+      },
+      "revId": "ab264804eed5a8fb7a8bedac7aa25e4cc1dd0b10",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_b6df9e0c",
+        "filename": "docs/release/configguide/Auto-featureconfig.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 3461
+      },
+      "writtenOn": "2018-04-12T11:55:35Z",
+      "side": 1,
+      "message": "OPNFV?",
+      "range": {
+        "startLine": 100,
+        "startChar": 58,
+        "endLine": 100,
+        "endChar": 62
+      },
+      "revId": "ab264804eed5a8fb7a8bedac7aa25e4cc1dd0b10",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_76d99621",
+        "filename": "docs/release/configguide/Auto-featureconfig.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 3461
+      },
+      "writtenOn": "2018-04-12T11:55:35Z",
+      "side": 1,
+      "message": "Auto installation",
+      "range": {
+        "startLine": 217,
+        "startChar": 6,
+        "endLine": 217,
+        "endChar": 27
+      },
+      "revId": "ab264804eed5a8fb7a8bedac7aa25e4cc1dd0b10",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
