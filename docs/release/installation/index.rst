@@ -1,15 +1,15 @@
-.. _auto-configguide:
+.. _auto-installation:
 
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
 .. http://creativecommons.org/licenses/by/4.0
+.. (c) Open Platform for NFV Project, Inc. and its contributors
 
-=====================================================
-OPNFV Auto (ONAP-Automated OPNFV) Configuration Guide
-=====================================================
+***********************************************************
+OPNFV Auto (ONAP-Automated OPNFV) Installation Instructions
+***********************************************************
 
 .. toctree::
-   :maxdepth: 1
+   :numbered:
+   :maxdepth: 3
 
-   UC01-installation.instruction.rst
-   UC02-installation.instruction.rst
-   UC03-installation.instruction.rst
+   Auto-installation.instruction.rst
