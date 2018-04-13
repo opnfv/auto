@@ -34,7 +34,7 @@ Preconditions:
 
 Main Success Scenarios:
 
-* lifecycle management - stop, stop, scale (dependent upon telemetry)
+* lifecycle management - start, stop, scale (dependent upon telemetry)
 
 * recovering from faults (detect, determine appropriate response, act); i.e. exercise closed-loop policy engine in ONAP
 
@@ -47,7 +47,7 @@ Details on the test cases corresponding to this use case:
 
 * Environment check
 
-  * Basic environment check: Create test script to check basic VIM (OpenStack), ONAP, and VNF are up and running
+  * Basic environment check: Create test script to check basic VIM (OpenStack), ONAP, and VNF(s) are up and running
 
 * VNF lifecycle management
 
@@ -55,7 +55,7 @@ Details on the test cases corresponding to this use case:
 
   * Tacker Monitoring Driver (VNFMonitorPing):
 
-    * Write Tacker Monitor driver to handle monitor_call and based on return state value create custom events
+    * Write Tacker Monitor driver to handle monitor_call and, based on return state value, create custom events
     * If Ping to VNF fails, trigger below events
 
       * Event 1 : Collect failure logs from VNF
