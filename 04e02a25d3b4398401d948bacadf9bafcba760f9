@@ -1,0 +1,8 @@
+Verified+1: jenkins-ci <jenkins-opnfv-ci@opnfv.org>
+Code-Review+1: Joe Kidder <Joe.kidder@5thlayer.com>
+Code-Review+2: Tina Tsou <tina.tsou@arm.com>
+Submitted-by: Gerard Damm <gerard.damm@wipro.com>
+Submitted-at: Mon, 16 Apr 2018 12:52:20 +0000
+Reviewed-on: https://gerrit.opnfv.org/gerrit/55625
+Project: auto
+Branch: refs/heads/master
