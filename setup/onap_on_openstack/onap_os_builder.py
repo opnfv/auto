@@ -121,9 +121,9 @@ class ONAP_os_builder(object):
         dcae_prikey_data = util.read_file(prikey_path).strip('\n')
         dcae_pubkey_data = util.read_file(pubkey_path).strip('\n')
         user_config.update({'dcae_public_key':
-                            literal_unicode(dcae_prikey_data)})
-        user_config.update({'dcae_private_key':
                             literal_unicode(dcae_pubkey_data)})
+        user_config.update({'dcae_private_key':
+                            literal_unicode(dcae_prikey_data)})
 
         public_net_id = os_lib.get_network_id(
             self.neutron_client,
