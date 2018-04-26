@@ -1,0 +1,8 @@
+Verified+1: jenkins-ci <jenkins-opnfv-ci@opnfv.org>
+Code-Review+2: Gerard Damm <gerard.damm@wipro.com>
+Verified+1: Gerard Damm <gerard.damm@wipro.com>
+Submitted-by: Gerard Damm <gerard.damm@wipro.com>
+Submitted-at: Thu, 26 Apr 2018 02:43:55 +0000
+Reviewed-on: https://gerrit.opnfv.org/gerrit/56567
+Project: auto
+Branch: refs/heads/stable/fraser
