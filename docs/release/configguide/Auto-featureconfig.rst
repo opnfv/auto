@@ -14,9 +14,7 @@ and provides guidelines on how to perform configurations and additional installa
 Goal
 ====
 
-The goal of `Auto <http://docs.opnfv.org/en/latest/release/release-notes.html>`_ installation and configuration is to prepare
-an environment where the `Auto use cases <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/userguide/index.html#auto-userguide>`_
-can be assessed, i.e. where the corresponding test cases can be executed and their results can be collected.
+The goal of `Auto <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/release-notes/index.html#auto-releasenotes>`_ installation and configuration is to prepare an environment where the `Auto use cases <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/userguide/index.html#auto-userguide>`_ can be assessed, i.e. where the corresponding test cases can be executed and their results can be collected.
 
 An instance of ONAP needs to be present, as well as a number of deployed VNFs, in the scope of the use cases.
 
@@ -57,8 +55,14 @@ server with the OpenStack instance.
 .. image:: auto-installTarget-initial.jpg
 
 
-Jenkins will be used for Continuous Integration in OPNFV releases, to ensure that the latest master
-branch of Auto is always working.
+The OpenStack instance running VNFs may need to be configured as per ONAP expectations, for example creating instances of ONAP projects/tenants, users, security groups, networks (private, public), connected to the Internet by a Router, and making sure expected VM images and flavors are present. A script (using OpenStack SDK, or OpenStack CLI, or even OpenStack Heat templates) would populate the OpenStack instance, as illustrated below:
+
+.. image:: auto-OS-config4ONAP.png
+
+
+
+Jenkins (or more precisely JJB: Jenkins Job Builder) will be used for Continuous Integration in OPNFV releases, to ensure that the latest master
+branch of Auto is always working. The first 3 tasks in the pipeline would be: install OpenStack instance via OPNFV installer (Fuel/MCP for example), configure the OpenStack instance for ONAP, install ONAP (using the OpenStack instance network IDs in the ONAP YAMP file).
 
 Moreover, Auto will offer an API, which can be imported as a module, and can be accessed for example
 by a web application. The following diagram shows the planned structure for the Auto Git repository,
