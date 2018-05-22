@@ -7,13 +7,13 @@
 Auto Release Notes
 ==================
 
-This document provides the release notes for Fraser release of Auto.
+This document provides the release notes for the Fraser release of Auto.
 
 
 Important notes for this release
 ================================
 
-Initial release (project inception: July 2017).
+The initial release for Auto was in Fraser 6.0 (project inception: July 2017). This is the first point release, in Fraser 6.1.
 
 
 Summary
@@ -54,28 +54,33 @@ Testability:
 
 Auto’s goals include the standup and tests for integrated ONAP-Cloud platforms (“Cloud” here being OPNFV “scenarios” or other cloud environments). Thus, the artifacts would be tools to deploy ONAP (leveraging OOM whenever possible (starting with Beijing release of ONAP), and a preference for the containerized version of ONAP), to integrate it with clouds, to onboard and deploy test VNFs, to configure policies and closed-loop controls, and to run use-case defined tests against that integrated environment. OPNFV scenarios would be a possible component in the above.
 
-Auto currently defines three use cases: Edge Cloud, Resiliency Improvements, and Enterprise vCPE. These use cases aim to show:
+Auto currently defines three use cases: Edge Cloud (UC1), Resiliency Improvements (UC2), and Enterprise vCPE (UC3). These use cases aim to show:
 
-* increased autonomy of Edge Cloud management (automation, catalog-based deployment)
-* increased resilience (i.e. fast VNF recovery in case of failure or problem, thanks to closed-loop control), including end-to-end composite services of which a Cloud Manager may not be aware
+* increased autonomy of Edge Cloud management (automation, catalog-based deployment). This use case relates to the `OPNFV Edge Cloud <https://wiki.opnfv.org/display/PROJ/Edge+cloud>`_ initiative.
+* increased resilience (i.e. fast VNF recovery in case of failure or problem, thanks to closed-loop control), including end-to-end composite services of which a Cloud Manager may not be aware.
 * enterprise-grade performance of vCPEs (certification during onboarding, then real-time performance assurance with SLAs and HA as well as scaling).
 
-The use cases define test cases, which initially will be independent, but which might eventually be integrated to FuncTest.
+The use cases define test cases, which initially will be independent, but which might eventually be integrated to `FuncTest <https://wiki.opnfv.org/display/functest/Opnfv+Functional+Testing>`_.
 
-Additional use cases can be added in the future, such as vIMS (example: project Clearwater).
+Additional use cases can be added in the future, such as vIMS (example: project Clearwater) or residential vHGW (virtual Home Gateways). The interest for vHGW is to reduce overall power consumption: even in idle mode, physical HGWs in residential premises consume a lot of energy. Virtualizing that service to the Service Provider edge data center would allow to minimize that consumption.
 
-Target architectures include x86 and Arm.
+Target architectures for all Auto use cases and test cases include x86 and Arm. Power consumption analysis will be performed, leveraging Functest tools.
 
-An ONAP instance (without DCAE) has been installed over Kubernetes on bare metal on an x86 pod of 6 servers at UNH IOL. A transition is in progress, to leverage OPNFV LaaS (Lab-as-a-Service) pods (`Pharos <https://labs.opnfv.org/>`_).
+An ONAP instance (without DCAE) has been installed over Kubernetes on bare metal on an x86 pod of 6 servers at UNH IOL. A transition is in progress, to leverage OPNFV LaaS (Lab-as-a-Service) pods (`Pharos <https://labs.opnfv.org/>`_). These pods can be booked for 3 weeks only (with an extension for a maximum of 2 weeks), so are not a permanent resource. A repeatable automated installation procedure is being developed. An installation of ONAP on Kubernetes in a public OpenStack cloud on an Arm server has been done, and demonstrated during OpenStack Summit in Vancouver on May 21st 2018 (see link in references below).
+
 ONAP-based onboarding and deployment of VNFs is in progress (ONAP pre-loading of VNFs must still done outside of ONAP: for VM-based VNFs, need to prepare OpenStack stacks (using Heat templates), then make an instance snapshot which serves as the binary image of the VNF).
+
+An initial version of a script to prepare an OpenStack instance for ONAP (creation of a public and a private network, with a router) has been developed.
 
 Integration with Arm servers has started (exploring binary compatibility):
 
 * Openstack is currently installed on a 6-server pod of Arm servers
 * A set of 14 additional Arm servers was deployed at UNH, for increased capacity
-* Arm-compatible Docker images are in the process of being developed
+* Arm-compatible Docker images are in the process of being developed (they were used in the OpenStack Summit demo)
 
 Test case implementation for the three use cases has started.
+
+OPNFV CI/CD integration with JJD (Jenkins Job Description) has started: see the Auto plan description `here <https://wiki.opnfv.org/display/AUTO/CI+Plan+for+Auto>`_. The permanent resource for that is a 6-server Arm pod, hosted at UNH.
 
 Finally, the following figure illustrates Auto in terms of project activities:
 
@@ -87,16 +92,16 @@ Release Data
 ============
 
 +--------------------------------------+--------------------------------------+
-| **Project**                          | Fraser/auto/auto@opnfv               |
+| **Project**                          | Auto                                 |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Repo/commit-ID**                   |                                      |
+| **Repo/commit-ID**                   | auto/opnfv-6.1.0                     |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release designation**              | Fraser 6.0                           |
+| **Release designation**              | Fraser 6.1                           |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release date**                     | 2018-04-20                           |
+| **Release date**                     | 2018-05-25                           |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 | **Purpose of the delivery**          | Official OPNFV release               |
@@ -122,7 +127,23 @@ Reason for version
 Feature additions
 ~~~~~~~~~~~~~~~~~
 
-Initial release, with use case descriptions, release plan, and in-progress test cases and ONAP installations.
+Initial release 6.0:
+
+* Fraser release plan
+* use case descriptions
+* test case descriptions
+* in-progress test case development
+* lab: OPNFV and ONAP (Amsterdam) installations
+
+Point release 6.1:
+
+* added Gambia release plan
+* started integration with CI/CD (JJB) on permanent Arm pod
+* Arm demo at OpenStack Summit
+* initial script for configuring OpenStack instance for ONAP, using OpenStack SDK
+* initial attempts to install ONAP Beijing
+* alignment with OPNFV Edge Cloud
+* initial contacts with Functest
 
 
 **JIRA TICKETS:**
@@ -140,14 +161,14 @@ Initial release, with use case descriptions, release plan, and in-progress test 
 | AUTO-7, UC3 definition               | Define Auto-UC-03 Enterprise vCPE    |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
+| AUTO-3, UC1 test case definition     | Develop test cases for Auto-UC-01    |
+|                                      | SP's Management of Edge Cloud        |
++--------------------------------------+--------------------------------------+
 | AUTO-4, UC2 test case definition     | Develop test cases for Auto-UC-02    |
 |                                      | Resilience Improvements through ONAP |
 +--------------------------------------+--------------------------------------+
 | AUTO-8, UC3 test case definition     | Develop test cases for Auto-UC-03    |
 |                                      | Enterprise vCPE                      |
-+--------------------------------------+--------------------------------------+
-| (UC1 test case definition is done,   |                                      |
-|  but no associated JIRA ticket)      |                                      |
 +--------------------------------------+--------------------------------------+
 | AUTO-5, install ONAP                 | Getting ONAP running onto Pharos     |
 |                                      | deployment (without DCAE)            |
@@ -187,18 +208,19 @@ Deliverables
 Software deliverables
 ^^^^^^^^^^^^^^^^^^^^^
 
-Initial release: in-progress install scripts and test case implementations.
+6.0 and 6.1 releases: in-progress install scripts and test case implementations.
 
 
 Documentation deliverables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Initial versions of:
+Updated versions of:
 
-* Release notes (this document)
-* User guide `OPNFV User and Configuration Guide <http://docs.opnfv.org/en/latest/release/userguide.introduction.html>`_
-* Configuration Guide (same landing page as User Guide)
+* Release Notes (this document)
+* User Guide
+* Configuration Guide
 
+(see links in References section)
 
 
 
@@ -271,7 +293,7 @@ Auto Wiki pages:
 
 OPNFV documentation on Auto:
 
-* `Auto release notes <http://docs.opnfv.org/en/latest/release/release-notes.html>`_
+* `Auto release notes <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/release-notes/index.html#auto-releasenotes>`_
 * `Auto use case user guides <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/userguide/index.html#auto-userguide>`_
 * `Auto configuration guide <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/configguide/index.html#auto-configguide>`_
 
@@ -282,4 +304,7 @@ Git&Gerrit Auto repositories:
 * `Gerrit for Auto project <https://gerrit.opnfv.org/gerrit/#/admin/projects/auto>`_
 
 
+Demo at OpenStack summit May 2018 (Vancouver, BC, Canada):
+
+* YouTube video (10min 52s): `Integration testing on an OpenStack public cloud <https://youtu.be/BJ05YuusNYw>`_
 
