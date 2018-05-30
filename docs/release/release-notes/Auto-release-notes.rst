@@ -23,15 +23,22 @@ OPNFV is a SDNFV system integration project for open-source components, which so
 
 In particular, OPNFV has yet to integrate higher-level automation features for VNFs and end-to-end Services.
 
-Auto ("ONAP-Automated OPNFV") will focus on ONAP component integration and verification with OPNFV reference platforms/scenarios, through primarily a post-install process in order to avoid impact to OPNFV installer projects. As much as possible, this will use a generic installation/integration process (not specific to any OPNFV installer's technology).
+Auto ("ONAP-Automated OPNFV") will focus on ONAP component integration and verification with OPNFV reference
+platforms/scenarios, through primarily a post-install process in order to avoid impact to OPNFV installer projects.
+As much as possible, this will use a generic installation/integration process (not specific to any OPNFV installer's
+technology).
 
 * `ONAP <https://www.onap.org/>`_ (a Linux Foundation Project) is an open source software platform that delivers robust capabilities for the design, creation, orchestration, monitoring, and life cycle management of Software-Defined Networks (SDNs).
 
 While all of ONAP is in scope, as it proceeds, the project will focus on specific aspects of this integration and verification in each release. Some example topics and work items include:
 
 * How ONAP meets VNFM standards, and interacts with VNFs from different vendors
-* How ONAP SDN-C uses OPNFV existing features, e.g. NetReady, in a two-layer controller architecture in which the upper layer (global controller) is replaceable, and the lower layer can use different vendor’s local controller to interact with SDN-C
-* What data collection interface VNF and controllers provide to ONAP DCAE, and (through DCAE), to closed-loop control functions such as Policy Tests which verify interoperability of ONAP automation/lifecycle features with specific NFVI and VIM features, as prioritized by the project with technical community and EUAG input. Examples include:
+* How ONAP SDN-C uses OPNFV existing features, e.g. NetReady, in a two-layer controller architecture in which the upper
+  layer (global controller) is replaceable, and the lower layer can use different vendor’s local controller to interact
+  with SDN-C
+* What data collection interface VNF and controllers provide to ONAP DCAE, and (through DCAE), to closed-loop control
+  functions such as Policy Tests which verify interoperability of ONAP automation/lifecycle features with specific NFVI
+  and VIM features, as prioritized by the project with technical community and EUAG input. Examples include:
 
   * Abstraction of networking tech/features e.g. through NetReady/Gluon
   * Blueprint-based VNF deployment (HOT, TOSCA, YANG)
@@ -52,7 +59,11 @@ Testability:
 * Tests will be developed for use cases within the project scope.
 * In future releases, tests will be added to Functest runs for supporting scenarios.
 
-Auto’s goals include the standup and tests for integrated ONAP-Cloud platforms (“Cloud” here being OPNFV “scenarios” or other cloud environments). Thus, the artifacts would be tools to deploy ONAP (leveraging OOM whenever possible (starting with Beijing release of ONAP), and a preference for the containerized version of ONAP), to integrate it with clouds, to onboard and deploy test VNFs, to configure policies and closed-loop controls, and to run use-case defined tests against that integrated environment. OPNFV scenarios would be a possible component in the above.
+Auto’s goals include the standup and tests for integrated ONAP-Cloud platforms (“Cloud” here being OPNFV “scenarios”
+or other cloud environments). Thus, the artifacts would be tools to deploy ONAP (leveraging OOM whenever possible
+(starting with Beijing release of ONAP), and a preference for the containerized version of ONAP), to integrate it with
+clouds, to onboard and deploy test VNFs, to configure policies and closed-loop controls, and to run use-case defined
+tests against that integrated environment. OPNFV scenarios would be a possible component in the above.
 
 Auto currently defines three use cases: Edge Cloud (UC1), Resiliency Improvements (UC2), and Enterprise vCPE (UC3). These use cases aim to show:
 
@@ -62,13 +73,24 @@ Auto currently defines three use cases: Edge Cloud (UC1), Resiliency Improvement
 
 The use cases define test cases, which initially will be independent, but which might eventually be integrated to `FuncTest <https://wiki.opnfv.org/display/functest/Opnfv+Functional+Testing>`_.
 
-Additional use cases can be added in the future, such as vIMS (example: project Clearwater) or residential vHGW (virtual Home Gateways). The interest for vHGW is to reduce overall power consumption: even in idle mode, physical HGWs in residential premises consume a lot of energy. Virtualizing that service to the Service Provider edge data center would allow to minimize that consumption.
+Additional use cases can be added in the future, such as vIMS (example: project Clearwater) or residential vHGW (virtual
+Home Gateways). The interest for vHGW is to reduce overall power consumption: even in idle mode, physical HGWs in
+residential premises consume a lot of energy. Virtualizing that service to the Service Provider edge data center would
+allow to minimize that consumption.
 
-Target architectures for all Auto use cases and test cases include x86 and Arm. Power consumption analysis will be performed, leveraging Functest tools.
+Target architectures for all Auto use cases and test cases include x86 and Arm. Power consumption analysis will be
+performed, leveraging Functest tools.
 
-An ONAP instance (without DCAE) has been installed over Kubernetes on bare metal on an x86 pod of 6 servers at UNH IOL. A transition is in progress, to leverage OPNFV LaaS (Lab-as-a-Service) pods (`Pharos <https://labs.opnfv.org/>`_). These pods can be booked for 3 weeks only (with an extension for a maximum of 2 weeks), so are not a permanent resource. A repeatable automated installation procedure is being developed. An installation of ONAP on Kubernetes in a public OpenStack cloud on an Arm server has been done, and demonstrated during OpenStack Summit in Vancouver on May 21st 2018 (see link in references below).
+An ONAP instance (without DCAE) has been installed over Kubernetes on bare metal on an x86 pod of 6 servers at UNH IOL.
+A transition is in progress, to leverage OPNFV LaaS (Lab-as-a-Service) pods (`Pharos <https://labs.opnfv.org/>`_).
+These pods can be booked for 3 weeks only (with an extension for a maximum of 2 weeks), so are not a permanent resource.
+A repeatable automated installation procedure is being developed. An installation of ONAP on Kubernetes in a public
+OpenStack cloud on an Arm server has been done, and demonstrated during OpenStack Summit in Vancouver on May 21st 2018
+(see link in references below).
 
-ONAP-based onboarding and deployment of VNFs is in progress (ONAP pre-loading of VNFs must still done outside of ONAP: for VM-based VNFs, need to prepare OpenStack stacks (using Heat templates), then make an instance snapshot which serves as the binary image of the VNF).
+ONAP-based onboarding and deployment of VNFs is in progress (ONAP pre-loading of VNFs must still done outside of ONAP:
+for VM-based VNFs, need to prepare OpenStack stacks (using Heat templates), then make an instance snapshot which serves
+as the binary image of the VNF).
 
 An initial version of a script to prepare an OpenStack instance for ONAP (creation of a public and a private network, with a router) has been developed.
 

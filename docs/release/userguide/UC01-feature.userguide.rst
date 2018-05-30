@@ -17,9 +17,12 @@ Description
 
 This use case aims at showcasing the benefits of using ONAP for autonomous Edge Cloud management.
 
-A high level of automation of VNF lifecycle event handling after launch is enabled by ONAP policies and closed-loop controls, which take care of most lifecycle events (start, stop, scale up/down/in/out, recovery/migration for HA) as well as their monitoring and SLA management.
+A high level of automation of VNF lifecycle event handling after launch is enabled by ONAP policies and closed-loop
+controls, which take care of most lifecycle events (start, stop, scale up/down/in/out, recovery/migration for HA) as
+well as their monitoring and SLA management.
 
-Multiple types of VNFs, for different execution environments, are first approved in the catalog thanks to the onboarding process, and then can be deployed and handled by multiple controllers in a systematic way.
+Multiple types of VNFs, for different execution environments, are first approved in the catalog thanks to the onboarding
+process, and then can be deployed and handled by multiple controllers in a systematic way.
 
 This results in management efficiency (lower control/automation overhead) and high degree of autonomy.
 

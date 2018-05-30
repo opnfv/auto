@@ -18,9 +18,14 @@ Description
 This Use Case shows how ONAP can help ensure that virtual CPEs (including vFW: virtual firewalls) in Edge Cloud are enterprise-grade.
 Other vCPE examples: vAAA, vDHCP, vDNS, vGW, vBNG, vRouter, ...
 
-ONAP operations include a verification process for VNF onboarding (i.e., inclusion in the ONAP catalog), with multiple Roles (Designer, Tester, Governor, Operator), responsible for approving proposed VNFs (as VSPs (Vendor Software Products), and eventually as end-to-end Services).
+ONAP operations include a verification process for VNF onboarding (i.e., inclusion in the ONAP catalog), with multiple
+Roles (Designer, Tester, Governor, Operator), responsible for approving proposed VNFs (as VSPs (Vendor Software Products),
+and eventually as end-to-end Services).
 
-This process guarantees a minimum level of quality of onboarded VNFs. If all deployed vCPEs are only chosen from such an approved ONAP catalog, the resulting deployed end-to-end vCPE services will meet enterprise-grade requirements. ONAP provides a NBI (currently HTTP-based) in addition to a standard GUI portal, thus enabling a programmatic deployment of VNFs, still conforming to ONAP processes.
+This process guarantees a minimum level of quality of onboarded VNFs. If all deployed vCPEs are only chosen from such an
+approved ONAP catalog, the resulting deployed end-to-end vCPE services will meet enterprise-grade requirements. ONAP
+provides a NBI (currently HTTP-based) in addition to a standard GUI portal, thus enabling a programmatic deployment of
+VNFs, still conforming to ONAP processes.
 
 Moreover, ONAP also comprises real-time monitoring (by the DCAE component), which can perform the following functions:
 
@@ -32,9 +37,12 @@ DCAE executes directives coming from policies described in the Policy Framework,
 
 ONAP can perform the provisioning side of a BSS Order Management application handling vCPE orders.
 
-Additional processing can be added to ONAP (internally as configured policies and closed-loop controls, or externally as separate systems): Path Computation Element and Load Balancing, and even telemetry-based Network Artificial Intelligence.
+Additional processing can be added to ONAP (internally as configured policies and closed-loop controls, or externally as
+separate systems): Path Computation Element and Load Balancing, and even telemetry-based Network Artificial Intelligence.
 
-Finally, this automated approach also reduces costs, since repetitive actions are designed once and executed multiple times, as vCPEs are instantiated and decommissioned (frequent events, given the variability of business activity, and a Small Business market similar to the Residential market: many contract updates resulting in many vCPE changes).
+Finally, this automated approach also reduces costs, since repetitive actions are designed once and executed multiple times,
+as vCPEs are instantiated and decommissioned (frequent events, given the variability of business activity, and a Small
+Business market similar to the Residential market: many contract updates resulting in many vCPE changes).
 
 NFV edge service providers need to provide site2site, site2dc (Data Center) and site2internet services to tenants both efficiently and safely, by deploying such qualified enterprise-grade vCPE.
 
