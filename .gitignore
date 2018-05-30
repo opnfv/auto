@@ -5,3 +5,6 @@
 /lib/auto.egg-info
 /build
 /dist
+/docs_build
+/docs_output
+/opnfvdocs
