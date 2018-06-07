@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_930cb496",
+        "filename": "ci/build-auto.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-07T22:55:34Z",
+      "side": 1,
+      "message": "typo: activate",
+      "range": {
+        "startLine": 53,
+        "startChar": 2,
+        "endLine": 53,
+        "endChar": 9
+      },
+      "revId": "97368109ee77ef6f4c5d3166a258bea145f0ee48",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
