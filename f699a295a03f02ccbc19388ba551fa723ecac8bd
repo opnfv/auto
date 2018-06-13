@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_7ba45257",
+        "filename": "INFO.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 4395
+      },
+      "writtenOn": "2018-06-13T09:05:11Z",
+      "side": 1,
+      "message": "pvaduva",
+      "revId": "f699a295a03f02ccbc19388ba551fa723ecac8bd",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
