@@ -24,13 +24,15 @@
 # https://wiki.opnfv.org/pages/viewpage.action?pageId=12389095
 
 #docstring
-"""This script configures an OpenStack instance to make it ready to interface with an ONAP instance, for example to host VM-based VNFs deployed by ONAP.
+"""This script configures an OpenStack instance to make it ready to interface with an ONAP instance, for example to host VM-based VNFs deployed by ONAP. It can also remove the created objects, when used in a clean-up procedure.
+Use -h option to see usage (-del to delete objects, -deb to print debug information).
+Requirements: python 3, OpenStack SDK (0.14 or greater), clouds.yaml file, .img files are downloaded
 Auto project: https://wiki.opnfv.org/pages/viewpage.action?pageId=12389095
 """
 
 ######################################################################
-# This script configures an OpenStack instance (e.g. from an OPNFV installer like FUEL/MCP) to make it
-# ready to interface with an ONAP instance, for example to host VM-based VNFs deployed by ONAP.
+# This script configures an OpenStack instance (e.g. from an OPNFV installer like FUEL/MCP, Compass4nfv, ...)
+# to make it ready to interface with an ONAP instance, for example to host VM-based VNFs deployed by ONAP.
 # After running this script, the created OpenStack object names/IDs can be used for example to populate
 # YAML&ENV files used by ONAP (installation of ONAP itself, VNF descriptor files, etc.).
 
@@ -42,12 +44,15 @@ Auto project: https://wiki.opnfv.org/pages/viewpage.action?pageId=12389095
 #   (optional, probably not needed: create a new group, which can be associated to a project, and contains users)
 # 2) create an ONAP user within the ONAP project, so as not to use the "admin" user for ONAP
 #   (associate user to group if applicable; credentials: name/pwd or name/APIkey, or token)
-# 3) create an ONAP security group, to allow ICMP traffic (for pings) and TCP port 22 (for SSH), rather than changing default security group(s)
-#   (optional, probably not needed: create new region; default region RegionOne is OK)
+# 3) create an ONAP security group, to allow ICMP traffic (for pings) and TCP port 22 (for SSH),
+#    rather than changing default security group(s)
+# (optional, probably not needed: create a new region; default region RegionOne is OK)
 # 4) create a public network for ONAP VNFs, with subnet and CIDR block
 #    (so components have access to the Internet, via router and gateway, on unnamed ports, dynamic IP@ allocation)
-# 5) create a private and an OAM network for ONAP VNFs or other ONAP components, with their respective subnet and CIDR block
-#    (ONAP VNFs will be deployed in this private and/or OAM network(s), usually with named ports and static IP@ as per VNF configuration file)
+# 5) create a private and an OAM network for ONAP VNFs or other ONAP components,
+#    with their respective subnet and CIDR block
+#    (ONAP VNFs will be deployed in this private and/or OAM network(s), usually with named ports
+#    and static IP@ as per VNF configuration file)
 # 6) create an OpenStack router, with interfaces to the public, private and OAM networks,
 #    and a reference to an external network (gateway) provided by the OpenStack instance installation
 # 7) create VM flavors as needed: m1.medium, etc.
@@ -59,11 +64,13 @@ Auto project: https://wiki.opnfv.org/pages/viewpage.action?pageId=12389095
 # - python3 is installed
 # - OpenStack SDK is installed for python3
 # - there is a clouds.yaml file (describing the OpenStack instance, especially the Auth URL and admin credentials)
+# - .img files (Ubuntu Trusty Tahr, Xenial Xerus, Cirros, ... are downloaded, and stored in IMAGES_DIR
 # - the script connects to OpenStack as a user with admin rights
 
 # typical commands to install OpenStack SDK Python client:
 # apt install python3-pip
 # pip3 install --upgrade pip
+# hash -r
 # pip3 list
 # pip3 install openstacksdk
 # pip3 install --upgrade openstacksdk
@@ -85,7 +92,8 @@ ONAP_USER_NAME              = 'ONAP_user'
 ONAP_USER_PASSWORD          = 'auto_topsecret'
 ONAP_USER_DESC              = 'OpenStack User created for ONAP'
 
-ONAP_TENANT_NAME            = 'ONAP_tenant'  # "project" is a more generic concept than "tenant"; a tenant is type of project; quotas are per project;
+ONAP_TENANT_NAME            = 'ONAP_tenant'
+# "project" is a more generic concept than "tenant"; a tenant is type of project; quotas are per project;
 ONAP_TENANT_DESC            = 'OpenStack Project/Tenant created for ONAP'
 
 ONAP_SECU_GRP_NAME          = 'ONAP_security_group'
@@ -93,28 +101,33 @@ ONAP_SECU_GRP_DESC          = 'Security Group created for ONAP'
 
 ONAP_PUBLIC_NET_NAME        = 'ONAP_public_net'
 ONAP_PUBLIC_SUBNET_NAME     = 'ONAP_public_subnet'
-ONAP_PUBLIC_SUBNET_CIDR     = '192.168.99.0/24'    # some arbitrary CIDR, but typically in a private (IANA-reserved) address range
+ONAP_PUBLIC_SUBNET_CIDR     = '192.168.99.0/24'
+# some arbitrary CIDR, but typically in a private (IANA-reserved) address range
 ONAP_PUBLIC_NET_DESC        = 'Public network created for ONAP, for unnamed ports, dynamic IP@, access to the Internet (e.g., Nexus repo) via Gateway'
 
 ONAP_PRIVATE_NET_NAME       = 'ONAP_private_net'
 ONAP_PRIVATE_SUBNET_NAME    = 'ONAP_private_subnet'
-ONAP_PRIVATE_SUBNET_CIDR    = '10.0.0.0/16'  # should match ONAP installation; Private and OAM may be the same network
+ONAP_PRIVATE_SUBNET_CIDR    = '10.0.0.0/16'
+# should match ONAP installation; Private and OAM may be the same network
 ONAP_PRIVATE_NET_DESC       = 'Private network created for ONAP, for named ports, static IP@, inter-component communication'
 
 ONAP_OAM_NET_NAME           = 'ONAP_OAM_net'
 ONAP_OAM_SUBNET_NAME        = 'ONAP_OAM_subnet'
-ONAP_OAM_SUBNET_CIDR        = '10.99.0.0/16'  # should match ONAP installation; Private and OAM may be the same network
+ONAP_OAM_SUBNET_CIDR        = '10.99.0.0/16'
+# should match ONAP installation; Private and OAM may be the same network
 ONAP_OAM_NET_DESC           = 'OAM network created for ONAP, for named ports, static IP@, inter-component communication'
 
 ONAP_ROUTER_NAME            = 'ONAP_router'
 ONAP_ROUTER_DESC            = 'Router created for ONAP'
 
-EXTERNAL_NETWORK_NAME       = 'floating_net'  # OpenStack instance external network (gateway) name to be used as router's gateway
+EXTERNAL_NETWORK_NAME       = 'floating_net'
+# OpenStack instance external network (gateway) name to be used as router's gateway
 
-ONAP_KEYPAIR_NAME           = 'ONAP_keypair'    # keypair that can be used to SSH into created servers (VNF VMs)
+ONAP_KEYPAIR_NAME           = 'ONAP_keypair'
+# keypair that can be used to SSH into created servers (VNF VMs)
 
 # OpenStack cloud name and region name, which should be the same as in the clouds.yaml file used by this script
-OPENSTACK_CLOUD_NAME        = 'hpe16openstackFraser'
+OPENSTACK_CLOUD_NAME        = 'unh-hpe-openstack-fraser'
 OPENSTACK_REGION_NAME       = 'RegionOne'
 # OpenStack domain is: Default
 
@@ -151,35 +164,47 @@ def delete_all_ONAP():
         # connect to OpenStack instance using Connection object from OpenStack SDK
         print('Opening connection...')
         conn = openstack.connect(
-            identity_api_version    = 3,        # must indicate Identity version (until fixed); can also be in clouds.yaml
-            cloud           = OPENSTACK_CLOUD_NAME,
-            region_name     = OPENSTACK_REGION_NAME)
+            identity_api_version = 3,        # must indicate Identity version (until fixed); can also be in clouds.yaml
+            cloud       = OPENSTACK_CLOUD_NAME,
+            region_name = OPENSTACK_REGION_NAME)
+
 
         # delete router; must delete router before networks (and must delete VMs before routers)
         print('Deleting ONAP router...')
         onap_router = conn.network.find_router(ONAP_ROUTER_NAME)
         print_debug('onap_router:',onap_router)
         if onap_router != None:
+
+            # delete router interfaces before deleting router
+            router_network = conn.network.find_network(ONAP_PUBLIC_NET_NAME)
+            if router_network != None:
+                if router_network.subnet_ids != None:
+                    print_debug('router_network.subnet_ids:',router_network.subnet_ids)
+                    for subnet_id in router_network.subnet_ids:
+                        print('  Deleting interface to',ONAP_PUBLIC_NET_NAME,'...')
+                        conn.network.remove_interface_from_router(onap_router, subnet_id)
+
+            router_network = conn.network.find_network(ONAP_PRIVATE_NET_NAME)
+            if router_network != None:
+                if router_network.subnet_ids != None:
+                    print_debug('router_network.subnet_ids:',router_network.subnet_ids)
+                    for subnet_id in router_network.subnet_ids:
+                        print('  Deleting interface to',ONAP_PRIVATE_NET_NAME,'...')
+                        conn.network.remove_interface_from_router(onap_router, subnet_id)
+
+            router_network = conn.network.find_network(ONAP_OAM_NET_NAME)
+            if router_network != None:
+                if router_network.subnet_ids != None:
+                    print_debug('router_network.subnet_ids:',router_network.subnet_ids)
+                    for subnet_id in router_network.subnet_ids:
+                        print('  Deleting interface to',ONAP_OAM_NET_NAME,'...')
+                        conn.network.remove_interface_from_router(onap_router, subnet_id)
+
+            # and finally delete ONAP router
             conn.network.delete_router(onap_router.id)
+
         else:
             print('No ONAP router found...')
-
-
-        # try:  # try to circumvent !=None issue with OpenStack Resource.py; nope;
-            # onap_router = conn.network.find_router(ONAP_ROUTER_NAME)
-            # print_debug('onap_router:',onap_router)
-            # print_debug('onap_router.name:',onap_router.name)
-            # print_debug('onap_router.id:',onap_router.id)
-            # conn.network.delete_router(onap_router.id)
-            # conn.network.delete_router(onap_router)
-        # except Exception as e:
-            # print('issue Deleting ONAP router...')
-            # print('*** Exception:',type(e), e)
-            # exceptionType, exceptionValue, exceptionTraceback = sys.exc_info()
-            # print('*** traceback.print_tb():')
-            # traceback.print_tb(exceptionTraceback)
-            # print('*** traceback.print_exception():')
-            # traceback.print_exception(exceptionType, exceptionValue, exceptionTraceback)
 
 
         # delete private network (which should also delete associated subnet and ports if any)
@@ -267,65 +292,9 @@ def configure_all_ONAP():
         # connect to OpenStack instance using Connection object from OpenStack SDK
         print('Opening connection...')
         conn = openstack.connect(
-            identity_api_version    = 3,        # must indicate Identity version (until fixed); can also be in clouds.yaml
-            cloud           = OPENSTACK_CLOUD_NAME,
-            region_name     = OPENSTACK_REGION_NAME)
-
-        ###################################################################
-        # TESTS: IGNORE/DELETE (BEGIN)
-        # gdserver_ID = '8bc274a2-8c0d-4795-9b4d-faa0a21e1d88'
-        # gdserver = conn.compute.get_server(gdserver_ID)
-        # print('\ngdserver.name=',gdserver.name)
-        # print('gdserver.status=',gdserver.status)
-
-        # print("\nList Users:")
-        # i=1
-        # for user in conn.identity.users():
-            # print('User',str(i),user.name,'\n',user,'\n')
-            # i+=1
-
-        # print("\nList Projects:")
-        # i=1
-        # for project in conn.identity.projects():
-            # print('Project',str(i),project.name,'\n',project,'\n')
-            # i+=1
-
-        # print("\nList Roles:")
-        # i=1
-        # for role in conn.identity.roles():
-            # print('Role',str(i),role.name,'\n',role,'\n')
-            # i+=1
-
-        # print("\nList Networks:")
-        # i=1
-        # for network in conn.network.networks():
-            # print('Network',str(i),network.name,'\n',network,'\n')
-            # i+=1
-
-        # print("\nList Routers:")
-        # i=1
-        # for router in conn.network.routers():
-            # print('Router',str(i),router.name,'\n',router,'\n')
-            # i+=1
-
-        # print("\nList Flavors:")
-        # i=1
-        # for flvr in conn.compute.flavors():
-            # print('Flavor',str(i),flvr.name,'\n',flvr,'\n')
-            # i+=1
-
-        # print("\nList Images:")
-        # i=1
-        # for img in conn.compute.images():
-            # print('Image',str(i),img.name,'\n',img,'\n')
-            # i+=1
-
-        # router = conn.network.find_router('gd_test_router')
-        # print('gd router\n',router,'\n\n')
-        # router = conn.network.find_router('e4e59f63-8063-4774-a97a-c110c6969e4a')
-        # print('gd router\n',router,'\n\n')
-        # TESTS: IGNORE/DELETE (END)
-        ###################################################################
+            identity_api_version = 3,        # must indicate Identity version (until fixed); can also be in clouds.yaml
+            cloud       = OPENSTACK_CLOUD_NAME,
+            region_name = OPENSTACK_REGION_NAME)
 
 
         print('Creating ONAP project/tenant...')
@@ -396,7 +365,8 @@ def configure_all_ONAP():
                 port_range_min      = None,
                 port_range_max      = None)
         except Exception as e:
-            print(description_text, ' Exception:', type(e), e)
+            print('  rule:', description_text, ' may already exist')
+            print_debug(description_text, ' Exception:', type(e), e)
 
         try:
             description_text = 'enable ICMP egress IPv4'
@@ -411,7 +381,8 @@ def configure_all_ONAP():
                 port_range_min      = None,
                 port_range_max      = None)
         except Exception as e:
-            print(description_text, ' Exception:', type(e), e)
+            print('  rule:', description_text, ' may already exist')
+            print_debug(description_text, ' Exception:', type(e), e)
 
         try:
             description_text = 'enable SSH (TCP port 22) ingress IPv4'
@@ -426,7 +397,8 @@ def configure_all_ONAP():
                 port_range_min      = '22',
                 port_range_max      = '22')
         except Exception as e:
-            print(description_text, ' Exception:', type(e), e)
+            print('  rule:', description_text, ' may already exist')
+            print_debug(description_text, ' Exception:', type(e), e)
 
         try:
             description_text = 'enable SSH (TCP port 22) egress IPv4'
@@ -441,7 +413,8 @@ def configure_all_ONAP():
                 port_range_min      = '22',
                 port_range_max      = '22')
         except Exception as e:
-            print(description_text, ' Exception:', type(e), e)
+            print('  rule:', description_text, ' may already exist')
+            print_debug(description_text, ' Exception:', type(e), e)
 
         try:
             description_text = 'enable IP traffic ingress IPv4'
@@ -456,7 +429,8 @@ def configure_all_ONAP():
                 port_range_min      = None,
                 port_range_max      = None)
         except Exception as e:
-            print(description_text, ' Exception:', type(e), e)
+            print('  rule:', description_text, ' may already exist')
+            print_debug(description_text, ' Exception:', type(e), e)
 
         try:
             description_text = 'enable IP traffic ingress IPv6'
@@ -471,44 +445,48 @@ def configure_all_ONAP():
                 port_range_min      = None,
                 port_range_max      = None)
         except Exception as e:
-            print(description_text, ' Exception:', type(e), e)
+            print('  rule:', description_text, ' may already exist')
+            print_debug(description_text, ' Exception:', type(e), e)
 
         # IPv4 IP egress rule should already exist by default
-        # try:
-            # description_text = 'enable IP traffic egress IPv4'
-            # print('  Creating rule:',description_text,'...')
-            # conn.network.create_security_group_rule(
-                # security_group_id   = onap_security_group.id,
-                # description         = description_text,
-                # protocol            = None,
-                # direction           = 'egress',
-                # ethertype           = 'IPv4',
-                # remote_ip_prefix    = '0.0.0.0/0',
-                # port_range_min      = None,
-                # port_range_max      = None)
-        # except Exception as e:
-            # print(description_text, ' Exception:', type(e), e)
+        try:
+            description_text = 'enable IP traffic egress IPv4'
+            print('  Creating rule:',description_text,'...')
+            conn.network.create_security_group_rule(
+                security_group_id   = onap_security_group.id,
+                description         = description_text,
+                protocol            = None,
+                direction           = 'egress',
+                ethertype           = 'IPv4',
+                remote_ip_prefix    = '0.0.0.0/0',
+                port_range_min      = None,
+                port_range_max      = None)
+        except Exception as e:
+            print('  rule:', description_text, ' may already exist')
+            print_debug(description_text, ' Exception:', type(e), e)
 
         # IPv6 IP egress rule should already exist by default
-        # try:
-            # description_text = 'enable IP traffic egress IPv6'
-            # print('  Creating rule:',description_text,'...')
-            # conn.network.create_security_group_rule(
-                # security_group_id   = onap_security_group.id,
-                # description         = description_text,
-                # protocol            = None,
-                # direction           = 'egress',
-                # ethertype           = 'IPv6',
-                # remote_ip_prefix    = '::/0',
-                # port_range_min      = None,
-                # port_range_max      = None)
-        # except Exception as e:
-            # print(description_text, ' Exception:', type(e), e)
+        try:
+            description_text = 'enable IP traffic egress IPv6'
+            print('  Creating rule:',description_text,'...')
+            conn.network.create_security_group_rule(
+                security_group_id   = onap_security_group.id,
+                description         = description_text,
+                protocol            = None,
+                direction           = 'egress',
+                ethertype           = 'IPv6',
+                remote_ip_prefix    = '::/0',
+                port_range_min      = None,
+                port_range_max      = None)
+        except Exception as e:
+            print('  rule:', description_text, ' may already exist')
+            print_debug(description_text, ' Exception:', type(e), e)
 
 
         # public network
         print('Creating ONAP public network...')
         public_network = conn.network.find_network(ONAP_PUBLIC_NET_NAME)
+        public_subnet = None
         if public_network != None:
             print('ONAP public network already exists')
         else:
@@ -530,13 +508,14 @@ def configure_all_ONAP():
                 ip_version = 4,
                 is_dhcp_enabled = True,
                 dns_nameservers = [DNS_SERVER_IP])    # list of DNS IP@
+            print_debug('public_subnet:',public_subnet)
         print_debug('public_network: after subnet',public_network)
-        print_debug('public_subnet:',public_subnet)
 
 
         # private network
         print('Creating ONAP private network...')
         private_network = conn.network.find_network(ONAP_PRIVATE_NET_NAME)
+        private_subnet = None
         if private_network != None:
             print('ONAP private network already exists')
         else:
@@ -557,13 +536,14 @@ def configure_all_ONAP():
                 ip_version = 4,
                 is_dhcp_enabled = True,
                 dns_nameservers = [DNS_SERVER_IP])    # list of DNS IP@; maybe not needed for private network
-            print_debug('private_network: after subnet',private_network)
             print_debug('private_subnet:',private_subnet)
+        print_debug('private_network: after subnet',private_network)
 
 
         # OAM network
         print('Creating ONAP OAM network...')
         oam_network = conn.network.find_network(ONAP_OAM_NET_NAME)
+        oam_subnet = None
         if oam_network != None:
             print('ONAP OAM network already exists')
         else:
@@ -584,8 +564,8 @@ def configure_all_ONAP():
                 ip_version = 4,
                 is_dhcp_enabled = True,
                 dns_nameservers = [DNS_SERVER_IP])    # list of DNS IP@; maybe not needed for OAM network
-            print_debug('oam_network: after subnet',oam_network)
             print_debug('oam_subnet:',oam_subnet)
+        print_debug('oam_network: after subnet',oam_network)
 
 
         # router
@@ -630,131 +610,93 @@ def configure_all_ONAP():
             conn.network.add_interface_to_router(onap_router, subnet_id = oam_subnet.id)
             print_debug('onap_router: after adding interfaces',onap_router)
 
-            # point to OpenStack external network (i.e. Gateway for router); network_id is passed in a body dictionary
-            # (external network such as floating_net)
-            # syntax: add_gateway_to_router(router, **body)
-            #print('Adding external network (gateway) to ONAP router...')
 
-            # nope
-            # network_dict_body = {'network_id': public_network.id}
-            # nope
-            # network_dict_body = {
-                # 'external_fixed_ips': [{'subnet_id' : public_subnet.id}],
-                # 'network_id': public_network.id
-            # }
+        # also create 5 flavors, from tiny to xlarge (hard-coded, no need for parameters)
+        # (Flavor is a Resource)
+        print('Creating flavors...')
+        print('Creating m1.tiny Flavor...')
+        tiny_flavor = conn.compute.find_flavor("m1.tiny")
+        if tiny_flavor != None:
+            print('m1.tiny Flavor already exists')
+        else:
+            tiny_flavor = conn.compute.create_flavor(
+                name = 'm1.tiny',
+                vcpus = 1,
+                disk = 1,
+                ram = 512,
+                ephemeral = 0,
+                #swap = 0,
+                #rxtx_factor = 1.0,
+                is_public = True)
+        print_debug('tiny_flavor: ',tiny_flavor)
 
-            # external_network = conn.network.find_network(EXTERNAL_NETWORK_NAME)
-            # print_debug('external_network:',external_network)
-            # external_subnet_ID_list = external_network.subnet_ids
-            # print_debug('external_subnet_ID_list:',external_subnet_ID_list)
+        print('Creating m1.small Flavor...')
+        small_flavor = conn.compute.find_flavor("m1.small")
+        if small_flavor != None:
+            print('m1.small Flavor already exists')
+        else:
+            small_flavor = conn.compute.create_flavor(
+                name = 'm1.small',
+                vcpus = 1,
+                disk = 20,
+                ram = 2048,
+                ephemeral = 0,
+                #swap = 0,
+                #rxtx_factor = 1.0,
+                is_public = True)
+        print_debug('small_flavor: ',small_flavor)
 
-            # # build external_fixed_ips: list of dictionaries, each with 'subnet_id' key (and may have 'ip_address' key as well)
-            # onap_gateway_external_subnets = []
-            # for ext_subn_id in external_subnet_ID_list:  # there should be only one subnet ID in the list, but go through each item, just in case
-                # onap_gateway_external_subnets.append({'subnet_id':ext_subn_id})
+        print('Creating m1.medium Flavor...')
+        medium_flavor = conn.compute.find_flavor("m1.medium")
+        if medium_flavor != None:
+            print('m1.medium Flavor already exists')
+        else:
+            medium_flavor = conn.compute.create_flavor(
+                name = 'm1.medium',
+                vcpus = 2,
+                disk = 40,
+                ram = 4096,
+                ephemeral = 0,
+                #swap = 0,
+                #rxtx_factor = 1.0,
+                is_public = True)
+        print_debug('medium_flavor: ',medium_flavor)
 
-            # #network_dict_body = {'gateway' : {'network_id' : external_network.id}}
-            # #network_dict_body = {'network_id' : external_network.id}
-            # #conn.network.add_gateway_to_router(onap_router, body=network_dict_body)
-            # #conn.network.add_gateway_to_router(onap_router, network_id=external_network.id)
-            # #conn.network.add_gateway_to_router(onap_router, **network_dict_body)
+        print('Creating m1.large Flavor...')
+        large_flavor = conn.compute.find_flavor("m1.large")
+        if large_flavor != None:
+            print('m1.large Flavor already exists')
+        else:
+            large_flavor = conn.compute.create_flavor(
+                name = 'm1.large',
+                vcpus = 4,
+                disk = 80,
+                ram = 8192,
+                ephemeral = 0,
+                #swap = 0,
+                #rxtx_factor = 1.0,
+                is_public = True)
+        print_debug('large_flavor: ',large_flavor)
 
-            # network_dict_body = {
-                # 'network_id': external_network.id,
-                # 'enable_snat': True,   # True should be the default, so there should be no need to set it
-                # 'external_fixed_ips': onap_gateway_external_subnets
-            # }
-            # #conn.network.add_gateway_to_router(onap_router, **network_dict_body)
-            # print_debug('onap_router: after add_gateway_to_router',onap_router)
-
-
-
-
-        # # also create 5 flavors, from tiny to xlarge (hard-coded, no need for parameters)
-        # # (Flavor is a Resource)
-        # print('Creating flavors...')
-        # print('Creating m1.tiny Flavor...')
-        # tiny_flavor = conn.compute.find_flavor("m1.tiny")
-        # if tiny_flavor != None:
-            # print('m1.tiny Flavor already exists')
-        # else:
-            # tiny_flavor = conn.compute.create_flavor(
-                # name = 'm1.tiny',
-                # vcpus = 1,
-                # disk = 1,
-                # ram = 512,
-                # ephemeral = 0,
-                # #swap = 0,
-                # #rxtx_factor = 1.0,
-                # is_public = True)
-        # print_debug('tiny_flavor: ',tiny_flavor)
-
-        # print('Creating m1.small Flavor...')
-        # small_flavor = conn.compute.find_flavor("m1.small")
-        # if small_flavor != None:
-            # print('m1.small Flavor already exists')
-        # else:
-            # small_flavor = conn.compute.create_flavor(
-                # name = 'm1.small',
-                # vcpus = 1,
-                # disk = 20,
-                # ram = 2048,
-                # ephemeral = 0,
-                # #swap = 0,
-                # #rxtx_factor = 1.0,
-                # is_public = True)
-        # print_debug('small_flavor: ',small_flavor)
-
-        # print('Creating m1.medium Flavor...')
-        # medium_flavor = conn.compute.find_flavor("m1.medium")
-        # if medium_flavor != None:
-            # print('m1.medium Flavor already exists')
-        # else:
-            # medium_flavor = conn.compute.create_flavor(
-                # name = 'm1.medium',
-                # vcpus = 2,
-                # disk = 40,
-                # ram = 4096,
-                # ephemeral = 0,
-                # #swap = 0,
-                # #rxtx_factor = 1.0,
-                # is_public = True)
-        # print_debug('medium_flavor: ',medium_flavor)
-
-        # print('Creating m1.large Flavor...')
-        # large_flavor = conn.compute.find_flavor("m1.large")
-        # if large_flavor != None:
-            # print('m1.large Flavor already exists')
-        # else:
-            # large_flavor = conn.compute.create_flavor(
-                # name = 'm1.large',
-                # vcpus = 4,
-                # disk = 80,
-                # ram = 8192,
-                # ephemeral = 0,
-                # #swap = 0,
-                # #rxtx_factor = 1.0,
-                # is_public = True)
-        # print_debug('large_flavor: ',large_flavor)
-
-        # print('Creating m1.xlarge Flavor...')
-        # xlarge_flavor = conn.compute.find_flavor("m1.xlarge")
-        # if xlarge_flavor != None:
-            # print('m1.xlarge Flavor already exists')
-        # else:
-            # xlarge_flavor = conn.compute.create_flavor(
-                # name = 'm1.xlarge',
-                # vcpus = 8,
-                # disk = 160,
-                # ram = 16384,
-                # ephemeral = 0,
-                # #swap = 0,
-                # #rxtx_factor = 1.0,
-                # is_public = True)
-        # print_debug('xlarge_flavor: ',xlarge_flavor)
+        print('Creating m1.xlarge Flavor...')
+        xlarge_flavor = conn.compute.find_flavor("m1.xlarge")
+        if xlarge_flavor != None:
+            print('m1.xlarge Flavor already exists')
+        else:
+            xlarge_flavor = conn.compute.create_flavor(
+                name = 'm1.xlarge',
+                vcpus = 8,
+                disk = 160,
+                ram = 16384,
+                ephemeral = 0,
+                #swap = 0,
+                #rxtx_factor = 1.0,
+                is_public = True)
+        print_debug('xlarge_flavor: ',xlarge_flavor)
 
 
         # create images: Ubuntu 16.04, 14.04, CirrOS, ...
+        # store them in images/ directory
         # 64-bit QCOW2 image for cirros-0.4.0-x86_64-disk.img
         # description: CirrOS minimal Linux distribution
         # http://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img
@@ -775,26 +717,28 @@ def configure_all_ONAP():
         # URL download not supported yet; download image separately, place it in the directory
         # https://docs.openstack.org/openstacksdk/latest/user/connection.html#openstack.connection.Connection.create_image
 
+        IMAGES_DIR = 'images/'
+
         IMAGE_NAME = 'CirrOS_0.4.0_minimal_Linux_distribution'
         print('Creating image:',IMAGE_NAME,'...')
         if conn.get_image(IMAGE_NAME) != None:
             print(IMAGE_NAME,'image already exists')
         else:
-            conn.create_image(IMAGE_NAME, filename='cirros-0.4.0-x86_64-disk.img')
+            conn.create_image(IMAGE_NAME, filename=IMAGES_DIR+'cirros-0.4.0-x86_64-disk.img')
 
         IMAGE_NAME = 'Ubuntu_Server_16.04_LTS_Xenial_Xerus'
         print('Creating image:',IMAGE_NAME,'...')
         if conn.get_image(IMAGE_NAME) != None:
             print(IMAGE_NAME,'image already exists')
         else:
-            conn.create_image(IMAGE_NAME, filename='xenial-server-cloudimg-amd64-disk1.img')
+            conn.create_image(IMAGE_NAME, filename=IMAGES_DIR+'xenial-server-cloudimg-amd64-disk1.img')
 
         IMAGE_NAME = 'Ubuntu_Server_14.04_LTS_Trusty_Tahr'
         print('Creating image:',IMAGE_NAME,'...')
         if conn.get_image(IMAGE_NAME) != None:
             print(IMAGE_NAME,'image already exists')
         else:
-            conn.create_image(IMAGE_NAME, filename='trusty-server-cloudimg-amd64-disk1.img')
+            conn.create_image(IMAGE_NAME, filename=IMAGES_DIR+'trusty-server-cloudimg-amd64-disk1.img')
 
 
         # create a keypair, if needed e.g. for VNF VMs; maybe to SSH for testing
@@ -816,8 +760,9 @@ def configure_all_ONAP():
         print('\nSUMMARY:')
         print('ONAP public network ID:',public_network.id)
         print('ONAP private network ID:',private_network.id)
-        print('ONAP private network subnet ID:',private_subnet.id)
-        print('ONAP private network subnet CIDR:',private_subnet.cidr)
+        if private_subnet != None:
+            print('ONAP private network subnet ID:',private_subnet.id)
+            print('ONAP private network subnet CIDR:',private_subnet.cidr)
         print('\n')
 
     except Exception as e:
@@ -849,7 +794,7 @@ def main():
         help   = 'delete ONAP configuration',
         action = 'store_true')
 
-    # parse arguments, modify global variable if need be, and use corresponding script
+    # parse arguments, modify global variable if need be, and use corresponding script (create objects, or delete objects)
     args = parser.parse_args()
     if args.debug:
         global DEBUG_VAR
@@ -862,4 +807,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
