@@ -54,7 +54,9 @@ import sys
 from enum import Enum
 from datetime import datetime, timedelta
 import AutoResilGlobal
-#import openstack
+import openstack
+import time
+
 
 # Constants with definition file names
 FILE_PHYSICAL_RESOURCES =       "ResourcesPhysical.bin"
@@ -319,8 +321,9 @@ class TestDefinition(AutoBaseObject):
         self.test_code_list.append(self.test_code010)
 
 
-    def run_test_code(self):
-        """Run currently selected test code. Common code runs here, specific code is invoked through test_code_list and test_code_ID."""
+    def run_test_code(self, *test_code_args, **test_code_kwargs):
+        """Run currently selected test code. Common code runs here, specific code is invoked through test_code_list and test_code_ID.
+        Optional parameters can be passed if needed (unnamed or named), interpreted accordingly by selected test code."""
         try:
             # here, trigger start code from challenge def (to simulate VM failure), manage Recovery time measurement,
             # specific monitoring of VNF, trigger stop code from challenge def
@@ -355,7 +358,8 @@ class TestDefinition(AutoBaseObject):
 
             # call specific test definition code, via table of functions; this code should monitor a VNF and return when restoration is observed
             test_code_index = self.test_code_ID - 1  # lists are indexed from 0 to N-1
-            self.test_code_list[test_code_index]()   # invoke corresponding method, via index; could check for return code
+            # invoke corresponding method, via index; could check for return code
+            self.test_code_list[test_code_index](*test_code_args, **test_code_kwargs)
 
             # memorize restoration detection time and compute recovery time
             test_exec.restoration_detection_time = datetime.now()
@@ -382,23 +386,23 @@ class TestDefinition(AutoBaseObject):
 
 
     # library of test codes, probably 1 per test case, so test_case_ID would be the same as test_code_ID
-    def test_code001(self):
+    def test_code001(self, *test_code_args, **test_code_kwargs):
         """Test case code number 001."""
         print("This is test_code001 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
 
-    def test_code002(self):
+    def test_code002(self, *test_code_args, **test_code_kwargs):
         """Test case code number 002."""
         print("This is test_code002 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
 
-    def test_code003(self):
+    def test_code003(self, *test_code_args, **test_code_kwargs):
         """Test case code number 003."""
         print("This is test_code003 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
 
-    def test_code004(self):
+    def test_code004(self, *test_code_args, **test_code_kwargs):
         """Test case code number 004."""
         print("This is test_code004 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
 
-    def test_code005(self):
+    def test_code005(self, *test_code_args, **test_code_kwargs):
         """Test case code number 005."""
         print("This is test_code005 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
 
@@ -407,23 +411,46 @@ class TestDefinition(AutoBaseObject):
         # return when VNF is recovered
         # may provision for failure to recover (max time to wait; return code: recovery OK boolean)
 
-    def test_code006(self):
+        # June 2018, test of code logic, using newly released OpenStack SDK 0.14.0
+        # VM is created arbitrarily, not yet with ONAP
+        # Openstack cloud was created by Fuel/MCP, descriptor in clouds.yaml file
+        # VM resume done in Horizon (to simulate an ONAP-based recovery)
+        # retrieved status values: {'ACTIVE', 'SUSPENDED'}
+        # loop: wait 2 seconds, check status, stop loop when status is ACTIVE
+        conn = openstack.connect(cloud='unh-hpe-openstack-fraser', region_name='RegionOne')
+        test_VM_ID = '5d07da11-0e85-4256-9894-482dcee4a5f0'  # arbitrary in this test, grab from OpenStack
+        test_VM = conn.compute.get_server(test_VM_ID)
+        print('  test_VM.name=',test_VM.name)
+        print('  test_VM.status=',test_VM.status)
+        test_VM_current_status = test_VM.status
+        wait_seconds = 2
+        nb_seconds_waited = 0
+        while test_VM_current_status != 'ACTIVE':
+            print('  waiting',wait_seconds,'seconds...')
+            time.sleep(wait_seconds)
+            test_VM = conn.compute.get_server(test_VM_ID) # need to get VM object ID, for an updated status attribute
+            test_VM_current_status = test_VM.status
+            nb_seconds_waited = nb_seconds_waited + wait_seconds
+        print('  nb_seconds_waited=',nb_seconds_waited)
+
+
+    def test_code006(self, *test_code_args, **test_code_kwargs):
         """Test case code number 006."""
         print("This is test_code006 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
 
-    def test_code007(self):
+    def test_code007(self, *test_code_args, **test_code_kwargs):
         """Test case code number 007."""
         print("This is test_code007 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
 
-    def test_code008(self):
+    def test_code008(self, *test_code_args, **test_code_kwargs):
         """Test case code number 008."""
         print("This is test_code008 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
 
-    def test_code009(self):
+    def test_code009(self, *test_code_args, **test_code_kwargs):
         """Test case code number 009."""
         print("This is test_code009 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
 
-    def test_code010(self):
+    def test_code010(self, *test_code_args, **test_code_kwargs):
         """Test case code number 010."""
         print("This is test_code010 from TestDefinition #", self.ID, ", test case #", self.test_case_ID, sep='')
 
@@ -622,20 +649,25 @@ class ChallengeDefinition(AutoBaseObject):
         self.stop_challenge_code_list.append(self.stop_challenge_code010)
 
 
-    def run_start_challenge_code(self):
-        """Run currently selected challenge code, start portion."""
+    def run_start_challenge_code(self, *chall_code_args, **chall_code_kwargs):
+        """Run currently selected challenge code, start portion.
+        Optional parameters can be passed if needed (unnamed or named), interpreted accordingly by selected test code."""
+
         try:
             code_index = self.challenge_code_ID - 1  # lists are indexed from 0 to N-1
-            self.start_challenge_code_list[code_index]()   # invoke corresponding start method, via index
+            # invoke corresponding start method, via index
+            self.start_challenge_code_list[code_index](*chall_code_args, **chall_code_kwargs)
         except Exception as e:
             print(type(e), e)
             sys.exit()
 
-    def run_stop_challenge_code(self):
-        """Run currently selected challenge code, stop portion."""
+    def run_stop_challenge_code(self, *chall_code_args, **chall_code_kwargs):
+        """Run currently selected challenge code, stop portion.
+        Optional parameters can be passed if needed (unnamed or named), interpreted accordingly by selected test code."""
         try:
             code_index = self.challenge_code_ID - 1  # lists are indexed from 0 to N-1
-            self.stop_challenge_code_list[code_index]()   # invoke corresponding stop method, via index
+            # invoke corresponding stop method, via index
+            self.stop_challenge_code_list[code_index](*chall_code_args, **chall_code_kwargs)
         except Exception as e:
             print(type(e), e)
             sys.exit()
@@ -643,35 +675,35 @@ class ChallengeDefinition(AutoBaseObject):
 
 
     # library of challenge codes
-    def start_challenge_code001(self):
+    def start_challenge_code001(self, *chall_code_args, **chall_code_kwargs):
         """Start Challenge code number 001."""
         print("This is start_challenge_code001 from ChallengeDefinition #",self.ID, sep='')
-    def stop_challenge_code001(self):
+    def stop_challenge_code001(self, *chall_code_args, **chall_code_kwargs):
         """Stop Challenge code number 001."""
         print("This is stop_challenge_code001 from ChallengeDefinition #",self.ID, sep='')
 
-    def start_challenge_code002(self):
+    def start_challenge_code002(self, *chall_code_args, **chall_code_kwargs):
         """Start Challenge code number 002."""
         print("This is start_challenge_code002 from ChallengeDefinition #",self.ID, sep='')
-    def stop_challenge_code002(self):
+    def stop_challenge_code002(self, *chall_code_args, **chall_code_kwargs):
         """Stop Challenge code number 002."""
         print("This is stop_challenge_code002 from ChallengeDefinition #",self.ID, sep='')
 
-    def start_challenge_code003(self):
+    def start_challenge_code003(self, *chall_code_args, **chall_code_kwargs):
         """Start Challenge code number 003."""
         print("This is start_challenge_code003 from ChallengeDefinition #",self.ID, sep='')
-    def stop_challenge_code003(self):
+    def stop_challenge_code003(self, *chall_code_args, **chall_code_kwargs):
         """Stop Challenge code number 003."""
         print("This is stop_challenge_code003 from ChallengeDefinition #",self.ID, sep='')
 
-    def start_challenge_code004(self):
+    def start_challenge_code004(self, *chall_code_args, **chall_code_kwargs):
         """Start Challenge code number 004."""
         print("This is start_challenge_code004 from ChallengeDefinition #",self.ID, sep='')
-    def stop_challenge_code004(self):
+    def stop_challenge_code004(self, *chall_code_args, **chall_code_kwargs):
         """Stop Challenge code number 004."""
         print("This is stop_challenge_code004 from ChallengeDefinition #",self.ID, sep='')
 
-    def start_challenge_code005(self):
+    def start_challenge_code005(self, *chall_code_args, **chall_code_kwargs):
         """Start Challenge code number 005."""
         print("This is start_challenge_code005 from ChallengeDefinition #",self.ID, sep='')
         # challenge #5, related to test case #5, i.e. test def #5
@@ -682,8 +714,23 @@ class ChallengeDefinition(AutoBaseObject):
         # conn.compute.servers() to get list of servers, using VM ID, check server.id and/or server.name
         # conn.compute.suspend_server(this server id)
 
+        # June 2018, test of code logic, using newly released OpenStack SDK 0.14.0
+        # VM is created arbitrarily, not yet with ONAP
+        # Openstack cloud was created by Fuel/MCP, descriptor in clouds.yaml file
+        # VM resume done in Horizon (to simulate an ONAP-based recovery)
+        conn = openstack.connect(cloud='unh-hpe-openstack-fraser', region_name='RegionOne')
+        test_VM_ID = '5d07da11-0e85-4256-9894-482dcee4a5f0'  # arbitrary in this test, grab from OpenStack
+        test_VM = conn.compute.get_server(test_VM_ID)
+        print('  test_VM.name=',test_VM.name)
+        print('  test_VM.status=',test_VM.status)
+        print('  suspending...')
+        conn.compute.suspend_server(test_VM_ID)
+        # wait a bit before continuing: ensure VM is actually suspended
+        wait_seconds = 10
+        print('  waiting',wait_seconds,'seconds...')
+        time.sleep(wait_seconds)
 
-    def stop_challenge_code005(self):
+    def stop_challenge_code005(self, *chall_code_args, **chall_code_kwargs):
         """Stop Challenge code number 005."""
         print("This is stop_challenge_code005 from ChallengeDefinition #",self.ID, sep='')
         # challenge #5, related to test case #5, i.e. test def #5
@@ -694,39 +741,49 @@ class ChallengeDefinition(AutoBaseObject):
         # conn.compute.servers() to get list of servers, using VM ID, check server.id and/or server.name
         # conn.compute.conn.compute.resume_server(this server id)
 
+        # June 2018, test of code logic, using newly released OpenStack SDK 0.14.0
+        # this resume would be the normal challenge stop, but not in the case of this test
+        conn = openstack.connect(cloud='unh-hpe-openstack-fraser', region_name='RegionOne')
+        test_VM_ID = '5d07da11-0e85-4256-9894-482dcee4a5f0'  # arbitrary in this test, grab from OpenStack
+        test_VM = conn.compute.get_server(test_VM_ID)
+        print('  test_VM.name=',test_VM.name)
+        print('  test_VM.status=',test_VM.status)
+        print('  suspending...')
+        conn.compute.resume_server(test_VM_ID)
 
-    def start_challenge_code006(self):
+
+    def start_challenge_code006(self, *chall_code_args, **chall_code_kwargs):
         """Start Challenge code number 006."""
         print("This is start_challenge_code006 from ChallengeDefinition #",self.ID, sep='')
-    def stop_challenge_code006(self):
+    def stop_challenge_code006(self, *chall_code_args, **chall_code_kwargs):
         """Stop Challenge code number 006."""
         print("This is stop_challenge_code006 from ChallengeDefinition #",self.ID, sep='')
 
-    def start_challenge_code007(self):
+    def start_challenge_code007(self, *chall_code_args, **chall_code_kwargs):
         """Start Challenge code number 007."""
         print("This is start_challenge_code007 from ChallengeDefinition #",self.ID, sep='')
-    def stop_challenge_code007(self):
+    def stop_challenge_code007(self, *chall_code_args, **chall_code_kwargs):
         """Stop Challenge code number 007."""
         print("This is stop_challenge_code007 from ChallengeDefinition #",self.ID, sep='')
 
-    def start_challenge_code008(self):
+    def start_challenge_code008(self, *chall_code_args, **chall_code_kwargs):
         """Start Challenge code number 008."""
         print("This is start_challenge_code008 from ChallengeDefinition #",self.ID, sep='')
-    def stop_challenge_code008(self):
+    def stop_challenge_code008(self, *chall_code_args, **chall_code_kwargs):
         """Stop Challenge code number 008."""
         print("This is stop_challenge_code008 from ChallengeDefinition #",self.ID, sep='')
 
-    def start_challenge_code009(self):
+    def start_challenge_code009(self, *chall_code_args, **chall_code_kwargs):
         """Start Challenge code number 009."""
         print("This is start_challenge_code009 from ChallengeDefinition #",self.ID, sep='')
-    def stop_challenge_code009(self):
+    def stop_challenge_code009(self, *chall_code_args, **chall_code_kwargs):
         """Stop Challenge code number 009."""
         print("This is stop_challenge_code009 from ChallengeDefinition #",self.ID, sep='')
 
-    def start_challenge_code010(self):
+    def start_challenge_code010(self, *chall_code_args, **chall_code_kwargs):
         """Start Challenge code number 010."""
         print("This is start_challenge_code010 from ChallengeDefinition #",self.ID, sep='')
-    def stop_challenge_code010(self):
+    def stop_challenge_code010(self, *chall_code_args, **chall_code_kwargs):
         """Stop Challenge code number 010."""
         print("This is stop_challenge_code010 from ChallengeDefinition #",self.ID, sep='')
 
@@ -797,7 +854,7 @@ def init_challenge_definitions():
     # in CLI:
 	# $ nova suspend NAME
 	# $ nova resume NAME
-    # but better use openstack SDK
+    # but better use OpenStack SDK
 
     chall_def_startChallengeAPICommandSent = []
     chall_def_stopChallengeAPICommandSent = []

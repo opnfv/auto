@@ -32,14 +32,16 @@ clouds:
       password: opnfv_secret
     region_name: RegionOne
 
-  # Openstack instance on LaaS hpe16, from OPNFV Fraser, controller IP@ (mgt: 172.16.10.36; public: 10.16.0.107)
+  # Openstack instance on generic LaaS hpe, from OPNFV Fraser, controller IP@ (mgt: 172.16.10.36; public: 10.16.0.107)
   # keystone endpoints (openstack endpoint list --service keystone)
   #   admin:    http://172.16.10.36:35357/v3
   #   internal: http://172.16.10.36:5000/v3
   #   public:   http://10.16.0.107:5000/v3
   # Horizon: https://10.16.0.107:8078, but need SSH port forwarding through 10.10.100.26 to be reached from outside
   # "If you are using Identity v3 you need to specify the user and the project domain name"
-  hpe16openstackFraser:
+
+  # generic cloud name, for a UNH IOL hpe server, for OPNFV Fraser, OpenStack installed by Fuel/MCP
+  unh-hpe-openstack-fraser:
     auth:
       auth_url: http://10.16.0.107:5000/v3
       project_name: admin
@@ -48,6 +50,7 @@ clouds:
       user_domain_name: Default
       project_domain_name: Default
     region_name: RegionOne
+    identity_api_version: 3
 
 # ubuntu@ctl01:~$ openstack project show admin
 # +-------------+----------------------------------+
@@ -81,19 +84,6 @@ clouds:
 # | id          | d9c29adac0fe4816922d783b257879d6            |
 # | name        | heat_user_domain                            |
 # +-------------+---------------------------------------------+
-
-# admin user (from Horizon on hpe16):
-# Domain ID               default
-# Domain Name             Default
-# User Name               admin
-# Description             None
-# ID                      df0ea50cfcff4bbfbfdfefccdb018834
-# Email                   root@localhost
-# Enabled                 Yes
-# Primary Project ID      04fcfe7aa83f4df79ae39ca748aa8637
-# Primary Project Name    admin
-
-
 
 
 # export OS_AUTH_URL=http://10.16.0.107:5000/v3

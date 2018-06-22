@@ -159,7 +159,8 @@ def gdtest_openstack():
     # Method 1 (preferred) : assume there is a clouds.yaml file in PATH, starting path search with local directory
     #conn = openstack.connect(cloud='armopenstack', region_name='RegionOne')
     #conn = openstack.connect(cloud='hpe16openstackEuphrates', region_name='RegionOne')
-    conn = openstack.connect(cloud='hpe16openstackFraser', region_name='RegionOne')
+    #conn = openstack.connect(cloud='hpe16openstackFraser', region_name='RegionOne')
+    conn = openstack.connect(cloud='unh-hpe-openstack-fraser', region_name='RegionOne')
     # if getting error: AttributeError: module 'openstack' has no attribute 'connect', check that openstack is installed for this python version
 
 
@@ -208,8 +209,8 @@ def gdtest_openstack():
     openstack_list_projects(conn)
     openstack_list_domains(conn)
 
-    # VM: hpe16-Auto-UC2-gdtest-compute1
-    gds_ID = '715c677a-7914-4ca8-8c6d-75bf29eeb940'
+    # VM test: create a test VM in the OpenStack instance, enter its ID here
+    gds_ID = '5d07da11-0e85-4256-9894-482dcee4a5f0'
     gds = conn.compute.get_server(gds_ID)
     print('\ngds.name=',gds.name)
     print('gds.status=',gds.status)
@@ -229,27 +230,8 @@ def gdtest_openstack():
 
 
 
-    #VM: test3
-    gds_ID = 'd3ceffc3-5967-4f18-b8b5-b1b2bd7ab76d'
-    gds = conn.compute.get_server(gds_ID)
-    print('\ngds.name=',gds.name)
-    print('gds.status=',gds.status)
-    print('suspending...')
-    conn.compute.suspend_server(gds_ID)  # NOT synchronous: returns before suspension action is completed
-    wait_seconds = 10
-    print('  waiting',wait_seconds,'seconds...')
-    time.sleep(wait_seconds)
-    gds = conn.compute.get_server(gds_ID)  # need to refresh data; not maintained live
-    print('gds.status=',gds.status)
-    print('resuming...')
-    conn.compute.resume_server(gds_ID)
-    print('  waiting',wait_seconds,'seconds...')
-    time.sleep(wait_seconds)
-    gds = conn.compute.get_server(gds_ID)  # need to refresh data; not maintained live
-    print('gds.status=',gds.status)
-
-    #Volume: hpe16-Auto-UC2-gdtest-volume1
-    gdv_ID = '5a6c1dbd-5097-4a9b-8f79-6f03cde18bf6'
+    #Volume test: volume attached to test VM; get its ID and enter it here
+    gdv_ID = 'd0206ff2-507c-444a-9871-b5b7ea704994'
     gdv = conn.block_storage.get_volume(gdv_ID)
     # no API for stopping/restarting a volume... only delete. ONAP would have to completely migrate a VNF depending on this volume
     print('\ngdv.name=',gdv.name)
