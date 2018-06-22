@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_e6fef96a",
+        "filename": "setup/VIMs/OpenStack/auto_script_config_openstack_for_onap.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-22T01:34:52Z",
+      "side": 1,
+      "message": "If there are blank lines before and after, it\u0027s not really important. It\u0027s like adding info after saying something, instead of announcing what will be said next.",
+      "parentUuid": "da5c1566_86e29dd3",
+      "revId": "6cc8e970f00e86daa2ca78b0fa348c03133f8dcb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_46d8851d",
         "filename": "setup/VIMs/OpenStack/auto_script_config_openstack_for_onap.py",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_c603f571",
+        "filename": "setup/VIMs/OpenStack/auto_script_config_openstack_for_onap.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 727,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-22T01:34:52Z",
+      "side": 1,
+      "message": "There sure is anticipation to do that ;)\nFor more flexibility, the script will read a file where the list of desired images will be maintained (i.e., not hard-coded in the script). Especially when creating an image from a URL works, instead of using a local file.",
+      "parentUuid": "da5c1566_46d8851d",
+      "revId": "6cc8e970f00e86daa2ca78b0fa348c03133f8dcb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_a604017f",
         "filename": "setup/VIMs/OpenStack/auto_script_config_openstack_for_onap.py",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2018-06-22T01:18:12Z",
       "side": 1,
       "message": "looks like private_subnet was set to None earlier, and if the private_network was already in existence, then the private_subnet will not be set to non-None.  Would it be useful go retrieve the subnet data associated with the private_network, if it already existed and wasn\u0027t created, as well as private_subnet?",
+      "revId": "6cc8e970f00e86daa2ca78b0fa348c03133f8dcb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_26f8f17b",
+        "filename": "setup/VIMs/OpenStack/auto_script_config_openstack_for_onap.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 763,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-22T01:34:52Z",
+      "side": 1,
+      "message": "This was to prevent an error when the user tries to re-create objects when they already exist. But yes, if a user does that, we might as well go get the subnet info and display it. I\u0027ll change that. Thanks for the review !",
+      "parentUuid": "da5c1566_a604017f",
       "revId": "6cc8e970f00e86daa2ca78b0fa348c03133f8dcb",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
