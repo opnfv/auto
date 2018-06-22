@@ -37,6 +37,23 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_c93ae635",
+        "filename": "setup/VIMs/OpenStack/auto_script_config_openstack_for_onap.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 726,
+      "author": {
+        "id": 7107
+      },
+      "writtenOn": "2018-06-22T14:32:38Z",
+      "side": 1,
+      "message": "Gerard,\n  One possibility that I\u0027ve used is to fetch the ubuntu images based on the architecture of the target machine.  Here\u0027s a snippet from a bash script:\n\n#!/bin/bash\n\narch\u003d`uname -p`\nif [ $arch \u003d\u003d \"x86_64\" ]; then\n  archName\u003d\"amd64\"\nelif [ $arch \u003d\u003d \"aarch64\" ]; then\n  archName\u003d\"arm64\"\nfi\n\nfileName\u003dxenial-server-cloudimg-$archName-disk1.img\nwget http://cloud-images.ubuntu.com/xenial/current/$fileName\n\n  This works for getting a xenial image.   It might need some nuance for a trusty image, as you might want the \"...\u003carchName\u003e-uefi1.img\", at least for arm64.  Not sure what the advice would be for the cirros image.",
+      "revId": "6cc8e970f00e86daa2ca78b0fa348c03133f8dcb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_46d8851d",
         "filename": "setup/VIMs/OpenStack/auto_script_config_openstack_for_onap.py",
         "patchSetId": 1
