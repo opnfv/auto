@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_89790e96",
+        "filename": "setup/VIMs/OpenStack/auto_script_config_openstack_for_onap.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 727,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-06-22T10:09:48Z",
+      "side": 1,
+      "message": "Will this be done in a separate patch or you will update this one?",
+      "parentUuid": "da5c1566_c603f571",
+      "revId": "6cc8e970f00e86daa2ca78b0fa348c03133f8dcb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_a604017f",
         "filename": "setup/VIMs/OpenStack/auto_script_config_openstack_for_onap.py",
         "patchSetId": 1
