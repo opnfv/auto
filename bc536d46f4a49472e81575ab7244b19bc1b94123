@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_fb404b58",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 7107
+      },
+      "writtenOn": "2018-06-27T02:48:40Z",
+      "side": 1,
+      "message": "Which 6-server x86 pod is at UNH?  Is this sentence a typo?  I believe that ONAP-Amsterdam has been deployed without DCAE on a single x86 server at UNH.",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_5b25f7c0",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 7107
+      },
+      "writtenOn": "2018-06-27T02:48:40Z",
+      "side": 1,
+      "message": "There was no installation of ONAP on k8s on arm64 for OpenStack Summit.  The demo was of Wordpress being installed on a mixed OpenStack environment (x86 and arm64 compute nodes)",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_3b22c3b9",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 7107
+      },
+      "writtenOn": "2018-06-27T02:48:40Z",
+      "side": 1,
+      "message": "Minor detail, but some arm64 docker images were created during the lead to the openstack summit, but they were not used in the demo.",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_9b2f8fa1",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 7107
+      },
+      "writtenOn": "2018-06-27T02:48:40Z",
+      "side": 1,
+      "message": "all ONAP docker images are NOT ready for arm64.",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
