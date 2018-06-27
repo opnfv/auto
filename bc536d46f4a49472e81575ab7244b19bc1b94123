@@ -2,6 +2,103 @@
   "comments": [
     {
       "key": {
+        "uuid": "da5c1566_be040116",
+        "filename": "docs/release/configguide/Auto-featureconfig.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1306
+      },
+      "writtenOn": "2018-06-27T07:22:15Z",
+      "side": 1,
+      "message": "I\u0027m just wondering if anybody else has noticed, that with kernel 4.4. the installation of OPNFV is not working properly. It means, that qemu-nbd (nor kpartx) is not able to correctly create a mapping to /dev/nbd0p1 partition in order to resize it to 3G (see fuel repo, file mcp/scripts/lib.sh, function mount_image). It is not a big deal in case of x86, because it is still possible to update the image and install all required stuff even with original partition size. However in case of ARM the OPNFV installation will fail, because there isn\u0027t enough space to install all required packages into the cloud image. It seems to be a known bug of kernel 4.4. It works correctly with 4.13. (I\u0027m not sure about 4.8. or CentOS/RHEL 3.10.xx kernels)\n\nMay be it\u0027s worth to mention it in the docs as a Note?",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_fb17ab4f",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1306
+      },
+      "writtenOn": "2018-06-27T07:22:15Z",
+      "side": 1,
+      "message": "There should be a empty line before Examples, otherwise it will be merged with previous paragraph.",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_5b0cd742",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1306
+      },
+      "writtenOn": "2018-06-27T07:22:15Z",
+      "side": 1,
+      "message": "\"from DPDK\" -\u003e with DPDK support ?\n\nor\n\n\"from DPDK\" -\u003e \"from Cisco\" or \"from FD.io\" ?",
+      "range": {
+        "startLine": 84,
+        "startChar": 73,
+        "endLine": 84,
+        "endChar": 113
+      },
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_1e0a4d21",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1306
+      },
+      "writtenOn": "2018-06-27T07:22:15Z",
+      "side": 1,
+      "message": "just a nitpicking - I would suggest to use \"*\" instead of \"-\" for bullet point formatting to be consistent through the document.",
+      "range": {
+        "startLine": 124,
+        "startChar": 0,
+        "endLine": 136,
+        "endChar": 97
+      },
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_3b092332",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1306
+      },
+      "writtenOn": "2018-06-27T07:22:15Z",
+      "side": 1,
+      "message": "please add a blank line above .. image markup",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_fb404b58",
         "filename": "docs/release/release-notes/Auto-release-notes.rst",
         "patchSetId": 1
@@ -47,6 +144,23 @@
       "writtenOn": "2018-06-27T02:48:40Z",
       "side": 1,
       "message": "Minor detail, but some arm64 docker images were created during the lead to the openstack summit, but they were not used in the demo.",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_9b066f1f",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 1306
+      },
+      "writtenOn": "2018-06-27T07:22:15Z",
+      "side": 1,
+      "message": "Although following points cover the recent work of Auto team, I don\u0027t think, that they (at least most of them) should be stated at Fraser release notes. As these activities are part of Gambia development cycle.",
       "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
