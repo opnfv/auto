@@ -6,3 +6,5 @@ python-glanceclient>=2.8.0
 python-neutronclient>=6.3.0
 python-novaclient>=9.0.0
 python-heatclient>=1.6.1
+pylint==1.9.2
+yamllint==1.11.1
