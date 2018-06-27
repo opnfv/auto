@@ -14,22 +14,29 @@ and provides guidelines on how to perform configurations and additional installa
 Goal
 ====
 
-The goal of `Auto <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/release-notes/index.html#auto-releasenotes>`_ installation and configuration is to prepare an environment where the `Auto use cases <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/userguide/index.html#auto-userguide>`_ can be assessed, i.e. where the corresponding test cases can be executed and their results can be collected.
+The goal of `Auto <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/release-notes/index.html#auto-releasenotes>`_
+installation and configuration is to prepare an environment where the
+`Auto use cases <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/userguide/index.html#auto-userguide>`_
+can be assessed, i.e. where the corresponding test cases can be executed and their results can be collected.
 
 An instance of ONAP needs to be present, as well as a number of deployed VNFs, in the scope of the use cases.
 
 The initial Auto use cases cover:
 
-* Edge Cloud (increased autonomy and automation for managing Edge VNFs)
-* Resilience Improvements through ONAP (reduced recovery time for VNFs and end-to-end services in case of failure or suboptimal performance)
-* Enterprise vCPE (automation, cost optimization, and performance assurance of enterprise connectivity to Data Centers and the Internet)
+* **Edge Cloud** (increased autonomy and automation for managing Edge VNFs)
+* **Resilience Improvements through ONAP** (reduced recovery time for VNFs and end-to-end services in case of failure
+  or suboptimal performance)
+* **Enterprise vCPE** (automation, cost optimization, and performance assurance of enterprise connectivity to Data Centers
+  and the Internet)
 
 The general idea of Auto is to install an OPNFV environment (comprising at least one Cloud Manager),
 an ONAP instance, ONAP-deployed VNFs as required by use cases, possibly additional cloud managers not
 already installed during the OPNFV environment setup, traffic generators, and the Auto-specific software
-for the use cases (which can include test frameworks such as `Robot <http://robotframework.org/>`_ or `Functest <http://docs.opnfv.org/en/latest/submodules/functest/docs/release/release-notes/index.html#functest-releasenotes>`_).
+for the use cases (which can include test frameworks such as `Robot <http://robotframework.org/>`_ or
+`Functest <http://docs.opnfv.org/en/latest/submodules/functest/docs/release/release-notes/index.html#functest-releasenotes>`_).
 The ONAP instance needs to be configured with policies and closed-loop controls (also as required by use cases),
-and the test framework controls the execution and result collection of all the test cases.
+and the test framework controls the execution and result collection of all the test cases. Then, test case execution
+results are analyzed, so as to fine-tune policies and closed-loop controls.
 
 The following diagram illustrates two execution environments, for x86 architectures and for Arm architectures.
 The installation process depends on the underlying architecture, since certain components may require a
@@ -39,7 +46,7 @@ manager), for x86 or for Arm. The initial VM-based VNFs will cover OpenStack, an
 additional cloud managers will be considered. The configuration of ONAP and of test cases should not depend
 on the architecture.
 
-.. image:: auto-installTarget-generic.jpg
+.. image:: auto-installTarget-generic.png
 
 
 For each component, various installer tools will be selected (based on simplicity and performance), and
@@ -47,12 +54,18 @@ may change from one Auto release to the next. For example, the most natural inst
 OOM (ONAP Operations Manager).
 
 The initial version of Auto will focus on OpenStack VM-based VNFs, onboarded and deployed via ONAP API
-(not by ONAP GUI, for the purpose of automation). ONAP is installed on Kubernetes. Two servers from LaaS
-are used: one to support an OpenStack instance as provided by the OPNFV installation via Fuel/MCP, and
-the other to support ONAP with Kubernetes and Docker. Therefore, the VNF execution environment is the
-server with the OpenStack instance.
+(not by ONAP GUI, for the purpose of automation). ONAP is installed on Kubernetes. Two or more servers from LaaS
+are used: one or more to support an OpenStack instance as provided by the OPNFV installation via Fuel/MCP or other
+OPNFV installers (Compass4NFV, Apex/TripleO, Daisy4NFV, JOID), and the other(s) to support ONAP with Kubernetes
+and Docker. Therefore, the VNF execution environment is composed of the server(s) with the OpenStack instance(s).
 
-.. image:: auto-installTarget-initial.jpg
+.. image:: auto-installTarget-initial.png
+
+ONAP/K8S has several variants. The initial variant considered by Auto is the basic one recommended by ONAP,
+which relies on the Rancher installer and on OpenStack VMs providing VMs for the Rancher master and for the
+Kubernetes cluster workers, as illustrated below for ONAP-Beijing release:
+
+.. image:: auto-installTarget-ONAP-B.png
 
 
 The OpenStack instance running VNFs may need to be configured as per ONAP expectations, for example creating
@@ -64,16 +77,16 @@ SDK, or OpenStack CLI, or even OpenStack Heat templates) would populate the Open
 
 
 
-Jenkins (or more precisely JJB: Jenkins Job Builder) will be used for Continuous Integration in OPNFV releases, to ensure that the latest master
-branch of Auto is always working. The first 3 tasks in the pipeline would be: install OpenStack instance via OPNFV
-installer (Fuel/MCP for example), configure the OpenStack instance for ONAP, install ONAP (using the OpenStack
-instance network IDs in the ONAP YAMP file).
+Jenkins (or more precisely JJB: Jenkins Job Builder) will be used for Continuous Integration in OPNFV releases,
+to ensure that the latest master branch of Auto is always working. The first 3 tasks in the pipeline would be:
+install OpenStack instance via OPNFV installer (Fuel/MCP for example), configure the OpenStack instance for ONAP,
+install ONAP (using the OpenStack instance network IDs in the ONAP YAML file).
 
 Moreover, Auto will offer an API, which can be imported as a module, and can be accessed for example
 by a web application. The following diagram shows the planned structure for the Auto Git repository,
 supporting this module, as well as the installation scripts, test case software, utilities, and documentation.
 
-.. image:: auto-repo-folders.jpg
+.. image:: auto-repo-folders.png
 
 
 
@@ -82,15 +95,18 @@ Pre-configuration activities
 
 The following resources will be required for the initial version of Auto:
 
-* two LaaS (OPNFV Lab-as-a-Service) pods, with their associated network information. Later, other types of target pods will be supported.
-* the `Auto Git repository <https://git.opnfv.org/auto/tree/>`_  (clone from `Gerrit Auto <https://gerrit.opnfv.org/gerrit/#/admin/projects/auto>`_)
+* at least two LaaS (OPNFV Lab-as-a-Service) pods (or equivalent in another lab), with their associated network
+  information. Later, other types of target pods will be supported, such as clusters (physical bare metal or virtual).
+  The pods can be either x86 or Arm CPU architectures.
+* the `Auto Git repository <https://git.opnfv.org/auto/tree/>`_
+  (clone from `Gerrit Auto <https://gerrit.opnfv.org/gerrit/#/admin/projects/auto>`_)
 
 
 
 Hardware configuration
 ======================
 
-<TBC>
+<TBC; large servers, at least 512G RAM, 1TB storage, 80-100 CPU threads>
 
 
 
@@ -100,7 +116,8 @@ Feature configuration
 Environment installation
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Current Auto work in progress is captured in the `Auto Lab Deployment wiki page <https://wiki.opnfv.org/display/AUTO/Auto+Lab+Deployment>`_.
+Current Auto work in progress is captured in the
+`Auto Lab Deployment wiki page <https://wiki.opnfv.org/display/AUTO/Auto+Lab+Deployment>`_.
 
 
 OPNFV with OpenStack
@@ -114,7 +131,7 @@ This OPNFV installer starts with installing a Salt Master, which then configures
 subnets and bridges, and install VMs (e.g., for controllers and compute nodes)
 and an OpenStack instance with predefined credentials.
 
-.. image:: auto-OPFNV-fuel.jpg
+.. image:: auto-OPFNV-fuel.png
 
 
 The Auto version of OPNFV installation configures additional resources for the OpenStack virtual pod,
@@ -136,20 +153,26 @@ These lines can be added to configure more resources:
        gtw01:
          ram: 2048
     +  cmp01:
-    +    vcpus: 16
-    +    ram: 65536
-    +    disk: 40
+    +    vcpus: 32
+    +    ram: 196608
     +  cmp02:
-    +    vcpus: 16
-    +    ram: 65536
-    +    disk: 40
+    +    vcpus: 32
+    +    ram: 196608
 
 
-The final step deploys OpenStack (duration: approximately between 30 and 45 minutes).
+The final steps deploy OpenStack (duration: approximately between 30 and 45 minutes).
 
 .. code-block:: console
 
-    6. ci/deploy.sh -l UNH-LaaS -p virtual1 -s os-nosdn-nofeature-noha -D |& tee deploy.log
+    # The following change will provide more space to VMs. Default is 100G per cmp0x. This gives 350 each and 700 total.
+    6. sed -i mcp/scripts/lib.sh -e 's/\(qemu-img create.*\) 100G/\1 350G/g'
+
+    # Then deploy OpenStack. It should take between 30 and 45 minutes:
+    7. ci/deploy.sh -l UNH-LaaS -p virtual1 -s os-nosdn-nofeature-noha -D |& tee deploy.log
+
+    # Lastly, to get access to the extra RAM and vCPUs, adjust the quotas (done on the controller at 172.16.10.36):
+    8. openstack quota set --cores 64 admin
+    9. openstack quota set --ram 393216 admin
 
 
 
@@ -166,10 +189,9 @@ with all components except DCAE running on Kubernetes, and DCAE running separate
 For Arm architectures, specialized Docker images are being developed to provide Arm architecture
 binary compatibility.
 
-The goal for the first release of Auto is to use an ONAP instance where DCAE also runs on Kubernetes,
-for both architectures.
+The goal for Auto is to use an ONAP instance where DCAE also runs on Kubernetes, for both architectures.
 
-The ONAP reference for this installation is detailed `here <https://wiki.onap.org/display/DW/ONAP+on+Kubernetes>`_.
+The ONAP reference for this installation is detailed `here <http://onap.readthedocs.io/en/latest/submodules/oom.git/docs/oom_user_guide.html>`_.
 
 Examples of manual steps for the deploy procedure are as follows:
 
@@ -223,7 +245,8 @@ Test Case software installation and execution control
 Installation health-check
 =========================
 
-<TBC; the Auto installation will self-check, but indicate here manual steps to double-check that the installation was successful>
+<TBC; the Auto installation will self-check, but indicate here manual steps to double-check that the
+installation was successful>
 
 
 
