@@ -30,11 +30,22 @@
 #
 EXIT=0
 EXIT_UNKNOWN_JOB_TYPE=1
+EXIT_LINT_FAILED=2
 
 #
 # configuration
 #
 AUTOENV_DIR="$HOME/autoenv"
+
+#
+# functions
+#
+# execute pylint and yamllint to check code quality
+function execute_auto_lint_check() {
+    if ! ./check -b ; then
+        EXIT=$EXIT_LINT_FAILED
+    fi
+}
 
 #
 # main
@@ -69,7 +80,7 @@ case $1 in
         # Example of verify job body. Functions can call
         # external scripts, etc.
 
-        #execute_auto_pylint_check
+        execute_auto_lint_check
         #execute_auto_doc_check
         #install_opnfv MCP
         #install_onap
@@ -87,14 +98,14 @@ case $1 in
         # Example of merge job body. Functions can call
         # external scripts, etc.
 
-        #execute_auto_pylint_check
+        execute_auto_lint_check
         #execute_auto_doc_check
         #install_opnfv MCP
         #install_onap
         #execute_sanity_check
         #execute_tests $1
 
-        # Everything went well, so report SUCCESS to Jenkins
+        # propagate result to the Jenkins job
         exit $EXIT
         ;;
     "daily")
@@ -111,7 +122,7 @@ case $1 in
         #execute_tests $1
         #push_results_and_logs_to_artifactory
 
-        # Everything went well, so report SUCCESS to Jenkins
+        # propagate result to the Jenkins job
         exit $EXIT
         ;;
     *)
