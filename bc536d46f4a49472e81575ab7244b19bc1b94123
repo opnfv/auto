@@ -108,6 +108,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_aa2037f8",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-28T18:30:12Z",
+      "side": 1,
+      "message": "OK, added a blank line. Thanks !",
+      "parentUuid": "da5c1566_a406b01e",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_5b0cd742",
         "filename": "docs/release/release-notes/Auto-release-notes.rst",
         "patchSetId": 1
