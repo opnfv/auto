@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_44f51482",
+        "filename": "docs/release/configguide/Auto-featureconfig.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-28T00:57:18Z",
+      "side": 1,
+      "message": "OK, added as note (rephrased a little bit, please verify if correct)",
+      "parentUuid": "da5c1566_be040116",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_fb17ab4f",
         "filename": "docs/release/release-notes/Auto-release-notes.rst",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_c4e2c4d4",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-28T00:57:18Z",
+      "side": 1,
+      "message": "these are supposed to be examples within this bullet",
+      "parentUuid": "da5c1566_fb17ab4f",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_5b0cd742",
         "filename": "docs/release/release-notes/Auto-release-notes.rst",
         "patchSetId": 1
@@ -47,6 +83,30 @@
       "writtenOn": "2018-06-27T07:22:15Z",
       "side": 1,
       "message": "\"from DPDK\" -\u003e with DPDK support ?\n\nor\n\n\"from DPDK\" -\u003e \"from Cisco\" or \"from FD.io\" ?",
+      "range": {
+        "startLine": 84,
+        "startChar": 73,
+        "endLine": 84,
+        "endChar": 113
+      },
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_24e8e0b3",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-28T00:57:18Z",
+      "side": 1,
+      "message": "OK, I put \"with DPDK support\"",
+      "parentUuid": "da5c1566_5b0cd742",
       "range": {
         "startLine": 84,
         "startChar": 73,
@@ -82,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_04eddcc3",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-28T00:57:18Z",
+      "side": 1,
+      "message": "I was actually curious to see if hyphens were good for that (laundry) list, rather than bullets, but OK",
+      "parentUuid": "da5c1566_1e0a4d21",
+      "range": {
+        "startLine": 124,
+        "startChar": 0,
+        "endLine": 136,
+        "endChar": 97
+      },
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_3b092332",
         "filename": "docs/release/release-notes/Auto-release-notes.rst",
         "patchSetId": 1
@@ -93,6 +177,24 @@
       "writtenOn": "2018-06-27T07:22:15Z",
       "side": 1,
       "message": "please add a blank line above .. image markup",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_64d138fb",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-28T00:57:18Z",
+      "side": 1,
+      "message": "OK",
+      "parentUuid": "da5c1566_3b092332",
       "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -116,6 +218,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_44ceb45b",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-28T00:57:18Z",
+      "side": 1,
+      "message": "OK, corrected",
+      "parentUuid": "da5c1566_fb404b58",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_5b25f7c0",
         "filename": "docs/release/release-notes/Auto-release-notes.rst",
         "patchSetId": 1
@@ -127,6 +247,24 @@
       "writtenOn": "2018-06-27T02:48:40Z",
       "side": 1,
       "message": "There was no installation of ONAP on k8s on arm64 for OpenStack Summit.  The demo was of Wordpress being installed on a mixed OpenStack environment (x86 and arm64 compute nodes)",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_a4db501a",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-28T00:57:18Z",
+      "side": 1,
+      "message": "Yes, that was still an error from the previous version. I re-used the diagram and text from Plugfest to fix this. Also moved the demo paragraph to the end of the section.",
+      "parentUuid": "da5c1566_5b25f7c0",
       "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -150,6 +288,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_c4092497",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-28T00:57:18Z",
+      "side": 1,
+      "message": "OK, removed that parenthesis",
+      "parentUuid": "da5c1566_3b22c3b9",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_9b066f1f",
         "filename": "docs/release/release-notes/Auto-release-notes.rst",
         "patchSetId": 1
@@ -167,6 +323,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_24ff4069",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-28T00:57:18Z",
+      "side": 1,
+      "message": "OK, moved to a separate paragraph, which may or may not be used/updated when we do R7.0",
+      "parentUuid": "da5c1566_9b066f1f",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_9b2f8fa1",
         "filename": "docs/release/release-notes/Auto-release-notes.rst",
         "patchSetId": 1
@@ -178,6 +352,24 @@
       "writtenOn": "2018-06-27T02:48:40Z",
       "side": 1,
       "message": "all ONAP docker images are NOT ready for arm64.",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_0404bc79",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-28T00:57:18Z",
+      "side": 1,
+      "message": "OK, replaced with \"many\"",
+      "parentUuid": "da5c1566_9b2f8fa1",
       "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
