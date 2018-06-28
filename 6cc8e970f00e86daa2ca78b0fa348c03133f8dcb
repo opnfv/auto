@@ -54,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_643f7826",
+        "filename": "setup/VIMs/OpenStack/auto_script_config_openstack_for_onap.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 726,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-28T01:19:30Z",
+      "side": 1,
+      "message": "OK. I\u0027ll have to find the equivalent of \u0027uname -p\u0027, or just issue it as a system command. But see the remark below: maybe all CPU images would need to be loaded (for remote deployment) ?",
+      "parentUuid": "da5c1566_c93ae635",
+      "revId": "6cc8e970f00e86daa2ca78b0fa348c03133f8dcb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_46d8851d",
         "filename": "setup/VIMs/OpenStack/auto_script_config_openstack_for_onap.py",
         "patchSetId": 1
@@ -107,6 +125,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_043b1c3b",
+        "filename": "setup/VIMs/OpenStack/auto_script_config_openstack_for_onap.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 727,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-28T01:19:30Z",
+      "side": 1,
+      "message": "for now, due to impending R6.2, I did research to support URLs (use the image proxy) but haven\u0027t had time to try it. I left the patterns in comment.\nAlso, all images are loaded systematically (x86 and Arm), in case the cloud deploys remote instances on different servers and then may need different images.",
+      "parentUuid": "da5c1566_89790e96",
+      "revId": "6cc8e970f00e86daa2ca78b0fa348c03133f8dcb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_a604017f",
         "filename": "setup/VIMs/OpenStack/auto_script_config_openstack_for_onap.py",
         "patchSetId": 1
@@ -136,6 +172,24 @@
       "side": 1,
       "message": "This was to prevent an error when the user tries to re-create objects when they already exist. But yes, if a user does that, we might as well go get the subnet info and display it. I\u0027ll change that. Thanks for the review !",
       "parentUuid": "da5c1566_a604017f",
+      "revId": "6cc8e970f00e86daa2ca78b0fa348c03133f8dcb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_443cf42f",
+        "filename": "setup/VIMs/OpenStack/auto_script_config_openstack_for_onap.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 763,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-06-28T01:19:30Z",
+      "side": 1,
+      "message": "rewrote the code, to dynamically fetch the OpenStack object data, so the summary will be accurate no matter if this was the first execution on a blank instance, or a retry on an already configured instance.",
+      "parentUuid": "da5c1566_26f8f17b",
       "revId": "6cc8e970f00e86daa2ca78b0fa348c03133f8dcb",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
