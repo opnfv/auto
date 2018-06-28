@@ -15,15 +15,21 @@ specifically for Use Case 2: Resiliency Improvements Through ONAP.
 Description
 ===========
 
-This use case illustrates VNF failure recovery time reduction with ONAP, thanks to its automated monitoring and management. It:
+This use case illustrates VNF failure recovery time reduction with ONAP, thanks to its automated monitoring
+and management. It:
 
 * simulates an underlying problem (failure, stress, or any adverse condition in the network that can impact VNFs)
 * tracks a VNF
 * measures the amount of time it takes for ONAP to restore the VNF functionality.
 
-The benefit for NFV edge service providers is to assess what degree of added VIM+NFVI platform resilience for VNFs is obtained by leveraging ONAP closed-loop control, vs. VIM+NFVI self-managed resilience (which may not be aware of the VNF or the corresponding end-to-end Service, but only of underlying resources such as VMs and servers).
+The benefit for NFV edge service providers is to assess what degree of added VIM+NFVI platform resilience for VNFs
+is obtained by leveraging ONAP closed-loop control, vs. VIM+NFVI self-managed resilience (which may not be aware
+of the VNF or the corresponding end-to-end Service, but only of underlying resources such as VMs and servers).
 
-Also, a problem, or challenge, may not necessarily be a failure (which could also be recovered by other layers): it could be an issue leading to suboptimal performance, without failure. A VNF management layer as provided by ONAP may detect such non-failure problems, and provide a recovery solution which no other layer could provide in a given deployment.
+Also, a problem, or challenge, may not necessarily be a failure (which could also be recovered by other layers):
+it could be an issue leading to suboptimal performance, without failure. A VNF management layer as provided by
+ONAP may detect such non-failure problems, and provide a recovery solution which no other layer could provide
+in a given deployment.
 
 
 Preconditions:
@@ -33,9 +39,13 @@ Preconditions:
 #. ONAP has been deployed onto a cloud and is interfaced (i.e. provisioned for API access) to the Edge cloud
 #. Components of ONAP have been deployed on the Edge cloud as necessary for specific test objectives
 
-In future releases, Auto Use cases will also include the deployment of ONAP (if not already installed), the deployment of test VNFs (pre-existing VNFs in pre-existing ONAP can be used in the test as well), the configuration of ONAP for monitoring these VNFs (policies, CLAMP, DCAE), in addition to the test scripts which simulate a problem and measures recovery time.
+In future releases, Auto Use cases will also include the deployment of ONAP (if not already installed),
+the deployment of test VNFs (pre-existing VNFs in pre-existing ONAP can be used in the test as well),
+the configuration of ONAP for monitoring these VNFs (policies, CLAMP, DCAE), in addition to the test
+scripts which simulate a problem and measures recovery time.
 
-Different types of problems can be simulated, hence the identification of multiple test cases corresponding to this use case, as illustrated in this diagram:
+Different types of problems can be simulated, hence the identification of multiple test cases corresponding
+to this use case, as illustrated in this diagram:
 
 .. image:: auto-UC02-testcases.jpg
 
@@ -68,7 +78,9 @@ Test execution high-level description
 
 The following two MSCs (Message Sequence Charts) show the actors and high-level interactions.
 
-The first MSC shows the preparation activities (assuming the hardware, network, cloud, and ONAP have already been installed): onboarding and deployment of VNFs (via ONAP portal and modules in sequence: SDC, VID, SO), and ONAP configuration (policy framework, closed-loops in CLAMP, activation of DCAE).
+The first MSC shows the preparation activities (assuming the hardware, network, cloud, and ONAP have already
+been installed): onboarding and deployment of VNFs (via ONAP portal and modules in sequence: SDC, VID, SO),
+and ONAP configuration (policy framework, closed-loops in CLAMP, activation of DCAE).
 
 .. image:: auto-UC02-preparation.jpg
 
@@ -94,7 +106,9 @@ The high-level design of classes identifies several entities, described as follo
 * ``Test Definition`` : gathers all the information necessary to run a certain test case
 * ``Metric Definition`` : describes a certain metric that may be measured for a Test Case, in addition to Recovery Time
 * ``Challenge Definition`` : describe the challenge (problem, failure, stress, ...) simulated by the test case
-* ``Recipient`` : entity that can receive commands and send responses, and that is queried by the Test Definition or Challenge Definition (a recipient would be typically a management service, with interfaces (CLI or API) for clients to query)
+* ``Recipient`` : entity that can receive commands and send responses, and that is queried by the Test Definition
+  or Challenge Definition (a recipient would be typically a management service, with interfaces (CLI or API) for
+  clients to query)
 * ``Resources`` : with 3 types (VNF, cloud virtual resource such as a VM, physical resource such as a server)
 
 
@@ -119,7 +133,9 @@ This next diagram shows the Python classes and attributes, as implemented by thi
 
 Test definition data is stored in serialization files (Python pickles), while test execution data is stored in CSV files, for easier post-analysis.
 
-The module design is straightforward: functions and classes for managing data, for interfacing with recipients, for executing tests, and for interacting with the test user (choosing a Test Definition, showing the details of a Test Definition, starting the execution).
+The module design is straightforward: functions and classes for managing data, for interfacing with recipients,
+for executing tests, and for interacting with the test user (choosing a Test Definition, showing the details of
+a Test Definition, starting the execution).
 
 .. image:: auto-UC02-module1.jpg
 
@@ -134,18 +150,27 @@ In future releases of Auto, testing environments such as Robot, FuncTest and Yar
 Also, anonymized test results could be collected from users willing to share them, and aggregates could be
 maintained as benchmarks.
 
-As further illustration, the next figure shows cardinalities of class instances: one Test Definition per Test Case, multiple Test Executions per Test Definition, zero or one Recovery Time Metric Value per Test Execution (zero if the test failed for any reason, including if ONAP failed to recover the challenge), etc.
+As further illustration, the next figure shows cardinalities of class instances: one Test Definition per Test Case,
+multiple Test Executions per Test Definition, zero or one Recovery Time Metric Value per Test Execution (zero if
+the test failed for any reason, including if ONAP failed to recover the challenge), etc.
 
 .. image:: auto-UC02-cardinalities.png
 
 
-In this particular implementation, both Test Definition and Challenge Definition classes have a generic execution method (e.g., ``run_test_code()`` for Test Definition) which can invoke a particular script, by way of an ID (which can be configured, and serves as a script selector for each Test Definition instance). The overall test execution logic between classes is show in the next figure.
+In this particular implementation, both Test Definition and Challenge Definition classes have a generic execution method
+(e.g., ``run_test_code()`` for Test Definition) which can invoke a particular script, by way of an ID (which can be
+configured, and serves as a script selector for each Test Definition instance). The overall test execution logic
+between classes is show in the next figure.
 
 .. image:: auto-UC02-logic.png
 
-The execution of a test case starts with invoking the generic method from Test Definition, which then creates Execution instances, invokes Challenge Definition methods, performs the Recovery time calculation, performs script-specific actions, and writes results to the CSV files.
+The execution of a test case starts with invoking the generic method from Test Definition, which then creates Execution
+instances, invokes Challenge Definition methods, performs the Recovery time calculation, performs script-specific
+actions, and writes results to the CSV files.
 
-Finally, the following diagram show a mapping between these class instances and the initial test case design. It corresponds to the test case which simulates a VM failure, and shows how the OpenStack SDK API is invoked (with a connection object) by the Challenge Definition methods, to suspend and resume a VM.
+Finally, the following diagram show a mapping between these class instances and the initial test case design. It
+corresponds to the test case which simulates a VM failure, and shows how the OpenStack SDK API is invoked (with
+a connection object) by the Challenge Definition methods, to suspend and resume a VM.
 
 .. image:: auto-UC02-TC-mapping.png
 

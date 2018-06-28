@@ -55,14 +55,19 @@ server with the OpenStack instance.
 .. image:: auto-installTarget-initial.jpg
 
 
-The OpenStack instance running VNFs may need to be configured as per ONAP expectations, for example creating instances of ONAP projects/tenants, users, security groups, networks (private, public), connected to the Internet by a Router, and making sure expected VM images and flavors are present. A script (using OpenStack SDK, or OpenStack CLI, or even OpenStack Heat templates) would populate the OpenStack instance, as illustrated below:
+The OpenStack instance running VNFs may need to be configured as per ONAP expectations, for example creating
+instances of ONAP projects/tenants, users, security groups, networks (private, public), connected to the
+Internet by a Router, and making sure expected VM images and flavors are present. A script (using OpenStack
+SDK, or OpenStack CLI, or even OpenStack Heat templates) would populate the OpenStack instance, as illustrated below:
 
 .. image:: auto-OS-config4ONAP.png
 
 
 
 Jenkins (or more precisely JJB: Jenkins Job Builder) will be used for Continuous Integration in OPNFV releases, to ensure that the latest master
-branch of Auto is always working. The first 3 tasks in the pipeline would be: install OpenStack instance via OPNFV installer (Fuel/MCP for example), configure the OpenStack instance for ONAP, install ONAP (using the OpenStack instance network IDs in the ONAP YAMP file).
+branch of Auto is always working. The first 3 tasks in the pipeline would be: install OpenStack instance via OPNFV
+installer (Fuel/MCP for example), configure the OpenStack instance for ONAP, install ONAP (using the OpenStack
+instance network IDs in the ONAP YAMP file).
 
 Moreover, Auto will offer an API, which can be imported as a module, and can be accessed for example
 by a web application. The following diagram shows the planned structure for the Auto Git repository,
