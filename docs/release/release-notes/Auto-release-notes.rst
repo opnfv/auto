@@ -274,6 +274,7 @@ Point release 6.2:
 * updated script for configuring OpenStack instance for ONAP, using OpenStack SDK 0.14
 
 Notable activities since release 6.1, which may result in new features for Gambia 7.0:
+
 * researching how to configure multiple Pharos servers in a cluster for Kubernetes
 * started to evaluate Compass4nfv as another OpenStack installer; issues with Python version (2 or 3)
 * common meeting with Functest
