@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "da5c1566_8403ac0e",
+        "filename": "docs/release/configguide/Auto-featureconfig.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 1306
+      },
+      "writtenOn": "2018-06-28T07:07:35Z",
+      "side": 1,
+      "message": "perfect",
+      "parentUuid": "da5c1566_44f51482",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da5c1566_fb17ab4f",
         "filename": "docs/release/release-notes/Auto-release-notes.rst",
         "patchSetId": 1
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "these are supposed to be examples within this bullet",
       "parentUuid": "da5c1566_fb17ab4f",
+      "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_a406b01e",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1306
+      },
+      "writtenOn": "2018-06-28T07:07:35Z",
+      "side": 1,
+      "message": "Just a nitpicking - feel free to ignore it.\n\n---\n\nYes, but if you won\u0027t use a blank line, then word \"Examples\" won\u0027t be at the beginning of the line, but somewhere in the text before (and thus not visible for the first sight).\n\nWith the blank line, you will still have \"Examples\" as part of the same bullet (ensured by indent), but it will be at the beginning of the line - i.e. identical to this plain text source.",
+      "parentUuid": "da5c1566_c4e2c4d4",
       "revId": "bc536d46f4a49472e81575ab7244b19bc1b94123",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
