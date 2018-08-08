@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_41e22fa0",
+        "filename": "ci/deploy-onap.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-08-08T11:03:30Z",
+      "side": 1,
+      "message": "The copyright header should follow the opnfv format\nCheck https://github.com/opnfv/armband/blob/master/ci/deploy.sh",
+      "revId": "0d4e37c43afe10a501bab9b0ff57836063351f36",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_a1eeab89",
+        "filename": "ci/deploy-onap.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-08-08T11:03:30Z",
+      "side": 1,
+      "message": "Is this a pre-requisite? I suspect the script can be reused in other labs, so maybe rephrase it to say that this is where the script is tested",
+      "range": {
+        "startLine": 17,
+        "startChar": 61,
+        "endLine": 18,
+        "endChar": 13
+      },
+      "revId": "0d4e37c43afe10a501bab9b0ff57836063351f36",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_018677b9",
+        "filename": "ci/deploy-onap.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-08-08T11:03:30Z",
+      "side": 1,
+      "message": "Overall comment for the document: I recommend to keep the 80 chars line length for all the document\nAlso use https://www.shellcheck.net/ to follow shell scripting good practices",
+      "revId": "0d4e37c43afe10a501bab9b0ff57836063351f36",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_21029b3e",
+        "filename": "ci/deploy-onap.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-08-08T11:03:30Z",
+      "side": 1,
+      "message": "This script will be cleaner if you use a packages.txt file to list the per-requisites and do something like \"xargs -a packages.txt sudo apt-get install\" here. It will also make it easier to update the list of packages.",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 40
+      },
+      "revId": "0d4e37c43afe10a501bab9b0ff57836063351f36",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_41906fec",
+        "filename": "ci/deploy-onap.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-08-08T11:03:30Z",
+      "side": 1,
+      "message": "I suggest you move this into a separate file with default values and only update it in this script. You can use sed for the updates",
+      "range": {
+        "startLine": 158,
+        "startChar": 0,
+        "endLine": 175,
+        "endChar": 33
+      },
+      "revId": "0d4e37c43afe10a501bab9b0ff57836063351f36",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
