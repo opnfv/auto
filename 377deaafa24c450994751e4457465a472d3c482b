@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_fcca066d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-08-09T01:04:45Z",
+      "side": 1,
+      "message": "OK, added in notes for patch #2",
+      "parentUuid": "9a561d44_c19e3f56",
+      "range": {
+        "startLine": 22,
+        "startChar": 3,
+        "endLine": 22,
+        "endChar": 11
+      },
+      "revId": "377deaafa24c450994751e4457465a472d3c482b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_21c45b91",
         "filename": "ci/deploy-opnfv-compass-ubuntu.sh",
         "patchSetId": 1
@@ -36,6 +60,24 @@
       "writtenOn": "2018-08-08T07:40:09Z",
       "side": 1,
       "message": "Installation went smoothly at newly installed server (hpe15), but I had to add apt-get update and apt-get upgrade. It might be good to use apt-get instead of apt, as per apt warning its CLI is not stable and thus not suitable for scripting.\n\nPatch with these changes follows:\n---\ndiff --git a/ci/deploy-opnfv-compass-ubuntu.sh b/ci/deploy-opnfv-compass-ubuntu.sh\nold mode 100644\nnew mode 100755\nindex 7b01023..32cc577\n--- a/ci/deploy-opnfv-compass-ubuntu.sh\n+++ b/ci/deploy-opnfv-compass-ubuntu.sh\n@@ -23,10 +23,12 @@ mkdir -p $INSTALLDIR\n cd $INSTALLDIR\n \n # premptively install latest pip and clear $PATH cache\n-sudo apt -y install python-pip\n+sudo apt-get -y update\n+sudo apt-get -y upgrade\n+sudo apt-get -y install python-pip\n pip install --upgrade pip\n hash -r\n-sudo apt -y autoremove\n+sudo apt-get -y autoremove\n \n \n # 2 options: (option 1 is preferable)",
+      "revId": "377deaafa24c450994751e4457465a472d3c482b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_1cceda83",
+        "filename": "ci/deploy-opnfv-compass-ubuntu.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-08-09T01:04:45Z",
+      "side": 1,
+      "message": "OK, thanks ! I also indicated the apt (vs. apt-get) version, in comments",
+      "parentUuid": "9a561d44_21c45b91",
       "revId": "377deaafa24c450994751e4457465a472d3c482b",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_5cc85274",
+        "filename": "ci/deploy-opnfv-fuel-ubuntu.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-08-09T01:04:45Z",
+      "side": 1,
+      "message": "OK, added extra comments",
+      "parentUuid": "9a561d44_c1ec7fca",
+      "revId": "377deaafa24c450994751e4457465a472d3c482b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_41d86f1d",
         "filename": "ci/deploy-opnfv-fuel-ubuntu.sh",
         "patchSetId": 1
@@ -70,6 +130,30 @@
       "writtenOn": "2018-08-08T09:04:03Z",
       "side": 1,
       "message": "if you plan on using the same script for aarch64 you can leave these in, but maybe comment them for now as the script will use only the x86 images",
+      "range": {
+        "startLine": 166,
+        "startChar": 0,
+        "endLine": 167,
+        "endChar": 76
+      },
+      "revId": "377deaafa24c450994751e4457465a472d3c482b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_3cc59e5b",
+        "filename": "ci/deploy-opnfv-fuel-ubuntu.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-08-09T01:04:45Z",
+      "side": 1,
+      "message": "These are images to be loaded in the OpenStack instance for spinning up VMs.\nIt might be possible that one instance of OpenStack can spin up VMs on Compute nodes deployed on physical servers with different architectures, or even on other OpenStack instances.\nSince there\u0027s not much cost in populating the list of images in an OpenStack instance, I\u0027d leave this (to avoid commenting in/out, or doing conditions and functions), even if it would not be used on a virtual deploy in a single server, not connected to other instances (as in initial tests).",
+      "parentUuid": "9a561d44_41d86f1d",
       "range": {
         "startLine": 166,
         "startChar": 0,
