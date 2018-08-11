@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_16b7d687",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-08-11T01:38:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a561d44_d34a9082",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 9
+      },
+      "revId": "81d2a46c1ad06a18bcd5fe3077f33059e24282d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_b34f1c92",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_f6bb4270",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-08-11T01:38:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a561d44_b34f1c92",
+      "range": {
+        "startLine": 43,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 9
+      },
+      "revId": "81d2a46c1ad06a18bcd5fe3077f33059e24282d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_7355841c",
         "filename": "ci/deploy-opnfv-apex-centos.sh",
         "patchSetId": 3
@@ -59,6 +107,24 @@
       "writtenOn": "2018-08-10T11:34:01Z",
       "side": 1,
       "message": "overall comment for all the scripts: use a shell check (eg https://www.shellcheck.net/) to make sure you are inline with shell good practices.",
+      "revId": "81d2a46c1ad06a18bcd5fe3077f33059e24282d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_7690d2ec",
+        "filename": "ci/deploy-opnfv-apex-centos.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-08-11T01:38:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a561d44_7355841c",
       "revId": "81d2a46c1ad06a18bcd5fe3077f33059e24282d7",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -99,6 +165,24 @@
       "writtenOn": "2018-08-10T11:34:01Z",
       "side": 1,
       "message": "joid is not supported in opnfv starting with Gambia. Does it still make sense to keep it here?",
+      "revId": "81d2a46c1ad06a18bcd5fe3077f33059e24282d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_b6c1cae6",
+        "filename": "ci/deploy-opnfv-joid-ubuntu.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-08-11T01:38:39Z",
+      "side": 1,
+      "message": "Is JOID gone permanently as of Gambia, or will they just skip that release ? If they\u0027re gone permanently, then it could be removed.",
+      "parentUuid": "9a561d44_b336fc01",
       "revId": "81d2a46c1ad06a18bcd5fe3077f33059e24282d7",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
