@@ -84,6 +84,23 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_5c896dc9",
+        "filename": "ci/deploy-onap.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-08-13T21:44:23Z",
+      "side": 1,
+      "message": "Maybe creating password-less users is dangerous ? (if this is ever used in production down the road)\nCould you spell out the steps/commands to prepare password-less SSH access (even in comments) ? Would there be a way to automate this as well ?\nIt seems there is a default \"opnfv\" user created on Pharos UNH servers: should Auto use a different new user, like \"opnfvauto\" for example ?",
+      "revId": "0d4e37c43afe10a501bab9b0ff57836063351f36",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_018677b9",
         "filename": "ci/deploy-onap.sh",
         "patchSetId": 1
@@ -207,6 +224,23 @@
         "endLine": 175,
         "endChar": 33
       },
+      "revId": "0d4e37c43afe10a501bab9b0ff57836063351f36",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_3c8639ba",
+        "filename": "ci/deploy-onap.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-08-13T21:44:23Z",
+      "side": 1,
+      "message": "Sometimes, during pod deployment, using the kubectl commands, getting this error:\n\"error: You must be logged in to the server (Unauthorized)\", and sometimes not (it depends, from one minute to the next). What could be the cause ?\nNote: if it keeps not working, disconnecting/reconnecting to the master node allows for the kubectl commands to work again (but still intermittently). \nAfter more than 2h30 minutes, stuck at this:\n     23 ContainerCreating\n      3 CrashLoopBackOff\n     43 Init:0/1\n      4 Init:0/2\n      7 Init:1/2\n     65 Running",
       "revId": "0d4e37c43afe10a501bab9b0ff57836063351f36",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
