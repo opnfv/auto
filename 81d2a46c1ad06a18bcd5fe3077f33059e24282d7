@@ -186,6 +186,24 @@
       "revId": "81d2a46c1ad06a18bcd5fe3077f33059e24282d7",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_d912afb3",
+        "filename": "ci/deploy-opnfv-joid-ubuntu.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-08-13T08:27:08Z",
+      "side": 1,
+      "message": "As far as I know they are gone on an undefined period of time. Nobody works on the project since April and no one knows if the project will be picked up any time soon. I suggest you just remove it.",
+      "parentUuid": "9a561d44_b6c1cae6",
+      "revId": "81d2a46c1ad06a18bcd5fe3077f33059e24282d7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
