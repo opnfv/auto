@@ -183,6 +183,30 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_e72c2e4d",
+        "filename": "ci/deploy-onap.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-08-14T08:44:09Z",
+      "side": 1,
+      "message": "Yes, I was referring to those. Variable with list of packages works as well. It\u0027s easier to have them all in one place. The same logic should apply to the packages that you install on master (or any other target)\n\nAlso, maybe it\u0027s worth moving to  a separate script the commands that need to be executed remote, scp it and run it there directly. I advocate for small files with a precise purpose than one big file with everything in.",
+      "parentUuid": "9a561d44_f35fd470",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 40
+      },
+      "revId": "0d4e37c43afe10a501bab9b0ff57836063351f36",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_41906fec",
         "filename": "ci/deploy-onap.sh",
         "patchSetId": 1
