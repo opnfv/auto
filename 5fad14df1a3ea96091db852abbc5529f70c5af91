@@ -34,6 +34,24 @@
       "revId": "5fad14df1a3ea96091db852abbc5529f70c5af91",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_655bec87",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-08-23T15:41:42Z",
+      "side": 1,
+      "message": "Please use https://jira.opnfv.org/issues/?filter\u003d12403 as link instead of the long filter.",
+      "parentUuid": "9a561d44_e5209cf9",
+      "revId": "5fad14df1a3ea96091db852abbc5529f70c5af91",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
