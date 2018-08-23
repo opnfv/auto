@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_45606832",
+        "filename": "docs/release/release-notes/Auto-release-notes.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 320,
+      "author": {
+        "id": 5267
+      },
+      "writtenOn": "2018-08-23T15:41:42Z",
+      "side": 1,
+      "message": "This line is kind of redundant, you can simply remove it",
+      "range": {
+        "startLine": 320,
+        "startChar": 0,
+        "endLine": 320,
+        "endChar": 86
+      },
+      "revId": "c167269e3efa8a6eec7abfa01472cde331be82e6",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
