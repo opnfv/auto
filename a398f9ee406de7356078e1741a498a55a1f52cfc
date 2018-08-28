@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a561d44_fa0aefd0",
+        "filename": "docs/release/configguide/Auto-featureconfig.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-08-28T21:40:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a561d44_ffa021f6",
+      "revId": "a398f9ee406de7356078e1741a498a55a1f52cfc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a561d44_5fa66d11",
         "filename": "docs/release/configguide/Auto-featureconfig.rst",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2018-08-28T08:49:57Z",
       "side": 1,
       "message": "http-\u003ehttps ?",
+      "revId": "a398f9ee406de7356078e1741a498a55a1f52cfc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_9af933cb",
+        "filename": "docs/release/configguide/Auto-featureconfig.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 7223
+      },
+      "writtenOn": "2018-08-28T21:40:27Z",
+      "side": 1,
+      "message": "In my case, all OPNFV HTTP URLs become HTTPS, in any browser I try (Chrome, Firefox, Edge, IE), whether I am logged in OPNFV or not. Is it a redirection on my side on on the server side ?",
+      "parentUuid": "9a561d44_5fa66d11",
       "revId": "a398f9ee406de7356078e1741a498a55a1f52cfc",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
