@@ -69,6 +69,24 @@
       "revId": "a398f9ee406de7356078e1741a498a55a1f52cfc",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_1a96c3f0",
+        "filename": "docs/release/configguide/Auto-featureconfig.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1306
+      },
+      "writtenOn": "2018-08-29T05:25:28Z",
+      "side": 1,
+      "message": "It seems to be a server side redirection. I mentioned it just to keep it consistent with other links to OPNFV docs in this document. Feel free to keep it as it is, if needed we can do it globally for all auto docs in a separate patch in the future.",
+      "parentUuid": "9a561d44_9af933cb",
+      "revId": "a398f9ee406de7356078e1741a498a55a1f52cfc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
