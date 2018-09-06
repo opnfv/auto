@@ -2,6 +2,7 @@ Auto
 ====
 
 #### Recent Changes ####
+- Outdated
 - Add util modules for common use in project
 - Add scripts to setup ONAP (Currently only on OpenStack)
 
