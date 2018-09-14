@@ -14,11 +14,14 @@ and provides guidelines on how to perform configurations and additional installa
 Goal
 ====
 
-The goal of `Auto <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/release-notes/index.html#auto-releasenotes>`_
+The goal of :ref:`Auto <auto-releasenotes>`
+
 installation and configuration is to prepare an environment where the
-`Auto use cases <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/userguide/index.html#auto-userguide>`_
+:ref:`Auto use cases <auto-userguide>`
+
 can be assessed, i.e. where the corresponding test cases can be executed and their results can be collected for analysis.
-See the `Auto Release Notes <https://docs.opnfv.org/en/latest/submodules/auto/docs/release/release-notes/index.html#auto-releasenotes>`_
+See the `Auto Release Notes <auto-releasenotes>`
+
 for a discussion of the test results analysis loop.
 
 An instance of ONAP needs to be present, as well as a number of deployed VNFs, in the scope of the use cases.
@@ -37,8 +40,7 @@ The initial Auto use cases cover:
 The general idea of the Auto feature configuration is to install an OPNFV environment (comprising at least one Cloud Manager),
 an ONAP instance, ONAP-deployed VNFs as required by use cases, possibly additional cloud managers not
 already installed during the OPNFV environment setup, traffic generators, and the Auto-specific software
-for the use cases (which can include test frameworks such as `Robot <http://robotframework.org/>`_ or
-`Functest <http://docs.opnfv.org/en/latest/submodules/functest/docs/release/release-notes/index.html#functest-releasenotes>`_).
+for the use cases (which can include test frameworks such as `Robot <http://robotframework.org/>`_ or :doc:`Functest <functest:release/release-notes>`
 
 The ONAP instance needs to be configured with policies and closed-loop controls (also as required by use cases),
 and the test framework controls the execution and result collection of all the test cases. Then, test case execution
@@ -236,7 +238,7 @@ instance was a hybrid, with all components except DCAE running on Kubernetes, an
 separately on OpenStack. Starting with ONAP Beijing, DCAE also runs on Kubernetes.
 
 For Arm architectures, specialized Docker images are being developed to provide Arm architecture
-binary compatibility. See the `Auto Release Notes <https://docs.opnfv.org/en/latest/submodules/auto/docs/release/release-notes/index.html#auto-releasenotes>~_
+binary compatibility. See the `Auto Release Notes <auto-releasenotes>`
 for more details on the availability status of these Arm images in the ONAP Docker registry.
 
 The ONAP reference for this installation is detailed `here <http://onap.readthedocs.io/en/latest/submodules/oom.git/docs/oom_user_guide.html>`_.
@@ -318,8 +320,8 @@ Auto Wiki pages:
 
 OPNFV documentation on Auto:
 
-* `Auto release notes <https://docs.opnfv.org/en/latest/submodules/auto/docs/release/release-notes/index.html#auto-releasenotes>`_
-* `Auto use case user guides <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/userguide/index.html#auto-userguide>`_
+* `Auto Release Notes <release-notes>`
+* `Auto use case user guides <auto-userguide>`
 
 
 Git&Gerrit Auto repositories:
