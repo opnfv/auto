@@ -15,7 +15,6 @@ OPNFV Auto (ONAP-Automated OPNFV) User Guide
 .. by the installer project.
 
 .. toctree::
-   :numbered:
    :maxdepth: 3
 
    UC01-feature.userguide.rst

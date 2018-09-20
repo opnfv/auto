@@ -9,7 +9,6 @@ OPNFV Auto (ONAP-Automated OPNFV) Release Notes
 ===============================================
 
 .. toctree::
-   :numbered:
    :maxdepth: 3
 
    Auto-release-notes.rst
