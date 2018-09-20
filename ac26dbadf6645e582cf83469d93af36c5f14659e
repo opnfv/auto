@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a682502_7d79d9fb",
+        "filename": "INFO.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1306
+      },
+      "writtenOn": "2018-09-20T07:11:09Z",
+      "side": 1,
+      "message": "Do you know if Song and Liang are active committers? I\u0027ve not seen any activity from them since I\u0027m on the project.\n\nIn case they are active, then they can and should vote +2 for new committers. If they are inactive, then they should step down or be removed too.",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 20
+      },
+      "revId": "ac26dbadf6645e582cf83469d93af36c5f14659e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
