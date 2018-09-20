@@ -473,9 +473,9 @@ Auto Wiki pages:
 
 OPNFV documentation on Auto:
 
-* `Auto release notes <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/release-notes/index.html#auto-releasenotes>`_
-* `Auto use case user guides <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/userguide/index.html#auto-userguide>`_
-* `Auto configuration guide <http://docs.opnfv.org/en/latest/submodules/auto/docs/release/configguide/index.html#auto-configguide>`_
+* `Auto release notes <auto-releasenotes>`
+* `Auto use case user guides <auto-userguide>`
+* `Auto configuration guide <auto-configguide>`
 
 
 Git&Gerrit Auto repositories:
