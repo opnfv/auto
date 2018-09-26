@@ -1,0 +1,9 @@
+Verified+1: jenkins-ci <jenkins-opnfv-ci@opnfv.org>
+Code-Review+1: Martin Klozik <martin.klozik@tieto.com>
+Code-Review+2: Tina Tsou <tina.tsou@arm.com>
+Verified+1: Tina Tsou <tina.tsou@arm.com>
+Submitted-by: Harry Huang <huangxiangyu5@huawei.com>
+Submitted-at: Wed, 26 Sep 2018 01:48:07 +0000
+Reviewed-on: https://gerrit.opnfv.org/gerrit/62459
+Project: auto
+Branch: refs/heads/master
