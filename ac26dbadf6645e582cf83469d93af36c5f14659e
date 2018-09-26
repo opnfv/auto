@@ -22,6 +22,30 @@
       "revId": "ac26dbadf6645e582cf83469d93af36c5f14659e",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_9ce78d40",
+        "filename": "INFO.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5455
+      },
+      "writtenOn": "2018-09-26T01:47:48Z",
+      "side": 1,
+      "message": "I don\u0027t know if Song and Liang are still planning to be active. Maybe Tina can answer this question.",
+      "parentUuid": "5a682502_7d79d9fb",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 48,
+        "endChar": 20
+      },
+      "revId": "ac26dbadf6645e582cf83469d93af36c5f14659e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
