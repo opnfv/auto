@@ -26,8 +26,8 @@
 # NOTE: Following must be assured for all MASTER and SLAVE servers before
 #       onap-deploy.sh execution:
 #       1) ssh access without a password
-#       2) an "opnfv" user account with password-less sudo access must be
-#          available
+#       2) an user account with password-less sudo access must be
+#          available - default user is "opnfv"
 
 #
 # Configuration
@@ -35,14 +35,28 @@
 DOCKER_VERSION=17.03
 RANCHER_VERSION=1.6.14
 RANCHER_CLI_VER=0.6.11
-KUBECTL_VERSION=1.8.10
-HELM_VERSION=2.8.2
+KUBECTL_VERSION=1.11.2
+HELM_VERSION=2.9.1
 
 MASTER=$1
 SERVERS=$*
+shift
+SLAVES=$*
 
-BRANCH='master'
+BRANCH='casablanca'
 ENVIRON='onap'
+
+SSH_USER=${SSH_USER:-"opnfv"}
+SSH_OPTIONS='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+# by defalult install full ONAP installation
+ONAP_COMPONENT_DISABLE=${ONAP_COMPONENT_DISABLE:-""}
+# example of minimal ONAP installation
+#ONAP_COMPONENT_DISABLE="clamp cli consul dcaegen2 esr log msb multicloud nbi oof policy uui vfc vnfsdk"
+
+# use identity file from the environment SSH_IDENTITY
+if [ -n "$SSH_IDENTITY" ] ; then
+    SSH_OPTIONS="-i $SSH_IDENTITY $SSH_OPTIONS"
+fi
 
 #
 # Installation
@@ -52,9 +66,10 @@ echo "$SERVERS"
 
 for MACHINE in $SERVERS;
 do
-ssh opnfv@"$MACHINE" "bash -s" <<DOCKERINSTALL &
-    sudo su
-    apt-get update
+ssh $SSH_OPTIONS $SSH_USER@"$MACHINE" "bash -s" <<DOCKERINSTALL &
+    sudo -i
+    sysctl -w vm.max_map_count=262144
+    apt-get update -y
     curl https://releases.rancher.com/install-docker/$DOCKER_VERSION.sh | sh
 
     mkdir -p /etc/systemd/system/docker.service.d/
@@ -83,16 +98,14 @@ wait
 echo "INSTALLING RANCHER ON MASTER"
 echo "$MASTER"
 
-ssh opnfv@"$MASTER" "bash -s" <<RANCHERINSTALL &
-sudo su
-apt install jq -y
+ssh $SSH_OPTIONS $SSH_USER@"$MASTER" "bash -s" <<RANCHERINSTALL
+sudo -i
+echo "INSTALL STARTS"
+apt-get install -y jq make htop
 echo "Waiting for 30 seconds at \$(date)"
 sleep 30
 
 docker login -u docker -p docker nexus3.onap.org:10001
-
-echo "INSTALL STARTS"
-apt-get install make -y
 
 docker run -d --restart=unless-stopped -p 8080:8080\
  --name rancher_server rancher/server:v$RANCHER_VERSION
@@ -116,7 +129,7 @@ echo "/dockerdata-nfs *(rw,no_root_squash,no_subtree_check)">>/etc/exports
 service nfs-kernel-server restart
 
 echo "Waiting 10 minutes for Rancher to setup at \$(date)"
-sleep 600
+sleep 10m
 echo "Installing RANCHER CLI, KUBERNETES ENV on RANCHER"
 wget https://github.com/rancher/cli/releases/download/v${RANCHER_CLI_VER}-rc2\
 /rancher-linux-amd64-v${RANCHER_CLI_VER}-rc2.tar.gz
@@ -142,6 +155,10 @@ echo "Creating kubernetes environment named ${ENVIRON}"
 ./rancher env create -t kubernetes $ENVIRON > kube_env_id.json
 PROJECT_ID=\$(<kube_env_id.json)
 echo "env id: \$PROJECT_ID"
+
+echo "Waiting for ${ENVIRON} creation - 1 min at \$(date)"
+sleep 1m
+
 export RANCHER_HOST_URL=http://${MASTER}:8080/v1/projects/\$PROJECT_ID
 echo "you should see an additional kubernetes environment"
 ./rancher env ls
@@ -153,7 +170,7 @@ REG_URL_RESPONSE=\`curl -X POST -u \$KEY_PUBLIC:\$KEY_SECRET\
  "http://$MASTER:8080/v1/projects/\$PROJECT_ID/registrationtokens"\`
 echo "REG_URL_RESPONSE: \$REG_URL_RESPONSE"
 echo "Waiting for the server to finish url configuration - 1 min at \$(date)"
-sleep 60
+sleep 1m
 # see registrationUrl in
 REGISTRATION_TOKENS=\`curl http://$MASTER:8080/v2-beta/registrationtokens\`
 echo "REGISTRATION_TOKENS: \$REGISTRATION_TOKENS"
@@ -197,13 +214,12 @@ echo "docker run --rm --privileged\
  \$REGISTRATION_DOCKER\
  \$RANCHER_URL/v1/scripts/\$REGISTRATION_TOKEN"\
  > /tmp/rancher_register_host
-chown opnfv /tmp/rancher_register_host
+chown $SSH_USER /tmp/rancher_register_host
 
 RANCHERINSTALL
-wait
 
 echo "REGISTER TOKEN"
-HOSTREGTOKEN=$(ssh opnfv@"$MASTER" cat /tmp/rancher_register_host)
+HOSTREGTOKEN=$(ssh $SSH_OPTIONS $SSH_USER@"$MASTER" cat /tmp/rancher_register_host)
 echo "$HOSTREGTOKEN"
 
 echo "REGISTERING HOSTS WITH RANCHER ENVIRONMENT '$ENVIRON'"
@@ -211,22 +227,38 @@ echo "$SERVERS"
 
 for MACHINE in $SERVERS;
 do
-ssh opnfv@"$MACHINE" "bash -s" <<REGISTERHOST &
-    sudo su
+ssh $SSH_OPTIONS $SSH_USER@"$MACHINE" "bash -s" <<REGISTERHOST &
+    sudo -i
     $HOSTREGTOKEN
     sleep 5
     echo "Host $MACHINE waiting for host registration 5 min at \$(date)"
-    sleep 300
+    sleep 5m
 REGISTERHOST
+done
+wait
+
+echo "CONFIGURING NFS ON SLAVES"
+echo "$SLAVES"
+
+for SLAVE in $SLAVES;
+do
+ssh $SSH_OPTIONS $SSH_USER@"$SLAVE" "bash -s" <<CONFIGURENFS &
+    sudo -i
+    apt-get install nfs-common -y
+    mkdir /dockerdata-nfs
+    chmod 777 /dockerdata-nfs
+    echo "$MASTER:/dockerdata-nfs /dockerdata-nfs   nfs    auto  0  0" >> /etc/fstab
+    mount -a
+    mount | grep dockerdata-nfs
+CONFIGURENFS
 done
 wait
 
 echo "DEPLOYING OOM ON RANCHER WITH MASTER"
 echo "$MASTER"
 
-ssh opnfv@"$MASTER" "bash -s" <<OOMDEPLOY &
-sudo su
-sysctl -w vm.max_map_count=262144
+ssh $SSH_OPTIONS $SSH_USER@"$MASTER" "bash -s" <<OOMDEPLOY
+sudo -i
 rm -rf oom
 echo "pulling new oom"
 git clone -b $BRANCH http://gerrit.onap.org/r/oom
@@ -242,10 +274,22 @@ chmod 777 prepull_docker.sh
 ./prepull_docker.sh
 echo "starting onap pods"
 cd oom/kubernetes/
+
+# Disable ONAP components
+if [ -n "$ONAP_COMPONENT_DISABLE" ] ; then
+    echo -n "Disable following ONAP components:"
+    for COMPONENT in $ONAP_COMPONENT_DISABLE; do
+        echo -n " \$COMPONENT"
+        sed -i '/^'\${COMPONENT}':$/!b;n;s/enabled: *true/enabled: false/' onap/values.yaml
+    done
+    echo
+fi
+
 helm init --upgrade
-helm serve &
+# run helm server on the background and detached from current shell
+nohup helm serve  0<&- &>/dev/null &
 echo "Waiting for helm setup for 5 min at \$(date)"
-sleep 300
+sleep 5m
 helm version
 helm repo add local http://127.0.0.1:8879
 helm repo list
@@ -254,40 +298,43 @@ helm install local/onap -n dev --namespace $ENVIRON
 cd ../../
 
 echo "Waiting for all pods to be up for 15-80 min at \$(date)"
-FAILED_PODS_LIMIT=0
-MAX_WAIT_PERIODS=480 # 120 MIN
+echo "Ignore failure of sdnc-ansible-server, see SDNC-443"
+TMP_POD_LIST='/tmp/onap_pod_list.txt'
+function get_onap_pods() {
+    kubectl get pods --namespace $ENVIRON > \$TMP_POD_LIST
+    return \$(cat \$TMP_POD_LIST | wc -l)
+}
+FAILED_PODS_LIMIT=1 # maximal number of falied ONAP PODs
+ALL_PODS_LIMIT=20   # minimum ONAP PODs to be up & running
+MAX_WAIT_PERIODS=500 # over 2 hours
 COUNTER=0
-PENDING_PODS=0
-while [  \$(kubectl get pods --all-namespaces | grep -E '0/|1/2' | wc -l) \
--gt \$FAILED_PODS_LIMIT ]; do
-  PENDING=\$(kubectl get pods --all-namespaces | grep -E '0/|1/2' | wc -l)
-  PENDING_PODS=\$PENDING
+get_onap_pods
+ALL_PODS=\$?
+PENDING=\$(grep -E '0/|1/2' \$TMP_POD_LIST | wc -l)
+while [ \$PENDING -gt \$FAILED_PODS_LIMIT -o \$ALL_PODS -lt \$ALL_PODS_LIMIT ]; do
+  # print header every 20th lines
+  if [ \$COUNTER -eq \$((\$COUNTER/20*20)) ] ; then
+    printf "%-3s %-29s %-3s/%s\n" "Nr." "Datetime of check" "Err" "Total PODs"
+  fi
+  COUNTER=\$((\$COUNTER+1))
+  printf "%3s %-29s %3s/%-3s\n" \$COUNTER "\$(date)" \$PENDING \$ALL_PODS
   sleep 15
-  LIST_PENDING=\$(kubectl get pods --all-namespaces -o wide | grep -E '0/|1/2' )
-  echo "\${LIST_PENDING}"
-  echo "\${PENDING} pending > \${FAILED_PODS_LIMIT} at the \${COUNTER}th"\
-       " 15 sec interval out of \${MAX_WAIT_PERIODS}"
-  echo ""
-  COUNTER=\$((\$COUNTER + 1 ))
   if [ "\$MAX_WAIT_PERIODS" -eq \$COUNTER ]; then
     FAILED_PODS_LIMIT=800
+    ALL_PODS_LIMIT=0
   fi
+  get_onap_pods
+  ALL_PODS=\$?
+  PENDING=\$(grep -E '0/|1/2' \$TMP_POD_LIST | wc -l)
 done
 
 echo "Report on non-running containers"
-PENDING=\$(kubectl get pods --all-namespaces | grep -E '0/|1/2')
-PENDING_COUNT=\$(kubectl get pods --all-namespaces | grep -E '0/|1/2' | wc -l)
-PENDING_COUNT_AAI=\$(kubectl get pods -n $ENVIRON | grep aai- \
-| grep -E '0/|1/2' | wc -l)
+get_onap_pods
+grep -E '0/|1/2' \$TMP_POD_LIST
+echo
 
-echo "Check filebeat 2/2 count for ELK stack logging consumption"
-FILEBEAT=\$(kubectl get pods --all-namespaces -a | grep 2/)
-echo "\${FILEBEAT}"
 echo "sleep 5 min - to allow rest frameworks to finish at \$(date)"
-sleep 300
-echo "List of ONAP Modules"
-LIST_ALL=\$(kubectl get pods --all-namespaces -a  --show-all )
-echo "\${LIST_ALL}"
+sleep 5m
 echo "run healthcheck 2 times to warm caches and frameworks"\
      "so rest endpoints report properly - see OOM-447"
 
@@ -314,29 +361,19 @@ cloud-regions/ \
 
 # OOM-484 - robot scripts moved
 cd oom/kubernetes/robot
-echo "run healthcheck prep 1"
+echo -e "\nrun healthcheck prep 1"
 # OOM-722 adds namespace parameter
-if [ "$BRANCH" == "amsterdam" ]; then
-  ./ete-k8s.sh health > ~/health1.out
-else
-  ./ete-k8s.sh $ENVIRON health > ~/health1.out
-fi
+./ete-k8s.sh $ENVIRON health > ~/health1.out
 echo "sleep 5 min at \$(date)"
-sleep 300
+sleep 5m
+
 echo "run healthcheck prep 2"
-if [ "$BRANCH" == "amsterdam" ]; then
-  ./ete-k8s.sh health > ~/health2.out
-else
-  ./ete-k8s.sh $ENVIRON health > ~/health2.out
-fi
+./ete-k8s.sh $ENVIRON health > ~/health2.out
+
 echo "run healthcheck for real - wait a further 5 min at \$(date)"
-sleep 300
-if [ "$BRANCH" == "amsterdam" ]; then
-  ./ete-k8s.sh health
-else
-  ./ete-k8s.sh $ENVIRON health
-fi
+sleep 5m
+./ete-k8s.sh $ENVIRON health
 OOMDEPLOY
-wait
-echo "Finished install, ruturned from Master"
+
+echo "Finished install, ruturned from Master at $(date)"
 exit 0
