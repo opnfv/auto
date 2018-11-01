@@ -26,8 +26,8 @@
 # NOTE: Following must be assured for all MASTER and SLAVE servers before
 #       onap-deploy.sh execution:
 #       1) ssh access without a password
-#       2) an "opnfv" user account with password-less sudo access must be
-#          available
+#       2) an user account with password-less sudo access must be
+#          available - default user is "opnfv"
 
 #
 # Configuration
@@ -40,9 +40,23 @@ HELM_VERSION=2.8.2
 
 MASTER=$1
 SERVERS=$*
+shift
+SLAVES=$*
 
-BRANCH='master'
+BRANCH='beijing'
 ENVIRON='onap'
+
+SSH_USER=${SSH_USER:-"opnfv"}
+SSH_OPTIONS='-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+# by defalult install full ONAP installation
+ONAP_COMPONENT_DISABLE=${ONAP_COMPONENT_DISABLE:-""}
+# example of minimal ONAP installation
+#ONAP_COMPONENT_DISABLE="clamp cli consul dcaegen2 esr log msb multicloud nbi oof policy uui vfc vnfsdk"
+
+# use identity file from the environment SSH_IDENTITY
+if [ -n "$SSH_IDENTITY" ] ; then
+    SSH_OPTIONS="-i $SSH_IDENTITY $SSH_OPTIONS"
+fi
 
 #
 # Installation
@@ -52,7 +66,7 @@ echo "$SERVERS"
 
 for MACHINE in $SERVERS;
 do
-ssh opnfv@"$MACHINE" "bash -s" <<DOCKERINSTALL &
+ssh $SSH_OPTIONS $SSH_USER@"$MACHINE" "bash -s" <<DOCKERINSTALL &
     sudo su
     apt-get update
     curl https://releases.rancher.com/install-docker/$DOCKER_VERSION.sh | sh
@@ -83,7 +97,7 @@ wait
 echo "INSTALLING RANCHER ON MASTER"
 echo "$MASTER"
 
-ssh opnfv@"$MASTER" "bash -s" <<RANCHERINSTALL &
+ssh $SSH_OPTIONS $SSH_USER@"$MASTER" "bash -s" <<RANCHERINSTALL &
 sudo su
 apt install jq -y
 echo "Waiting for 30 seconds at \$(date)"
@@ -116,7 +130,7 @@ echo "/dockerdata-nfs *(rw,no_root_squash,no_subtree_check)">>/etc/exports
 service nfs-kernel-server restart
 
 echo "Waiting 10 minutes for Rancher to setup at \$(date)"
-sleep 600
+sleep 10m
 echo "Installing RANCHER CLI, KUBERNETES ENV on RANCHER"
 wget https://github.com/rancher/cli/releases/download/v${RANCHER_CLI_VER}-rc2\
 /rancher-linux-amd64-v${RANCHER_CLI_VER}-rc2.tar.gz
@@ -153,7 +167,7 @@ REG_URL_RESPONSE=\`curl -X POST -u \$KEY_PUBLIC:\$KEY_SECRET\
  "http://$MASTER:8080/v1/projects/\$PROJECT_ID/registrationtokens"\`
 echo "REG_URL_RESPONSE: \$REG_URL_RESPONSE"
 echo "Waiting for the server to finish url configuration - 1 min at \$(date)"
-sleep 60
+sleep 1m
 # see registrationUrl in
 REGISTRATION_TOKENS=\`curl http://$MASTER:8080/v2-beta/registrationtokens\`
 echo "REGISTRATION_TOKENS: \$REGISTRATION_TOKENS"
@@ -197,13 +211,13 @@ echo "docker run --rm --privileged\
  \$REGISTRATION_DOCKER\
  \$RANCHER_URL/v1/scripts/\$REGISTRATION_TOKEN"\
  > /tmp/rancher_register_host
-chown opnfv /tmp/rancher_register_host
+chown $SSH_USER /tmp/rancher_register_host
 
 RANCHERINSTALL
 wait
 
 echo "REGISTER TOKEN"
-HOSTREGTOKEN=$(ssh opnfv@"$MASTER" cat /tmp/rancher_register_host)
+HOSTREGTOKEN=$(ssh $SSH_OPTIONS $SSH_USER@"$MASTER" cat /tmp/rancher_register_host)
 echo "$HOSTREGTOKEN"
 
 echo "REGISTERING HOSTS WITH RANCHER ENVIRONMENT '$ENVIRON'"
@@ -211,20 +225,38 @@ echo "$SERVERS"
 
 for MACHINE in $SERVERS;
 do
-ssh opnfv@"$MACHINE" "bash -s" <<REGISTERHOST &
+ssh $SSH_OPTIONS $SSH_USER@"$MACHINE" "bash -s" <<REGISTERHOST &
     sudo su
     $HOSTREGTOKEN
     sleep 5
     echo "Host $MACHINE waiting for host registration 5 min at \$(date)"
-    sleep 300
+    sleep 5m
 REGISTERHOST
+done
+wait
+
+echo "CONFIGURING NFS ON SLAVES"
+echo "$SLAVES"
+
+for SLAVE in $SLAVES;
+do
+ssh $SSH_OPTIONS $SSH_USER@"$SLAVE" "bash -s" <<CONFIGURENFS &
+    sudo -i
+    apt update
+    apt install nfs-common -y
+    mkdir /dockerdata-nfs
+    chmod 777 /dockerdata-nfs
+    echo "$MASTER:/dockerdata-nfs /dockerdata-nfs   nfs    auto  0  0" >> /etc/fstab
+    mount -a
+    mount | grep dockerdata-nfs
+CONFIGURENFS
 done
 wait
 
 echo "DEPLOYING OOM ON RANCHER WITH MASTER"
 echo "$MASTER"
 
-ssh opnfv@"$MASTER" "bash -s" <<OOMDEPLOY &
+ssh $SSH_OPTIONS $SSH_USER@"$MASTER" "bash -s" <<OOMDEPLOY &
 sudo su
 sysctl -w vm.max_map_count=262144
 rm -rf oom
@@ -242,10 +274,21 @@ chmod 777 prepull_docker.sh
 ./prepull_docker.sh
 echo "starting onap pods"
 cd oom/kubernetes/
+
+# Disable ONAP components
+if [ -n "$ONAP_COMPONENT_DISABLE" ] ; then
+    echo -n "Disable following ONAP components:"
+    for COMPONENT in $ONAP_COMPONENT_DISABLE; do
+        echo -n " \$COMPONENT"
+        sed -i '/^'\${COMPONENT}':$/!b;n;s/enabled: *true/enabled: false/' onap/values.yaml
+    done
+    echo
+fi
+
 helm init --upgrade
 helm serve &
 echo "Waiting for helm setup for 5 min at \$(date)"
-sleep 300
+sleep 5m
 helm version
 helm repo add local http://127.0.0.1:8879
 helm repo list
@@ -254,7 +297,8 @@ helm install local/onap -n dev --namespace $ENVIRON
 cd ../../
 
 echo "Waiting for all pods to be up for 15-80 min at \$(date)"
-FAILED_PODS_LIMIT=0
+echo "Ignore failure of sdnc-ansible-server, see SDNC-443"
+FAILED_PODS_LIMIT=1
 MAX_WAIT_PERIODS=480 # 120 MIN
 COUNTER=0
 PENDING_PODS=0
@@ -284,7 +328,7 @@ echo "Check filebeat 2/2 count for ELK stack logging consumption"
 FILEBEAT=\$(kubectl get pods --all-namespaces -a | grep 2/)
 echo "\${FILEBEAT}"
 echo "sleep 5 min - to allow rest frameworks to finish at \$(date)"
-sleep 300
+sleep 5m
 echo "List of ONAP Modules"
 LIST_ALL=\$(kubectl get pods --all-namespaces -a  --show-all )
 echo "\${LIST_ALL}"
@@ -322,7 +366,7 @@ else
   ./ete-k8s.sh $ENVIRON health > ~/health1.out
 fi
 echo "sleep 5 min at \$(date)"
-sleep 300
+sleep 5m
 echo "run healthcheck prep 2"
 if [ "$BRANCH" == "amsterdam" ]; then
   ./ete-k8s.sh health > ~/health2.out
@@ -330,7 +374,7 @@ else
   ./ete-k8s.sh $ENVIRON health > ~/health2.out
 fi
 echo "run healthcheck for real - wait a further 5 min at \$(date)"
-sleep 300
+sleep 5m
 if [ "$BRANCH" == "amsterdam" ]; then
   ./ete-k8s.sh health
 else
