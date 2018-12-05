@@ -19,11 +19,15 @@
 # project.
 
 # Usage:
-#       build-auto.sh job_type
-#   where job_type is one of "verify", "merge", "daily"
+#       build-auto.sh [-l lab -p pod] job_type
+# Parameters:
+#       -l lab      - lab name to be passed to MCP/Fuel installer
+#       -p pod      - pod name to be passed to MCP/Fuel installer
+#       job_type    - is one of "verify", "merge" or "daily"
 #
 # Example:
-#       ./ci/build-auto.sh daily
+#       ./ci/build-auto.sh verify
+#       ./ci/build-auto.sh -l intel -p pod18 daily
 
 #
 # exit codes
@@ -36,6 +40,15 @@ EXIT_LINT_FAILED=2
 # configuration
 #
 AUTOENV_DIR="$HOME/autoenv"
+TIMESTAMP=$(date +%Y%m%d_%H%M)
+LOG_DIR=$HOME/auto_ci_daily_logs
+FUEL_TMP=/tmp/fuel_tmp
+# POD details used during OPNFV deployment performed by daily job
+# By default, virtual deployment is performed. Values can be specified
+# by -l and -p options.
+POD_LAB='ericsson'
+POD_NAME='virtual1'
+DEPLOY_SCENARIO=${DEPLOY_SCENARIO:-"os-nofeature-onap-ha"}
 
 #
 # functions
@@ -47,6 +60,20 @@ function execute_auto_lint_check() {
     fi
 }
 
+# parse command line arguments
+function parse_arguments() {
+    OPTIND=1
+    while getopts "l:p:" opt; do
+        case "$opt" in
+            l)  POD_LAB=$OPTARG
+                ;;
+            p)  POD_NAME=$OPTARG
+                ;;
+        esac
+    done
+    shift $((OPTIND-1))
+    JOB_TYPE=$1
+}
 #
 # main
 #
@@ -70,6 +97,26 @@ source "$AUTOENV_DIR"/bin/activate
 pip install -r ./requirements.txt
 echo
 
+# create log dir if needed
+if [ ! -e $LOG_DIR ] ; then
+    echo "Create AUTO LOG DIRECTORY"
+    echo "========================="
+    echo "mkdir $LOG_DIR"
+    mkdir $LOG_DIR
+fi
+
+# parse arguments if needed
+OPTIND=1
+while getopts "l:p:" opt; do
+    case "$opt" in
+        l)  POD_LAB=$OPTARG
+            ;;
+        p)  POD_NAME=$OPTARG
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
 # execute job based on passed parameter
 case $1 in
     "verify")
@@ -77,15 +124,8 @@ case $1 in
         echo "AUTO verify job"
         echo "==============="
 
-        # Example of verify job body. Functions can call
-        # external scripts, etc.
-
         execute_auto_lint_check
         #execute_auto_doc_check
-        #install_opnfv MCP
-        #install_onap
-        #execute_sanity_check
-        #execute_tests $1
 
         # Everything went well, so report SUCCESS to Jenkins
         exit $EXIT
@@ -95,15 +135,8 @@ case $1 in
         echo "AUTO merge job"
         echo "=============="
 
-        # Example of merge job body. Functions can call
-        # external scripts, etc.
-
         execute_auto_lint_check
         #execute_auto_doc_check
-        #install_opnfv MCP
-        #install_onap
-        #execute_sanity_check
-        #execute_tests $1
 
         # propagate result to the Jenkins job
         exit $EXIT
@@ -112,15 +145,24 @@ case $1 in
         echo "=============="
         echo "AUTO daily job"
         echo "=============="
+        echo
+        echo "POD details:"
+        echo "  LAB:  $POD_LAB"
+        echo "  NAME: $POD_NAME"
+        echo
 
-        # Example of daily job body. Functions can call
-        # external scripts, etc.
+        # clone fuel and execute installation of ONAP scenario to install
+        # ONAP on top of OPNFV deployment
+        [ -e fuel ] && rm -rf fuel
+        git clone https://gerrit.opnfv.org/gerrit/fuel
+        # temporary until patch will be merged
+        git pull https://gerrit.opnfv.org/gerrit/fuel refs/changes/69/64369/51
+        cd fuel
 
-        #install_opnfv MCP
-        #install_onap
-        #execute_sanity_check
-        #execute_tests $1
-        #push_results_and_logs_to_artifactory
+        echo "Installation of OPNFV and ONAP"
+        echo "=============================="
+        sudo ci/deploy.sh -l $POD_LAB -p $POD_NAME -s $DEPLOY_SCENARIO \
+            -S $FUEL_TMP | tee $LOG_DIR/deploy_${TIMESTAMP}.log
 
         # propagate result to the Jenkins job
         exit $EXIT
