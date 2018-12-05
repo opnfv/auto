@@ -20,10 +20,12 @@
 
 # Usage:
 #       build-auto.sh job_type
-#   where job_type is one of "verify", "merge", "daily"
+#
+# Parameters:
+#       job_type - is one of "verify", "merge" or "daily"
 #
 # Example:
-#       ./ci/build-auto.sh daily
+#       ./ci/build-auto.sh verify
 
 #
 # exit codes
@@ -36,6 +38,15 @@ EXIT_LINT_FAILED=2
 # configuration
 #
 AUTOENV_DIR="$HOME/autoenv"
+TIMESTAMP=$(date +%Y%m%d_%H%M)
+LOG_DIR=$HOME/auto_ci_daily_logs
+FUEL_TMP=/tmp/fuel_tmp
+
+# POD and SCENARIO details used during OPNFV deployment performed by daily job
+NODE_NAME=${NODE_NAME:-"ericsson-virtual1"}
+POD_LAB=$(echo $NODE_NAME | cut -d '-' -f1)
+POD_NAME=$(echo $NODE_NAME | cut -d '-' -f2)
+DEPLOY_SCENARIO=${DEPLOY_SCENARIO:-"os-nofeature-onap-ha"}
 
 #
 # functions
@@ -70,6 +81,14 @@ source "$AUTOENV_DIR"/bin/activate
 pip install -r ./requirements.txt
 echo
 
+# create log dir if needed
+if [ ! -e $LOG_DIR ] ; then
+    echo "Create AUTO LOG DIRECTORY"
+    echo "========================="
+    echo "mkdir $LOG_DIR"
+    mkdir $LOG_DIR
+fi
+
 # execute job based on passed parameter
 case $1 in
     "verify")
@@ -77,15 +96,8 @@ case $1 in
         echo "AUTO verify job"
         echo "==============="
 
-        # Example of verify job body. Functions can call
-        # external scripts, etc.
-
         execute_auto_lint_check
         #execute_auto_doc_check
-        #install_opnfv MCP
-        #install_onap
-        #execute_sanity_check
-        #execute_tests $1
 
         # Everything went well, so report SUCCESS to Jenkins
         exit $EXIT
@@ -95,15 +107,8 @@ case $1 in
         echo "AUTO merge job"
         echo "=============="
 
-        # Example of merge job body. Functions can call
-        # external scripts, etc.
-
         execute_auto_lint_check
         #execute_auto_doc_check
-        #install_opnfv MCP
-        #install_onap
-        #execute_sanity_check
-        #execute_tests $1
 
         # propagate result to the Jenkins job
         exit $EXIT
@@ -112,15 +117,24 @@ case $1 in
         echo "=============="
         echo "AUTO daily job"
         echo "=============="
+        echo
+        echo "POD details:"
+        echo "  LAB:  $POD_LAB"
+        echo "  NAME: $POD_NAME"
+        echo
 
-        # Example of daily job body. Functions can call
-        # external scripts, etc.
+        # clone fuel and execute installation of ONAP scenario to install
+        # ONAP on top of OPNFV deployment
+        [ -e fuel ] && rm -rf fuel
+        git clone https://gerrit.opnfv.org/gerrit/fuel
+        cd fuel
+        # temporary until patch will be merged
+        git pull https://gerrit.opnfv.org/gerrit/fuel refs/changes/69/64369/51
 
-        #install_opnfv MCP
-        #install_onap
-        #execute_sanity_check
-        #execute_tests $1
-        #push_results_and_logs_to_artifactory
+        echo "Installation of OPNFV and ONAP"
+        echo "=============================="
+        sudo ci/deploy.sh -l $POD_LAB -p $POD_NAME -s $DEPLOY_SCENARIO \
+            -S $FUEL_TMP | tee $LOG_DIR/deploy_${TIMESTAMP}.log
 
         # propagate result to the Jenkins job
         exit $EXIT
