@@ -101,7 +101,7 @@ echo "Storage for instances: CMP_STORAGE_TOTAL=$CMP_STORAGE_TOTAL"
 echo "Number of VMs:         VM_COUNT=$VM_COUNT"
 # Calculate VM parameters; there will be up to 1 VM per Compute node
 # to maximize resources available for VMs
-PER=90                      # % of compute resources will be consumed by VMs
+PER=85                      # % of compute resources will be consumed by VMs
 VM_DISK_MAX=100             # GB - max VM disk size
 VM_MEM_MAX=81920            # MB - max VM RAM size
 VM_CPUS_MAX=56              # max count of VM CPUs
@@ -180,15 +180,14 @@ while [ $VM_ITER -le $VM_COUNT ] ; do
         --nic net-id=onap_private_network --security-group onap_security_group \
         --key-name onap_key ${VM_NAME[$VM_ITER]} \
         --availability-zone ${HOST_ZONE}:${HOST_NAME[$HOST_ITER]}
-    sleep 5 # wait for VM init before floating IP can be assigned
+    sleep 10 # wait for VM init before floating IP can be assigned
     openstack server add floating ip ${VM_NAME[$VM_ITER]} ${VM_IP[$VM_ITER]}
+    echo "Waiting for ${VM_NAME[$VM_ITER]} to start up for 1m at $(date)"
+    sleep 1m
     VM_ITER=$(($VM_ITER+1))
     HOST_ITER=$(($HOST_ITER+1))
     [ $HOST_ITER -ge $HOST_COUNT ] && HOST_ITER=0
 done
-
-echo "Waiting for VMs to start up for 2m at $(date)"
-sleep 2m
 
 openstack server list -c ID -c Name -c Status -c Networks -c Host --long
 
