@@ -61,6 +61,19 @@ fi
 #
 # Installation
 #
+
+# use standalone K8S master if there are enough VMs available for the K8S cluseter
+SERVERS_COUNT=$(echo $SERVERS | wc -w)
+if [ $SERVERS_COUNT -gt 2 ] ; then
+    RANCHER_SLAVES=$SLAVES
+else
+    RANCHER_SLAVES=$SERVERS
+fi
+
+echo "INSTALLATION TOPOLOGY:"
+echo "Rancher Master: $MASTER"
+echo "Rancher Slaves: $RANCHER_SLAVES"
+echo
 echo "INSTALLING DOCKER ON ALL MACHINES"
 echo "$SERVERS"
 
@@ -225,7 +238,7 @@ echo "$HOSTREGTOKEN"
 echo "REGISTERING HOSTS WITH RANCHER ENVIRONMENT '$ENVIRON'"
 echo "$SERVERS"
 
-for MACHINE in $SERVERS;
+for MACHINE in $RANCHER_SLAVES;
 do
 ssh $SSH_OPTIONS $SSH_USER@"$MACHINE" "bash -s" <<REGISTERHOST &
     sudo -i
@@ -256,6 +269,7 @@ wait
 
 echo "DEPLOYING OOM ON RANCHER WITH MASTER"
 echo "$MASTER"
+TMP_POD_LIST='/tmp/onap_pod_list.txt'
 
 ssh $SSH_OPTIONS $SSH_USER@"$MASTER" "bash -s" <<OOMDEPLOY
 sudo -i
@@ -297,20 +311,21 @@ make all
 helm install local/onap -n dev --namespace $ENVIRON
 cd ../../
 
-echo "Waiting for all pods to be up for 15-80 min at \$(date)"
+echo "Waiting for ONAP pods to be up \$(date)"
 echo "Ignore failure of sdnc-ansible-server, see SDNC-443"
-TMP_POD_LIST='/tmp/onap_pod_list.txt'
 function get_onap_pods() {
-    kubectl get pods --namespace $ENVIRON > \$TMP_POD_LIST
-    return \$(cat \$TMP_POD_LIST | wc -l)
+    kubectl get pods --namespace $ENVIRON > $TMP_POD_LIST
+    return \$(cat $TMP_POD_LIST | wc -l)
 }
-FAILED_PODS_LIMIT=1 # maximal number of falied ONAP PODs
-ALL_PODS_LIMIT=20   # minimum ONAP PODs to be up & running
-MAX_WAIT_PERIODS=500 # over 2 hours
+FAILED_PODS_LIMIT=1         # maximal number of failed ONAP PODs
+ALL_PODS_LIMIT=20           # minimum ONAP PODs to be up & running
+WAIT_PERIOD=60              # wait period in seconds
+MAX_WAIT_TIME=\$((3600*4))  # max wait time in seconds
+MAX_WAIT_PERIODS=\$((\$MAX_WAIT_TIME/\$WAIT_PERIOD))
 COUNTER=0
 get_onap_pods
 ALL_PODS=\$?
-PENDING=\$(grep -E '0/|1/2' \$TMP_POD_LIST | wc -l)
+PENDING=\$(grep -E '0/|1/2' $TMP_POD_LIST | wc -l)
 while [ \$PENDING -gt \$FAILED_PODS_LIMIT -o \$ALL_PODS -lt \$ALL_PODS_LIMIT ]; do
   # print header every 20th lines
   if [ \$COUNTER -eq \$((\$COUNTER/20*20)) ] ; then
@@ -318,19 +333,20 @@ while [ \$PENDING -gt \$FAILED_PODS_LIMIT -o \$ALL_PODS -lt \$ALL_PODS_LIMIT ]; 
   fi
   COUNTER=\$((\$COUNTER+1))
   printf "%3s %-29s %3s/%-3s\n" \$COUNTER "\$(date)" \$PENDING \$ALL_PODS
-  sleep 15
+  sleep \$WAIT_PERIOD
   if [ "\$MAX_WAIT_PERIODS" -eq \$COUNTER ]; then
     FAILED_PODS_LIMIT=800
     ALL_PODS_LIMIT=0
   fi
   get_onap_pods
   ALL_PODS=\$?
-  PENDING=\$(grep -E '0/|1/2' \$TMP_POD_LIST | wc -l)
+  PENDING=\$(grep -E '0/|1/2' $TMP_POD_LIST | wc -l)
 done
 
 echo "Report on non-running containers"
 get_onap_pods
-grep -E '0/|1/2' \$TMP_POD_LIST
+cp $TMP_POD_LIST ~/onap_all_pods.txt
+grep -E '0/|1/2' $TMP_POD_LIST | tee ~/onap_failed_pods.txt
 echo
 
 echo "sleep 5 min - to allow rest frameworks to finish at \$(date)"
@@ -363,17 +379,21 @@ cloud-regions/ \
 cd oom/kubernetes/robot
 echo -e "\nrun healthcheck prep 1"
 # OOM-722 adds namespace parameter
-./ete-k8s.sh $ENVIRON health > ~/health1.out
+./ete-k8s.sh $ENVIRON health > ~/onap_health_prep1.txt
 echo "sleep 5 min at \$(date)"
 sleep 5m
 
 echo "run healthcheck prep 2"
-./ete-k8s.sh $ENVIRON health > ~/health2.out
+./ete-k8s.sh $ENVIRON health > ~/onap_health_prep2.txt
 
 echo "run healthcheck for real - wait a further 5 min at \$(date)"
 sleep 5m
-./ete-k8s.sh $ENVIRON health
+./ete-k8s.sh $ENVIRON health | tee ~/onap_health_final.txt
 OOMDEPLOY
+
+#echo "=========================="
+#echo "ONAP installation Summary:"
+#echo "=========================="
 
 echo "Finished install, ruturned from Master at $(date)"
 exit 0
