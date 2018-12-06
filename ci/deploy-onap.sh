@@ -61,6 +61,19 @@ fi
 #
 # Installation
 #
+
+# use standalone K8S master if there are enough VMs available for the K8S cluseter
+SERVERS_COUNT=$(echo $SERVERS | wc -w)
+if [ $SERVERS_COUNT -gt 2 ] ; then
+    RANCHER_SLAVES=$SLAVES
+else
+    RANCHER_SLAVES=$SERVERS
+fi
+
+echo "INSTALLATION TOPOLOGY:"
+echo "Rancher Master: $MASTER"
+echo "Rancher Slaves: $SLAVES"
+echo
 echo "INSTALLING DOCKER ON ALL MACHINES"
 echo "$SERVERS"
 
@@ -225,7 +238,7 @@ echo "$HOSTREGTOKEN"
 echo "REGISTERING HOSTS WITH RANCHER ENVIRONMENT '$ENVIRON'"
 echo "$SERVERS"
 
-for MACHINE in $SERVERS;
+for MACHINE in $RANCHER_SLAVES;
 do
 ssh $SSH_OPTIONS $SSH_USER@"$MACHINE" "bash -s" <<REGISTERHOST &
     sudo -i
@@ -297,16 +310,18 @@ make all
 helm install local/onap -n dev --namespace $ENVIRON
 cd ../../
 
-echo "Waiting for all pods to be up for 15-80 min at \$(date)"
+echo "Waiting for ONAP pods to be up \$(date)"
 echo "Ignore failure of sdnc-ansible-server, see SDNC-443"
 TMP_POD_LIST='/tmp/onap_pod_list.txt'
 function get_onap_pods() {
     kubectl get pods --namespace $ENVIRON > \$TMP_POD_LIST
     return \$(cat \$TMP_POD_LIST | wc -l)
 }
-FAILED_PODS_LIMIT=1 # maximal number of falied ONAP PODs
-ALL_PODS_LIMIT=20   # minimum ONAP PODs to be up & running
-MAX_WAIT_PERIODS=500 # over 2 hours
+FAILED_PODS_LIMIT=1         # maximal number of failed ONAP PODs
+ALL_PODS_LIMIT=20           # minimum ONAP PODs to be up & running
+WAIT_PERIOD=60              # wait period in seconds
+MAX_WAIT_TIME=$((3600*4))   # max wait time in seconds
+MAX_WAIT_PERIODS=$(($MAX_WAIT_TIME/$WAIT_PERIOD))
 COUNTER=0
 get_onap_pods
 ALL_PODS=\$?
