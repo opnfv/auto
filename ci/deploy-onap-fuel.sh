@@ -33,7 +33,7 @@ CMP_MIN_MEM=${CMP_MIN_MEM:-64000}   # MB RAM of the weakest compute node
 CMP_MIN_CPUS=${CMP_MIN_CPUS:-36}    # CPU count of the weakest compute node
 # size of storage for instances
 CMP_STORAGE_TOTAL=${CMP_STORAGE_TOTAL:-$((80*$CMP_COUNT))}
-VM_COUNT=${VM_COUNT:-2}             # number of VMs available for k8s cluster
+VM_COUNT=${VM_COUNT:-6}             # number of VMs available for k8s cluster
 
 #
 # Functions
@@ -163,27 +163,64 @@ openstack security group rule create --remote-ip $PUBLIC_NET --proto tcp \
 openstack security group rule create --remote-ip $PUBLIC_NET --proto udp \
     --dst-port 1:65535 onap_security_group
 
+# Get list of hypervisors and their zone
+HOST_ZONE=$(openstack host list -f value | grep compute | head -n1 | cut -d' ' -f3)
+HOST_NAME=($(openstack host list -f value | grep compute | cut -d' ' -f1))
+HOST_COUNT=$(echo ${HOST_NAME[@]} | wc -w)
 # Create VMs and assign floating IPs to them
 VM_ITER=1
+HOST_ITER=0
 while [ $VM_ITER -le $VM_COUNT ] ; do
     openstack floating ip create floating_net
     VM_NAME[$VM_ITER]="onap_vm${VM_ITER}"
     VM_IP[$VM_ITER]=$(openstack floating ip list -c "Floating IP Address" \
         -c "Port" -f value | grep None | cut -f1 -d " " | head -n1)
+    # dispatch new VMs among compute nodes in round robin fashion
     openstack server create --flavor onap.large --image xenial \
         --nic net-id=onap_private_network --security-group onap_security_group \
-        --key-name onap_key ${VM_NAME[$VM_ITER]}
+        --key-name onap_key ${VM_NAME[$VM_ITER]} \
+        --availability-zone ${HOST_ZONE}:${HOST_NAME[$HOST_ITER]}
     sleep 5 # wait for VM init before floating IP can be assigned
     openstack server add floating ip ${VM_NAME[$VM_ITER]} ${VM_IP[$VM_ITER]}
     VM_ITER=$(($VM_ITER+1))
+    HOST_ITER=$(($HOST_ITER+1))
+    [ $HOST_ITER -ge $HOST_COUNT ] && HOST_ITER=0
 done
 
-openstack server list
+echo "Waiting for VMs to start up for 2m at $(date)"
+sleep 2m
 
-echo "Waiting for VMs to start up for 5 minutes at $(date)"
-sleep 5m
+openstack server list -c ID -c Name -c Status -c Networks -c Host --long
 
-openstack server list
+# check that SSH to all VMs is working
+SSH_OPTIONS="-i $SSH_IDENTITY -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+COUNTER=1
+while [ $COUNTER -le 10 ] ; do
+    VM_UP=0
+    VM_ITER=1
+    while [ $VM_ITER -le $VM_COUNT ] ; do
+       if ssh $SSH_OPTIONS -l $SSH_USER ${VM_IP[$VM_ITER]} exit &>/dev/null ; then
+            VM_UP=$(($VM_UP+1))
+            echo "${VM_NAME[$VM_ITER]} ${VM_IP[$VM_ITER]}: up"
+        else
+            echo "${VM_NAME[$VM_ITER]} ${VM_IP[$VM_ITER]}: down"
+        fi
+        VM_ITER=$(($VM_ITER+1))
+    done
+    COUNTER=$(($COUNTER+1))
+    if [ $VM_UP -eq $VM_COUNT ] ; then
+        break
+    fi
+    echo "Waiting for VMs to be accessible via ssh for 2m at $(date)"
+    sleep 2m
+done
+
+openstack server list -c ID -c Name -c Status -c Networks -c Host --long
+
+if [ $VM_UP -ne $VM_COUNT ] ; then
+    echo "Only $VM_UP from $VM_COUNT VMs are accessible via ssh. Installation will be terminated."
+    exit 1
+fi
 
 # Start ONAP installation
 DATE_START=$(date)
