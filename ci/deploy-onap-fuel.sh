@@ -33,7 +33,7 @@ CMP_MIN_MEM=${CMP_MIN_MEM:-64000}   # MB RAM of the weakest compute node
 CMP_MIN_CPUS=${CMP_MIN_CPUS:-36}    # CPU count of the weakest compute node
 # size of storage for instances
 CMP_STORAGE_TOTAL=${CMP_STORAGE_TOTAL:-$((80*$CMP_COUNT))}
-VM_COUNT=${VM_COUNT:-2}             # number of VMs available for k8s cluster
+VM_COUNT=${VM_COUNT:-6}             # number of VMs available for k8s cluster
 
 #
 # Functions
@@ -86,6 +86,12 @@ function remove_openstack_setup(){
 #
 # Script Main
 #
+
+echo "Configure Nova Scheduler to avoid CPU and RAM overcommiting"
+sed -i /etc/nova/nova.conf -e 's/^ram_allocation_ratio =.*$/ram_allocation_ratio = 1.0/'
+sed -i /etc/nova/nova.conf -e 's/^cpu_allocation_ratio =.*$/cpu_allocation_ratio = 1.0/'
+grep -E "^(cpu|ram)_allocation_ratio" /etc/nova/nova.conf
+systemctl restart nova-scheduler.service
 
 # remove OpenStack configuration if it exists
 remove_openstack_setup
@@ -178,12 +184,40 @@ while [ $VM_ITER -le $VM_COUNT ] ; do
     VM_ITER=$(($VM_ITER+1))
 done
 
-openstack server list
+echo "Waiting for VMs to start up for 2m at $(date)"
+sleep 2m
 
-echo "Waiting for VMs to start up for 5 minutes at $(date)"
-sleep 5m
+openstack server list -c ID -c Name -c Status -c Networks -c Host --long
 
-openstack server list
+# check that SSH to all VMs is working
+SSH_OPTIONS="-i $SSH_IDENTITY -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+COUNTER=1
+while [ $COUNTER -le 10 ] ; do
+    VM_UP=0
+    VM_ITER=1
+    while [ $VM_ITER -le $VM_COUNT ] ; do
+       if ssh $SSH_OPTIONS -l $SSH_USER ${VM_IP[$VM_ITER]} exit &>/dev/null ; then
+            VM_UP=$(($VM_UP+1))
+            echo "${VM_NAME[$VM_ITER]} ${VM_IP[$VM_ITER]}: up"
+        else
+            echo "${VM_NAME[$VM_ITER]} ${VM_IP[$VM_ITER]}: down"
+        fi
+        VM_ITER=$(($VM_ITER+1))
+    done
+    COUNTER=$(($COUNTER+1))
+    if [ $VM_UP -eq $VM_COUNT ] ; then
+        break
+    fi
+    echo "Waiting for VMs to be accessible via ssh for 2m at $(date)"
+    sleep 2m
+done
+
+openstack server list -c ID -c Name -c Status -c Networks -c Host --long
+
+if [ $VM_UP -ne $VM_COUNT ] ; then
+    echo "Only $VM_UP from $VM_COUNT VMs are accessible via ssh. Installation will be terminated."
+    exit 1
+fi
 
 # Start ONAP installation
 DATE_START=$(date)
