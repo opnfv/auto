@@ -178,12 +178,40 @@ while [ $VM_ITER -le $VM_COUNT ] ; do
     VM_ITER=$(($VM_ITER+1))
 done
 
-openstack server list
-
-echo "Waiting for VMs to start up for 5 minutes at $(date)"
-sleep 5m
+echo "Waiting for VMs to start up for 2m at $(date)"
+sleep 2m
 
 openstack server list
+
+# check that SSH to all VMs is working
+SSH_OPTIONS="-i $SSH_IDENTITY -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+COUNTER=1
+while [ $COUNTER -le 10 ] ; do
+    VM_UP=0
+    VM_ITER=1
+    while [ $VM_ITER -le $VM_COUNT ] ; do
+       if ssh $SSH_OPTIONS -l $SSH_USER ${VM_IP[$VM_ITER]} exit &>/dev/null ; then
+            VM_UP=$(($VM_UP+1))
+            echo "${VM_NAME[$VM_ITER]} ${VM_IP[$VM_ITER]}: up"
+        else
+            echo "${VM_NAME[$VM_ITER]} ${VM_IP[$VM_ITER]}: down"
+        fi
+        VM_ITER=$(($VM_ITER+1))
+    done
+    COUNTER=$(($COUNTER+1))
+    if [ $VM_UP -eq $VM_COUNT ] ; then
+        break
+    fi
+    echo "Waiting for VMs to be accessible via ssh for 2m at $(date)"
+    sleep 2m
+done
+
+openstack server list
+
+if [ $VM_UP -ne $VM_COUNT ] ; then
+    echo "Only $VM_UP from $VM_COUNT VMs are accessible via ssh. Installation will be terminated."
+    exit 1
+fi
 
 # Start ONAP installation
 DATE_START=$(date)
