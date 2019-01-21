@@ -38,6 +38,14 @@ committers:
       email: 'huangxiangyu5@huawei.com'
       company: 'huawei.com'
       id: 'huangxiangyu'
+    - name: 'Paul Vaduva'
+      email: 'paul.vaduva@enea.com'
+      company: 'enea.com'
+      id: 'pvaduva'
+    - name: 'Martin Klozik'
+      email: 'martin.klozik@tieto.com'
+      company: 'tieto.com'
+      id: 'mklozik'
 tsc:
     # yamllint disable rule:line-length
     approval: 'http//meetbot.opnfv.org/meetings/opnfv-meeting/2017/opnfv-meeting.2017-08-15-12.59.html'
