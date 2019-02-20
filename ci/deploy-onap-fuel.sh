@@ -25,12 +25,17 @@
 export SSH_USER="ubuntu"
 export SSH_IDENTITY="/root/.ssh/onap_key"
 
+# detect hypervisor details to be used as default values if needed
+DEFAULT_CMP_COUNT=$(openstack hypervisor list --long -f value -c "ID" | wc -l)
+DEFAULT_CMP_MIN_MEM=$(openstack hypervisor list --long -f value -c "Memory MB" | sort | head -n1)
+DEFAULT_CMP_MIN_CPUS=$(openstack hypervisor list --long -f value -c "vCPUs" | sort | head -n1)
+
 # Use default values if compute configuration was not set by FUEL installer
 AUTO_INSTALL_DIR=${AUTO_INSTALL_DIR:-"."}
 AUTO_IMAGE_DIR="${AUTO_INSTALL_DIR}/images"
-CMP_COUNT=${CMP_COUNT:-2}           # number of compute nodes
-CMP_MIN_MEM=${CMP_MIN_MEM:-64000}   # MB RAM of the weakest compute node
-CMP_MIN_CPUS=${CMP_MIN_CPUS:-36}    # CPU count of the weakest compute node
+CMP_COUNT=${CMP_COUNT:-$DEFAULT_CMP_COUNT}          # number of compute nodes
+CMP_MIN_MEM=${CMP_MIN_MEM:-$DEFAULT_CMP_MIN_MEM}    # MB RAM of the weakest compute node
+CMP_MIN_CPUS=${CMP_MIN_CPUS:-$DEFAULT_CMP_MIN_CPUS} # CPU count of the weakest compute node
 # size of storage for instances
 CMP_STORAGE_TOTAL=${CMP_STORAGE_TOTAL:-$((80*$CMP_COUNT))}
 VM_COUNT=${VM_COUNT:-6}             # number of VMs available for k8s cluster
@@ -224,6 +229,6 @@ fi
 # Start ONAP installation
 DATE_START=$(date)
 echo -e "\nONAP Installation Started at $DATE_START\n"
-$AUTO_INSTALL_DIR/ci/deploy-onap.sh ${VM_IP[@]}
+$AUTO_INSTALL_DIR/ci/deploy-onap-kubespray.sh ${VM_IP[@]}
 echo -e "\nONAP Installation Started at $DATE_START"
 echo -e "ONAP Installation Finished at $(date)\n"
